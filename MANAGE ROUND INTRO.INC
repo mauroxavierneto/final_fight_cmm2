@@ -54,7 +54,7 @@ SUB RoundIntro(Ending)
         NEXT T
 
        'PLAYERS WALKING TO BREAK THE DRUMCANS
-       CASE 800 TO 900:
+       CASE 800 TO 850:
         FOR PL=1 TO 2
          INC X(PL), SPD(PL): MV=1: MVLR(PL)=1
         NEXT PL 
@@ -89,11 +89,11 @@ SUB RoundIntro(Ending)
         IF OSDX=2100 THEN STE(T)=75: EANIDelay(T)=1 'START ENEMY KICK
         'DRUMCAN KICKED
         IF OSDX=2050 THEN
-         ESPDX(17)=-4: ESJMP(17)=-4
-         InsertHit(EX(17)+20,RealY(17)-50,1) 'HIT
-         InsertHit(EX(17)+20,RealY(17),2)    'SMOKE
+         ESPDX(14)=-4: ESJMP(14)=-4
+         InsertHit(EX(14)+20,RealY(14)-50,1) 'HIT
+         InsertHit(EX(14)+20,RealY(14),2)    'SMOKE
         ENDIF
-        IF OSDX=1960 THEN ESPDX(17)=0: ESJMP(17)=0  'STOP DRUMCAN
+        IF OSDX=1960 THEN ESPDX(14)=0: ESJMP(14)=0  'STOP DRUMCAN
         'ENEMY STOPPED
         IF OSDX>=2000 AND OSDX<=2100 THEN EWAIT(T)=0 
         IF OSDX>=700 AND EWAIT(T)=10 THEN EAN(T)=9 
@@ -111,7 +111,7 @@ SUB RoundIntro(Ending)
       ' PLAYERS WALKING TO THE UPSTAIRS
       GO=1
       ' A LITTLE PAUSE (LIKE THE ARCADE)
-      IF OSDX>=9600 THEN GO=0: MV=0
+      IF OSDX>=9600 THEN GO=0: MV=0: FOR PL=1 TO MAXPL: AN(PL)=0: NEXT PL
       IF OSDX>7000 AND OSDX<9600 THEN
        FOR PL=1 TO MAXPL
         IF X(PL)<=200 THEN
@@ -128,9 +128,10 @@ SUB RoundIntro(Ending)
       ' GO DOWNSTAIRS
       IF OSDX=7000 THEN
        GO=0
-       FOR PL=1 TO MAXPL
-        INC X(PL), 3: MV=1: MVLR(PL)= 1
-        IF X(PL)>235 THEN INC RealY(PL), 1.5: MVUD(PL)= 1
+       FOR PL=1 TO MAXPL 
+        IF X(PL)<245 THEN T=4 ELSE T=(AN(PL) MOD 5 <=2)*3
+        INC X(PL), T: MV=1: MVLR(PL)= 1
+        IF X(PL)>235 THEN INC RealY(PL), T/1.3: MVUD(PL)= 1
         ' REACH THE LIMIT
         IF X(PL)>350 THEN INC GO
        NEXT PL
@@ -188,10 +189,10 @@ SUB RoundIntro(Ending)
         PLAY_WAV "The Slums 2"
         MV=0
         FOR PL=1 TO MAXPL
-         X(PL)=-40: RealY(PL)=193:Y(PL)=0
+         X(PL)=-20: RealY(PL)=193:Y(PL)=0
         NEXT PL
         FOR PL=1 TO MAXPL
-         IF Energy(PL)>=0 THEN X(PL)=-20: EXIT FOR
+         IF Energy(PL)>=0 THEN X(PL)=0: EXIT FOR
         NEXT PL
 
       END SELECT 'END SELECT OSDX

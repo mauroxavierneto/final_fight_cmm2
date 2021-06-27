@@ -59,7 +59,7 @@ SUB PutPlayer(xs,ys,num,s,Who,pl,SHOW)
               kx=10-(MVUD(PL)<>0)*10:ky=5:kt=PS_GRP(PL)*20
     'GUY PUNCHING 
     CASE 13 : xa=  0:ya=0:sx= 64:sy=90:p=27:tx=-12:        
-    CASE 14 : xa= 64:ya=0:sx= 81:sy=90:p=27:tx=-44:     kx=19:ky= 5
+    CASE 14 : xa= 64:ya=0:sx= 81:sy=90:p=27:tx=-44:     kx=15:ky= 5: kt=50
     'GUY EXTENDED PUNCH
     CASE 15 : xa=145:ya=0:sx= 65:sy=90:p=27:tx=-30:ty=-2 
     CASE 16 : xa=211:ya=0:sx=100:sy=90:p=27:tx=-62:ty=-2:kx=19:ky=15:kt=40
@@ -144,8 +144,8 @@ SUB PutPlayer(xs,ys,num,s,Who,pl,SHOW)
     CASE 19 : xa=266:ya= 89:sx=55:sy=111:p=27:tx=- 4:                  Combo(PL)=0
     'CODY GRAPPLE / KNEELING / THROWING 
     CASE 20 : xa=  0:ya= 2:sx=77:sy=86:p=25:tx=10
-    CASE 21 : xa= 77:ya= 8:sx=49:sy=77:p=25:tx= 2:BX=&HFF0000:kx=20:ky=0
-    CASE 22 : xa=126:ya= 4:sx=63:sy=76:p=25:tx= 4:BX=&HFF0000:kx=20:ky=0
+    CASE 21 : xa= 77:ya= 8:sx=49:sy=77:p=25:tx= 2:BX=&HFF0000:kx=15:ky=0: kt=50
+    CASE 22 : xa=126:ya= 4:sx=63:sy=76:p=25:tx= 4:BX=&HFF0000:kx=15:ky=0: kt=50
     CASE 23 : xa=189:ya=16:sx=59:sy=64:p=25:tx= 0
     'CODY JUMPING AHEAD / VERTICAL
     CASE 24 : xa=259:ya= 0:sx=61:sy= 65:p=25:     ty=-30
@@ -231,10 +231,10 @@ SUB PutPlayer(xs,ys,num,s,Who,pl,SHOW)
               xa=  1:ya=153:sx= 72:sy= 45:p =25:tx=-44:ty= 9
     'HAGGAR HEAD BANG
     CASE 21 : xb= 81:yb=  0:sbx=51:sby=60:pb=28
-              xa=  0:ya=200:sx= 54:sy= 40:p =25:tx=-17:ty=16:BX=&HFF0000:kx=15:ky=-35:kt=60
+              xa=  0:ya=200:sx= 54:sy= 40:p =25:tx=-17:ty=16:BX=&HFF0000:kx=25:ky=-25:kt=70
     'HAGGAR SUPLEX
-    CASE 22 : xa=102:ya=141:sx= 69:sy= 99:p =25:tx= 2':       BX=&HFF0000:kx=  0:ky=0:kt=40
-    CASE 23 : xa=224:ya=192:sx= 96:sy= 49:p =25:tx= 0':       BX=&HFF0000:kx=-20:ky=0:kt=50
+    CASE 22 : xa=102:ya=141:sx= 69:sy= 99:p =25:tx= 2
+    CASE 23 : xa=224:ya=192:sx= 96:sy= 49:p =25:tx= 0': ETR(GrapE(PL))=1
     'HAGGAR JUMPING AHEAD / VERTICAL
     CASE 24 : xa=  0:ya=  0:sx=63:sy= 85:p=25
     CASE 25 : xa= 63:ya=  0:sx=52:sy=100:p=25

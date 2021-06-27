@@ -55,6 +55,9 @@ END SUB
 SUB StageScrollEvent(xx,PL)
  Local t,xs,mv
 
+ 'DON'T ALLOW SCROLL FOR A WHILE
+ IF ScrollLock>0 THEN INC ScrollLock,-1: xx=0
+
  xx=int(xx)
 
  'SCROLL OTHER PLAYERS OR CANCEL SCROLL IF OTHER PLAYER IS IN THE LIMIT OF THE SCREEN
@@ -136,6 +139,11 @@ SUB StageScrollEvent(xx,PL)
        InsertObject(650,195,5,,-1)
        'ENEMY LEANING AGAINST THE WALL
        InsertEnemy(427-xs,174,4,65)
+
+       'TESTS
+       'InsertEnemy(340,174,14,1)
+       'InsertObject(250,195,19,,-1)
+ 
       ENDIF
 
      CASE 1:
@@ -211,10 +219,17 @@ SUB StageScrollEvent(xx,PL)
     ENDIF
     INC EVENT(0)
     ' "WAKE UP" ENEMIES
-    IF EVENT(0)=160 THEN STE(5)=1
-    IF EVENT(0)=170 THEN STE(4)=1
-    IF EVENT(0)=180 THEN STE(6)=1
+    IF EVENT(0)=60 THEN STE(5)=1
+    IF EVENT(0)=70 THEN STE(4)=1
+    IF EVENT(0)=80 THEN STE(6)=1 
   
+    IF xs>180 AND EVENT(1)=0 THEN INC EVENT(1): ScrollLock=140
+    IF EVENT(1)>0 THEN INC EVENT(1)
+    ' G. ORIBER RUNNING + J - RIGHT
+    IF EVENT(1)=20 THEN InsertEnemy(335,190,15,80,5): InsertEnemy(355,210,7,1,5)
+    ' BILL BULL + TWO P - LEFT
+    IF EVENT(1)=35 THEN InsertEnemy(-20,210,14,1,5): InsertEnemy(-40,230,8,1,4)
+
   END SELECT 'END OF Section
 
  ENDIF 'END OF ROUND 1

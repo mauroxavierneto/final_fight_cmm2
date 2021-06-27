@@ -69,10 +69,11 @@ SUB PutObject(xs,ys,num,s,SHOW)
   CASE 40 : xa=224:ya= 92:sx=80:sy=40:p=39 'LOWER BROKEN
   'BILLBOARD
   CASE -41: xa= 64:ya=224:sx=16:sy= 16:p=38: AVA$="BILLBOARD" 'AVATAR
-  CASE 41 : xa=  0:ya=146:sx=64:sy= 94:p=39 'OK - LIGHT 1
-  CASE 42 : xa= 64:ya=146:sx=64:sy= 94:p=39 'OK - LIGHT 2
-  CASE 43 : xa=  0:ya=  0:sx=64:sy= 48:p=39 'UPPER BROKEN
-  CASE 44 : xa=  0:ya= 48:sx=64:sy= 64:p=39 'LOWER BROKEN
+  CASE 41 : xa=  0:ya= 64:sx=64:sy= 94:p=39:'OK - LIGHT 1
+            xxt=xs-(sx+TX)\2: yyt=ys-sy+TY: BLIT 311,0,xxt+49,yyt+1,9,78,p,s            
+  CASE 42 : xa=  0:ya= 64:sx=64:sy= 94:p=39:'OK - LIGHT 2
+            xxt=xs-(sx+TX)\2: yyt=ys-sy+TY: BLIT 311,4,xxt+49,yyt+1,9,78,p,s            
+  CASE 43 : xa=  0:ya=  0:sx=64:sy= 64:p=39 'LOWER BROKEN
 
   'POINTS -------------------------------------------------------------------------------
 
@@ -171,7 +172,7 @@ SUB PutObject(xs,ys,num,s,SHOW)
   CASE  135 : xa= 63:ya=158:sx=29:sy=12 :p=38 
   'CURRY - 5000
   CASE -136 : xa=112:ya=224:sx=16:sy=16 :p=38: AVA$="CURRY"
-  CASE  136 : xa=122:ya=147:sx=30:sy=13 :p=38 
+  CASE  136 : xa= 92:ya=157:sx=30:sy=13 :p=38 
   'PIZZA - 5000
   CASE -137 : xa=112:ya=224:sx=16:sy=16 :p=38: AVA$="PIZZA"
   CASE  137 : xa=  0:ya=178:sx=30:sy=14 :p=38 

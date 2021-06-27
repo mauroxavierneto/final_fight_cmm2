@@ -8,7 +8,7 @@ SUB InsertObject(x,y,tp,NUM,IT)
  LOCAL T
  NUM=0
 
- FOR T=13 TO EMAX
+ FOR T=10 TO EMAX
   IF STE(T)=0 THEN
    IF tp=0 THEN EXIT SUB
    'GENERIC START PARAMETERS
@@ -52,8 +52,7 @@ SUB InsertObject(x,y,tp,NUM,IT)
 
     CASE  19: EAN(T)= 41                   'INTACT BILLBOARD ANIMATION 1
     CASE  20: EAN(T)= 42                   'INTACT BILLBOARD ANIMATION 2
-    CASE  21: EAN(T)= 43: EEnergy(NUM)=20  'SUPERIOR PIECE OF A BROKEN BILLBOARD
-    CASE  22: EAN(T)= 44: EEnergy(NUM)=25  'INFERIOR PIECE OF A BROKEN BILLBOARD
+    CASE  21: EAN(T)= 43: EEnergy(NUM)=25  'INFERIOR PIECE OF A BROKEN BILLBOARD
     'POINTS
     CASE 100: EAN(T)=EType(T): EMV(T)=3: EScore(T)=1000   'NAPKIN
     CASE 101: EAN(T)=EType(T): EMV(T)=3: EScore(T)=1000   'HAT
@@ -209,14 +208,9 @@ SUB ControlObject(T)
     CASE  1: EAN(T)=30+(EType(T)=17)*9+(EType(T)=19)*11+(EType(T)=19)*SW
     ' REMOVE AND CREATE TWO PIECES
     CASE 10:
-     'INSERT SUPERIOR PART IF IT'S A BILLBOARD
      InsertObject(EX(T),RealY(T),EITEM(T))
      INC SCORE(EHIT(T)),900
-     IF Etype(T)=19 THEN
-      InsertObject(EX(T),RealY(T),21,NUM): EY(NUM)=EY(T)-64
-      ESJMP(NUM)=ESJMP(T): ESIDE(NUM)=ESIDE(T): EMV(NUM)=1
-     ENDIF
-     InsertObject(EX(T),RealY(T),10+(EType(T)=17)*8+(EType(T)=19)*12,NUM)
+     InsertObject(EX(T),RealY(T),10+(EType(T)=17)*8+(EType(T)=19)*11,NUM)
      ESJMP(NUM)=ESJMP(T)/2: ESIDE(NUM)=ESIDE(T): EMV(NUM)=1
      FOR II=-3 TO 3
       InsertObject(EX(T),RealY(T),201+INT(RND*3.99),NUM): EY(NUM)=EY(T)-40+II*10

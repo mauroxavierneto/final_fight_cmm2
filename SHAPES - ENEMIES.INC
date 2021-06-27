@@ -85,7 +85,7 @@ SUB PutEnemy(xs,ys,num,s,Who,pl,SHOW)
   CASE 7, 8: 'J / TWO P -----------------------------------------------------------------
    SELECT CASE num
     'ENERGY AVATAR
-    CASE 99 : xa=0:ya=504:sx=59:sy=16:tx=-3:ty=0
+    CASE 99 : xa=0:ya=504:sx=59:sy=16:tx=-14
     'STOPPED
     CASE  9 : xa=163:ya=508:sx=64:sy=91
     'WALKING (ALWAYS WITH ATTENTION)
@@ -159,7 +159,7 @@ SUB PutEnemy(xs,ys,num,s,Who,pl,SHOW)
    INC yb,(who-9)*107
 
 
-  CASE 11, 12: 'HOLLY WOOD / EL GADO ----------------------------------------------------
+  CASE 11 TO 13: 'HOLLY WOOD / EL GADO ----------------------------------------------------
    SELECT CASE num
     'ENERGY AVATAR
     CASE 99 : xa=0:ya=787:sx=99:sy=16:tx=-54:ty=0
@@ -208,11 +208,47 @@ SUB PutEnemy(xs,ys,num,s,Who,pl,SHOW)
    INC ya,(who-11)*100
    INC yb,(who-11)*100
 
+  CASE 14 TO 16: 'BILL BILL / G. ORIBER / WONG WHO --------------------------------------
+   SELECT CASE num
+    'ENERGY AVATAR
+    CASE 99 : xa=1363:ya=838:sx=91:sy=16:tx=-cint(sx/2)
+    'WALKING
+    CASE  0 : xa=1288:ya=648:sx=68:sy=53:tx=0:ty=10:xb=1266:yb=599:sbx=77:sby=49:tbx= 2:tby=0
+    CASE  1 : xa=1288:ya=648:sx=68:sy=53:tx=0:ty=10:xb=1343:yb=599:sbx=46:sby=49:tbx=10:tby=0
+    CASE  2 : xa=1288:ya=648:sx=68:sy=53:tx=0:ty=10:xb=1418:yb=651:sbx=53:sby=49:tbx= 4:tby=0
+    CASE  3 : xa=1288:ya=648:sx=68:sy=53:tx=0:ty=10:xb=1397:yb=599:sbx=49:sby=52:tbx= 6:tby=0
+    'START TO RUN
+    CASE  4 : xa=1251:ya=692:sx=84:sy=89:tx=0:ty=6
+    'RUNNING
+    CASE  5 : xa=1535:ya=681:sx=64:sy=36:tx=-12:ty=6:xb=1507:yb=717:sbx=92:sby=36:tbx=0:tby=0
+    CASE  6 : xa=1535:ya=681:sx=64:sy=36:tx=-14:ty=4:xb=1460:yb=717:sbx=47:sby=38:tbx=0:tby=0
+    CASE  7 : xa=1535:ya=681:sx=64:sy=36:tx=-12:ty=8:xb=1471:yb=681:sbx=64:sby=36:tbx=0:tby=0
+    CASE  8 : xa=1535:ya=681:sx=64:sy=36:tx=- 8:ty=4:xb=1413:yb=700:sbx=47:sby=38:tbx=0:tby=0
+    'KICKING
+    CASE 16 : xa=1261:ya=781:sx=75:sy=52:tx=  0:ty=88:xb=1446:yb=599:sbx=60:sby=49:tbx=44:tby=-40
+    CASE 17 : xa=1506:ya=599:sx=93:sy=82:tx=-16:ty=94:xb=1446:yb=599:sbx=60:sby=49:tbx=40:tby=-46
+    CASE 18 : xa=1261:ya=781:sx=75:sy=52:tx=  0:ty=88:xb=1446:yb=599:sbx=60:sby=49:tbx=44:tby=-40
+    'HURT
+    CASE 21 : xa=1356:ya=651:sx=57:sy=80:tx=0 'IN THE STOMACH
+    CASE 22 : xa=1454:ya=756:sx=77:sy=86:tx=0 'IN THE FACE
+
+    'FALLING
+    CASE 23 : xa=1353:ya=738:sx=101:sy=63:tx=5:ty=-20 'FALLING DOWN
+    CASE 24,50,52,54,56,58,60:
+              xa=1337:ya=801:sx=117:sy=37:tx=5        'LYING ON THE FLOOR / DEAD
+    'GETTING UP
+    CASE 25:  xa= 1531:ya=753:sx= 68:sy= 53:tx=0
+   END SELECT 'BILL BILL / G. ORIBER / WONG WHO
+    'CASE  9 : xa=  0:ya=  0:sx= 0:sy= 0:tx=0:ty=0
+    'CASE  9 : xa=  0:ya=  0:sx= 0:sy= 0:tx=0:ty=0
+   INC ya,(Who-14)*255
+   INC yb,(Who-14)*255
+
 
   CASE 80: 'DAMND -----------------------------------------------------------------------
    SELECT CASE num
     'ENERGY AVATAR
-    CASE 99 : xa=2:ya=1084:sx=60:sy=16:tx=-7:ty=0
+    CASE 99 : xa=2:ya=1084:sx=60:sy=16::tx=-cint(sx/2)
     'STOPPED
     CASE  0 : xa=423:ya=1083: sx=86: sy=61: tx=-4: ty= 13:
               xb=192:yb=1083:sbx=73:sby=61:tbx= 0:tby=  0
