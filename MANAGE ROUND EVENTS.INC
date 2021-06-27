@@ -1,0 +1,223 @@
+' --- GENERAL STAGE/ROUND EVENTS CONTROL ---
+
+SUB ClearEvents
+ LOCAL T
+ 'RESET ALL STAGE EVENTS, ENEMIES, OBJECTS AND MORE
+ MATH SET 0,Event()
+ MATH SET 0,EEnergy()
+ MATH SET 0,STE()
+ MATH SET 0,EX()
+ MATH SET 0,EY()
+ MATH SET 0,ESJMP()
+ MATH SET 0,ETR()
+ MATH SET 0,EWAIT()
+ MATH SET 0,ESPD()
+ MATH SET 0,ESIDE()
+ MATH SET 0,EType()
+ MATH SET 0,ECOMBO()
+ MATH SET 0,EHIT()
+ MATH SET 0,ESPDX()
+ MATH SET 0,ESPDY()
+ MATH SET 0,EBACK()
+ MATH SET 0,EBACKX()
+ MATH SET 0,EAN()
+ MATH SET 0,EAniSpd()
+ MATH SET 0,EAniDelay()
+ MATH SET 0,EDIST()
+ MATH SET 0,EEnergy()
+ MATH SET 0,EEnMax()
+ MATH SET 0,EMV()
+ MATH SET 0,STE()
+ MATH SET 0,ES_SPD()
+ MATH SET 0,ES_POW()
+ MATH SET 0,ES_DEF()
+ MATH SET 0,ESCORE()
+ MATH SET 0,EITEM()
+ MATH SET 0,XHit()
+ MATH SET 0,YHit()
+ MATH SET 0,AHit()
+ MATH SET 0,EnHit()
+ MATH SET 0,SPHit()
+ MATH SET 0,Event()
+ MATH SET 0,Index()
+ MATH SET 0,ZBUF()
+ MATH SET 0,Y()
+ FOR T=4 TO EMAX
+  RealY(T)=0
+ NEXT T
+ Scroll=0
+ LevelPart=0
+ ScrX=240
+END SUB
+
+' SCROLL STAGE AND CONTROL EVENTS (ANIMATIONS, SPAWN ENEMIES)
+
+SUB StageScrollEvent(xx,PL)
+ Local t,xs,mv
+
+ xx=int(xx)
+
+ 'SCROLL OTHER PLAYERS OR CANCEL SCROLL IF OTHER PLAYER IS IN THE LIMIT OF THE SCREEN
+ IF OSDX=0 THEN
+  for t=1 to MAXPL
+   IF t<>PL THEN INC X(t),-xx
+   IF X(t)<20 THEN xx=0: X(t)=0
+  next t
+ ENDIF
+
+ INC Scroll,xx
+ xs=Scroll: mv=1
+
+ 'SCROLL ENEMIES
+ for t=0 to EMAX
+  INC EX(t),-xx
+ next t
+
+ 'LIMIT OF THE ROUND 
+ INC ScrX,xx
+
+ IF ScrX>=LIMRD THEN
+  ScrX=LIMRD
+  'LOAD END OF SECTION EVENT ONLY WHEN PLAYERS ARE STOPPED
+  IF CNTE=0 AND OSDX<5000 THEN
+   GO=1
+   FOR T=1 TO MAXPL
+    IF Punch(T)>0 OR Kick(T)>0 OR Special(T)>0 OR PHurted(T)>0 OR AN(T)>14 THEN GO=0
+   NEXT T
+   IF GO THEN OSDX=9990': RoundIntro(1)
+  ENDIF
+ ENDIF
+
+ 'CREATE HORIZONTAL LIMIT FOR THE ROUND
+ R_SCR=LIMRD-ScrX+RSCRX
+ L_SCR=LSCRX-(ScrX-240)
+
+ 'CALL EACH LEVEL PART 
+ if xs>320 then inc xs,-320: inc LevelPart, 1:mv=0
+ if xs<  0 then inc xs, 320: inc LevelPart,-1:mv=0
+ if LevelPart<0 then xs=0: LevelPart=0
+
+ PAGE WRITE 1
+ 
+ if Round=1 then  
+
+  SELECT CASE Section
+
+   CASE 1: ' ROUND 1-1: SLUMS -----------------------------------------------------------    
+    if LevelPart>2 then xs=320: LevelPart=2
+    'PARALLAX CITY BACKGROUND
+    IF MV=1 THEN PAGE SCROLL 11,-xx\2,0
+    PAGE COPY 11 TO 1  
+
+    SELECT CASE Levelpart
+
+     CASE 0: 
+      BLIT xs,0,0,0,320-xs,240,2,4: BLIT 0,0,320-xs,0,xs,240,3,4
+      'OPEN DOOR 1
+      IF XS>230 AND XS<240 AND Event(0)=0 THEN Event(0)=1
+      IF Event(0)>0 THEN INC Event(0) 
+      IF Event(0)<=20 THEN
+       PAGE WRITE 3        
+       IF Event(0)\4<5 THEN
+        BLIT (Event(0)\4)*44,0,143,60,44,105,12,0
+       ELSE
+        BLIT           132,105,143,60,44,105,12,0
+       ENDIF
+       PAGE WRITE 1
+      ENDIF
+      'RELEASE ENEMIES THROUGH THE DOOR AND FROM LEFT
+      IF Event(0)= 20 THEN InsertEnemy(487-xs,164,4,57)
+      IF Event(0)= 60 THEN InsertEnemy(487-xs,164,6,57)
+      IF Event(0)=100 THEN InsertEnemy(487-xs,164,5,57)
+      IF Event(0)=170 THEN InsertEnemy(-30,170,7,1)
+
+      IF OSDX=10 THEN
+       'INSERT OBJECT - TELEPHONE BOOTH
+       InsertObject(650,195,5,,-1)
+       'ENEMY LEANING AGAINST THE WALL
+       InsertEnemy(427-xs,174,4,65)
+      ENDIF
+
+     CASE 1:
+      'INSERT OBJECTS - 2 DUSTBINS
+      IF MV=0 THEN 
+       InsertObject(450,190,11,,-1)
+       InsertObject(500,190,11,,-1)
+      ENDIF
+      INC Event(0)
+      BLIT xs,0,0,0,320-xs,240,3,4: BLIT 0,0,320-xs,0,xs,240,4,4
+      'FINISH OPENING THE DOOR IF THE PLAYER IS FAST
+      IF Event(0)<=20 THEN
+       PAGE WRITE 3        
+       IF Event(0)\4<5 THEN
+        BLIT (Event(0)\4)*44,0,143,60,44,105,12,0
+       ELSE
+        BLIT           132,105,143,60,44,105,12,0
+       ENDIF
+       PAGE WRITE 1
+      ENDIF
+      'RELEASE ENEMIES THROUGH THE DOOR AND FROM LEFT - IF NOT RELEASED IN PREVIOUS BLOCK
+      IF Event(0)= 20 THEN InsertEnemy(167-xs,164,4,57)
+      IF Event(0)= 60 THEN InsertEnemy(167-xs,164,6,57)
+      IF Event(0)=100 THEN InsertEnemy(167-xs,164,5,57)
+      IF Event(0)=170 THEN InsertEnemy(-30,170,7,1)
+
+     CASE 2:
+      'INSERT OBJECTS - 3 DUSTBINS
+      IF MV=0 THEN 
+       InsertObject(450,185,11,,-2)
+       InsertObject(500,185,11,,-2)
+       InsertObject(480,238,11,,-1)
+      ENDIF
+      BLIT xs,0,0,0,320-xs,240,4,4: BLIT 0,0,320-xs,0,xs,240,5,4
+      'OPEN DOOR 2
+      INC Event(1)
+      IF Event(1)<=20 THEN
+       PAGE WRITE 4        
+       IF Event(1)\4<5 THEN 
+        BLIT (Event(1)\4)*44,0,222,60,44,105,12,0
+       ELSE
+        BLIT           132,105,222,60,44,105,12,0
+       ENDIF
+       PAGE WRITE 1
+      ENDIF
+      'RELEASE ENEMIES THROUGH THE DOOR
+      IF Event(1)= 20 THEN InsertEnemy(246-xs,164,4,57)
+      IF Event(1)= 60 THEN InsertEnemy(246-xs,164,6,57)
+      IF Event(1)=100 THEN InsertEnemy(246-xs,164,5,57)
+      IF Event(1)=120 THEN InsertEnemy(-30,170,8,1)
+
+      'RELEASE ENEMIES ON THE STAGE
+      IF XS>200 THEN INC Event(2)
+      IF Event(2)= 50 THEN InsertEnemy(-30,170,4,1)
+      IF Event(2)=100 THEN InsertEnemy(-30,160,6,1): InsertEnemy(-60,200,9,1)
+      IF Event(2)=150 THEN InsertEnemy(-30,170,11,1)
+    END SELECT 'END OF LevelPart -----------------------------------------------------------
+
+   CASE 2: ' ROUND 1-2: SLUMS GALLERY ------------------------------------------------------
+
+    'ONLY ONE PART
+    PAGE WRITE 1: CLS 0
+    BLIT xs,0,0,0,320-xs,240,6,4: BLIT 0,0,320-xs,0,xs,240,7,4
+   
+    IF EVENT(0)=0 THEN
+     InsertObject(140,200,17,,-3)
+     InsertObject(280,195,8,,-1)
+     InsertObject(350,195,8,,-1)
+     'SEATED ENEMIES
+     InsertEnemy(295,210,9,66,4)
+     InsertEnemy(255,230,5,68,4)
+     InsertEnemy(325,230,4,68,5)
+    ENDIF
+    INC EVENT(0)
+    ' "WAKE UP" ENEMIES
+    IF EVENT(0)=160 THEN STE(5)=1
+    IF EVENT(0)=170 THEN STE(4)=1
+    IF EVENT(0)=180 THEN STE(6)=1
+  
+  END SELECT 'END OF Section
+
+ ENDIF 'END OF ROUND 1
+ Scroll=xs
+END SUB
+
