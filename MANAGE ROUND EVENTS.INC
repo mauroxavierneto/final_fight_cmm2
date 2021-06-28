@@ -53,7 +53,7 @@ END SUB
 ' SCROLL STAGE AND CONTROL EVENTS (ANIMATIONS, SPAWN ENEMIES)
 
 SUB StageScrollEvent(xx,PL)
- Local t,xs,mv
+ Local t,i,xs,mv
 
  'DON'T ALLOW SCROLL FOR A WHILE
  IF ScrollLock>0 THEN INC ScrollLock,-1: xx=0
@@ -95,10 +95,12 @@ SUB StageScrollEvent(xx,PL)
  R_SCR=LIMRD-ScrX+RSCRX
  L_SCR=LSCRX-(ScrX-240)
 
- 'CALL EACH LEVEL PART 
+ 'CALL EACH LEVEL PART UNTIL THE SECTION LIMIT
  if xs>320 then inc xs,-320: inc LevelPart, 1:mv=0
  if xs<  0 then inc xs, 320: inc LevelPart,-1:mv=0
  if LevelPart<0 then xs=0: LevelPart=0
+
+ IF LevelPart>PartMax THEN LevelPart=PartMax: xs=320
 
  PAGE WRITE 1
  
@@ -107,7 +109,7 @@ SUB StageScrollEvent(xx,PL)
   SELECT CASE Section
 
    CASE 1: ' ROUND 1-1: SLUMS -----------------------------------------------------------    
-    if LevelPart>2 then xs=320: LevelPart=2
+
     'PARALLAX CITY BACKGROUND
     IF MV=1 THEN PAGE SCROLL 11,-xx\2,0
     PAGE COPY 11 TO 1  
@@ -115,7 +117,9 @@ SUB StageScrollEvent(xx,PL)
     SELECT CASE Levelpart
 
      CASE 0: 
+
       BLIT xs,0,0,0,320-xs,240,2,4: BLIT 0,0,320-xs,0,xs,240,3,4
+
       'OPEN DOOR 1
       IF XS>230 AND XS<240 AND Event(0)=0 THEN Event(0)=1
       IF Event(0)>0 THEN INC Event(0) 
@@ -141,19 +145,22 @@ SUB StageScrollEvent(xx,PL)
        InsertEnemy(427-xs,174,4,65)
 
        'TESTS
-       'InsertEnemy(340,174,14,1)
+       'InsertEnemy(340,200,17,1)
+       'InsertEnemy(340,230,18,1)
        'InsertObject(250,195,19,,-1)
  
       ENDIF
 
      CASE 1:
+
+      BLIT xs,0,0,0,320-xs,240,3,4: BLIT 0,0,320-xs,0,xs,240,4,4
+
       'INSERT OBJECTS - 2 DUSTBINS
       IF MV=0 THEN 
        InsertObject(450,190,11,,-1)
        InsertObject(500,190,11,,-1)
       ENDIF
       INC Event(0)
-      BLIT xs,0,0,0,320-xs,240,3,4: BLIT 0,0,320-xs,0,xs,240,4,4
       'FINISH OPENING THE DOOR IF THE PLAYER IS FAST
       IF Event(0)<=20 THEN
        PAGE WRITE 3        
@@ -171,13 +178,15 @@ SUB StageScrollEvent(xx,PL)
       IF Event(0)=170 THEN InsertEnemy(-30,170,7,1)
 
      CASE 2:
+
+      BLIT xs,0,0,0,320-xs,240,4,4: BLIT 0,0,320-xs,0,xs,240,5,4
+
       'INSERT OBJECTS - 3 DUSTBINS
       IF MV=0 THEN 
        InsertObject(450,185,11,,-2)
        InsertObject(500,185,11,,-2)
        InsertObject(480,238,11,,-1)
       ENDIF
-      BLIT xs,0,0,0,320-xs,240,4,4: BLIT 0,0,320-xs,0,xs,240,5,4
       'OPEN DOOR 2
       INC Event(1)
       IF Event(1)<=20 THEN
@@ -219,16 +228,67 @@ SUB StageScrollEvent(xx,PL)
     ENDIF
     INC EVENT(0)
     ' "WAKE UP" ENEMIES
-    IF EVENT(0)=60 THEN STE(5)=1
-    IF EVENT(0)=70 THEN STE(4)=1
-    IF EVENT(0)=80 THEN STE(6)=1 
+    IF EVENT(0)=60 THEN STE(5)=1: EMV(5)=1
+    IF EVENT(0)=70 THEN STE(4)=1: EMV(4)=1
+    IF EVENT(0)=80 THEN STE(6)=1: EMV(6)=1
   
     IF xs>180 AND EVENT(1)=0 THEN INC EVENT(1): ScrollLock=140
     IF EVENT(1)>0 THEN INC EVENT(1)
-    ' G. ORIBER RUNNING + J - RIGHT
-    IF EVENT(1)=20 THEN InsertEnemy(335,190,15,80,5): InsertEnemy(355,210,7,1,5)
-    ' BILL BULL + TWO P - LEFT
-    IF EVENT(1)=35 THEN InsertEnemy(-20,210,14,1,5): InsertEnemy(-40,230,8,1,4)
+    ' G. ORIBER RUNNING + J - LEFT
+    IF EVENT(1)=20 THEN InsertEnemy(-20,190,15,80,5): InsertEnemy(-40,210,7,1,5)
+    ' BILL BULL + TWO P - RIGHT
+    IF EVENT(1)=35 THEN InsertEnemy(335,210,14,1,5): InsertEnemy(355,230,8,1,4)
+
+   CASE 3: ' ROUND 1-3: SLUMS MAD GEAR'S LAIR ----------------------------------------------
+
+    'PARALLAX CITY BACKGROUND
+    IF MV=1 THEN PAGE SCROLL 11,-xx\2,0
+    PAGE COPY 11 TO 1  
+
+    SELECT CASE Levelpart
+
+     CASE 0: 
+
+      BLIT xs,0,0,0,320-xs,240,8,4: BLIT 0,0,320-xs,0,xs,240,9,4
+
+      IF OSDX=2200 THEN
+       'INSERT OBJECT - TIRES
+       InsertObject(220,185,13,,140) 'BARBECUE
+       InsertObject(274,185,13,,-3)  'RANDOM WEAPON
+       'ENEMIES
+       InsertEnemy(470,180, 7,66,4) 'J
+       InsertEnemy(540,180, 9,64,5) 'AXEL
+      ENDIF
+
+     CASE 1:
+
+      BLIT xs,0,0,0,320-xs,240,9,4: BLIT 0,0,320-xs,0,xs,240,10,4
+
+      'INSERT ENEMY
+      IF MV=0 THEN InsertEnemy(440,185, 8,66,4) 'TWO P
+
+      'DAMND BREAK THE DOOR
+      IF EVENT(0)=0 AND xs>120 THEN
+       INC EVENT(0)
+       PAGE WRITE  9: BLIT  0,118,295,52,25,122,12,0
+       PAGE WRITE 10: BLIT 25,118,  0,52,73,122,12,0
+       PAGE WRITE 1
+       FOR T=0 TO 2
+        FOR I=0 TO 3
+         InsertObject(220+((I<=1)-(I>=2))*RND*15,180,201+INT(RND*3.99),NUM): EY(NUM)=-40-T*15
+         ESJMP(NUM)=-15+RND*5: ESIDE(NUM)=5: EMV(NUM)=1
+         ESPDX(NUM)=((I<=1)-(I>=2))*RND*6
+        NEXT I
+       NEXT T
+       PLAY_SAMPLE 2,4,22050
+      ENDIF
+
+     CASE 2:
+
+      BLIT xs,0,0,0,320-xs,240,10,4
+
+    END SELECT 'END OF LevelPart -----------------------------------------------------------
+
 
   END SELECT 'END OF Section
 

@@ -130,7 +130,7 @@ SUB ControlEnemy(T)
     ENDIF
 
     'WALKING
-    IF STE(T)<50 THEN 'CAN WALK OR MAKE ANY ATTACK? -----------------
+    IF STE(T)<50 AND EMV(T)>0 THEN 'CAN WALK OR MAKE ANY ATTACK? -----------------
 
      'DECREASE TO WALK
      INC STE(T),-1
@@ -222,22 +222,22 @@ SUB ControlEnemy(T)
      'SEATED ----------------------------------------------------------------------------
      CASE 66:
       EAN(T)=34: EAniDelay(T)=0: EAniSPD(T)=10
-      STE(T)=67
-      IF EX(T)<235 THEN STE(T)=35
+      STE(T)=67: EMV(T)=0
+      IF EX(T)<235 THEN STE(T)=65
      CASE 67:
       EAN(T)=34: EAniDelay(T)=0: EAniSPD(T)=10
-      STE(T)=66
-      IF EX(T)<235 THEN STE(T)=35
+      STE(T)=66: EMV(T)=0
+      IF EX(T)<235 THEN STE(T)=65
 
      'SEATED CROUCHED -------------------------------------------------------------------
      CASE 68:
       EAN(T)=6: EAniDelay(T)=0: EAniSPD(T)=10
-      STE(T)=69
-      IF EX(T)<235 THEN STE(T)=35
+      STE(T)=69: EMV(T)=0
+      IF EX(T)<235 THEN STE(T)=65
      CASE 69:
       EAN(T)=6: EAniDelay(T)=0: EAniSPD(T)=10
-      STE(T)=68
-      IF EX(T)<235 THEN STE(T)=35
+      STE(T)=68: EMV(T)=0
+      IF EX(T)<235 THEN STE(T)=65
 
      'PUNCH -----------------------------------------------------------------------------
      CASE 70: EAN(T)=13: EAniDelay(T)=0: EAniSpd(T)=4: INC STE(T)
@@ -310,38 +310,7 @@ SUB ControlEnemy(T)
      CASE 101: IF EAN(T)>60 THEN EEnergy(T)=-98: STE(T)=0: RealY(T)=999: Exit Sub 'REMOVE DEAD ENEMY
 
      'GRAPPLED BY A PLAYER --------------------------------------------------------------
-     CASE 120 TO 170:
-      'RESIST IF GRAPPLED FOR A WHILE WITHOUT BEING ATTACK
-      EAN(T)=22
-     INC STE(T)
-      FOR I=1 TO MAXPL 
-       IF PlType(I)=3 AND SB THEN INC STE(T),-1 'HAGGAR KEEP GRAPPLE FOR MORE TIME
-       'RELEASE IF PLAYER USE SPECIAL OR JUMP (CODY OR GUY)
-       IF Special(I)=1 OR (PlType(I)<3 AND Jump(I)>0) THEN STE(T)=170: Grap(I)=0: GrapE(I)=0: Kick(I)=0: Punch(I)=1
-       IF GrapE(I)=T THEN
-        EX(T)=X(I)+(SIDE(I)=4)*8-(SIDE(I)=5)*8: RealY(T)=RealY(I)+4-(PlType(I)=3)*18
-        IF PlType(I)=3 THEN
-         EY(T)=Y(I): ESJMP(T)=0: ESPDY(T)=0
-         INC EX(T),(SIDE(I)=4)*(32-(AN(I)=32)*24)-(SIDE(I)=5)*(32-(AN(I)=32)*24)
-         IF AN(I)=32 THEN EAN(T)=21: EY(T)=Y(I)-10
-         'PILE DRIVER ADJUST ENEMY POSITION AND SIDE
-         SELECT CASE Jump(I)
-          CASE 1,2,9 TO 10,21,22,29 TO 30: EY(T)=Y(I)+8
-          CASE 38: ESIDE(T)=(SIDE(I)=4)*7+(SIDE(I)=5)*6        
-          CASE 33:
-           STE(T)=60
-           ESPDX(T)=(SIDE(I)=4)*6-(SIDE(I)=5)*6: RealY(T)=RealY(I)
-           EAniDelay(T)=0:EAniSpd(T)=1: ESJMP(T)=-6: ESPDY(T)=-6
-           Grap(I)=0: GrapE(I)=0: Kick(I)=0: Punch(I)=1
-           Exit Sub
-         END SELECT
-        ENDIF
-        IF STE(T)>=170 THEN
-         STE(T)=52: EAniDelay(T)=0:EAniSpd(T)=3: ESJMP(T)=-3: ESPDY(T)=-3: RealY(T)=RealY(I)
-         Grap(I)=0: GrapE(I)=0: Combo(I)=0: Punch(I)=2: AniDelay(I)=0: AniSpd(I)=0
-        ENDIF
-       ENDIF
-      NEXT I
+     CASE 120 TO 170: GrapPlayer(T) 
 
      'RETURN TO THE ORIGINAL STATE IF SOMETHING GOES WRONG ON GAPPLE
      CASE >=171:
@@ -360,7 +329,7 @@ SUB ControlEnemy(T)
     ENDIF
 
     'WALKING
-    IF STE(T)<50 THEN 'CAN WALK OR MAKE ANY ATTACK? -----------------
+    IF STE(T)<50 AND EMV(T)>0 THEN 'CAN WALK OR MAKE ANY ATTACK? -----------------
 
      'DECREASE TO WALK
      INC STE(T),-1
@@ -432,22 +401,22 @@ SUB ControlEnemy(T)
      'LEANING AGAINST THE WALL ----------------------------------------------------------
      CASE 64:
       EAN(T)=35: EAniDelay(T)=0: EAniSPD(T)=10
-      STE(T)=65
-      IF EX(T)<235 THEN STE(T)=35
+      STE(T)=65: EMV(T)=0
+      IF EX(T)<235 THEN STE(T)=35: EMV(T)=1
      CASE 65:
       EAN(T)=35: EAniDelay(T)=0: EAniSPD(T)=10
-      STE(T)=64
-      IF EX(T)<235 THEN STE(T)=35
+      STE(T)=64: EMV(T)=0
+      IF EX(T)<235 THEN STE(T)=35: EMV(T)=1
 
      'SEATED ----------------------------------------------------------------------------
      CASE 66:
       EAN(T)=34: EAniDelay(T)=0: EAniSPD(T)=10
-      STE(T)=67
-      IF EX(T)<235 THEN STE(T)=35
+      STE(T)=67: EMV(T)=0
+      IF EX(T)<235 THEN STE(T)=65
      CASE 67:
       EAN(T)=34: EAniDelay(T)=0: EAniSPD(T)=10
-      STE(T)=66
-      IF EX(T)<235 THEN STE(T)=35
+      STE(T)=66: EMV(T)=0
+      IF EX(T)<235 THEN STE(T)=65
 
      'PUNCH AND FAST BACKWARD -----------------------------------------------------------
      CASE 70: EAN(T)=13: EAniDelay(T)=0: EAniSpd(T)=2: INC STE(T)
@@ -475,38 +444,7 @@ SUB ControlEnemy(T)
      CASE 101: IF EAN(T)>60 THEN EEnergy(T)=-98: STE(T)=0: RealY(T)=999: Exit Sub 'REMOVE DEAD ENEMY
 
      'GRAPPLED BY A PLAYER --------------------------------------------------------------
-     CASE 120 TO 170:
-      'RESIST IF GRAPPLED FOR A WHILE WITHOUT BEING ATTACK
-      EAN(T)=22
-     INC STE(T)
-      FOR I=1 TO MAXPL 
-       IF PlType(I)=3 AND SB THEN INC STE(T),-1 'HAGGAR KEEP GRAPPLE FOR MORE TIME
-       'RELEASE IF PLAYER USE SPECIAL OR JUMP (CODY OR GUY)
-       IF Special(I)=1 OR (PlType(I)<3 AND Jump(I)>0) THEN STE(T)=170: Grap(I)=0: GrapE(I)=0: Kick(I)=0: Punch(I)=1
-       IF GrapE(I)=T THEN
-        EX(T)=X(I)+(SIDE(I)=4)*8-(SIDE(I)=5)*8: RealY(T)=RealY(I)+4-(PlType(I)=3)*18
-        IF PlType(I)=3 THEN
-         EY(T)=Y(I): ESJMP(T)=0: ESPDY(T)=0
-         INC EX(T),(SIDE(I)=4)*(32-(AN(I)=32)*24)-(SIDE(I)=5)*(32-(AN(I)=32)*24)
-         IF AN(I)=32 THEN EAN(T)=21: EY(T)=Y(I)-10
-         'PILE DRIVER ADJUST ENEMY POSITION AND SIDE
-         SELECT CASE Jump(I)
-          CASE 1,2,9 TO 10,21,22,29 TO 30: EY(T)=Y(I)+8
-          CASE 38: ESIDE(T)=(SIDE(I)=4)*7+(SIDE(I)=5)*6        
-          CASE 33:
-           STE(T)=60
-           ESPDX(T)=(SIDE(I)=4)*6-(SIDE(I)=5)*6: RealY(T)=RealY(I)
-           EAniDelay(T)=0:EAniSpd(T)=1: ESJMP(T)=-6: ESPDY(T)=-6
-           Grap(I)=0: GrapE(I)=0: Kick(I)=0: Punch(I)=1
-           Exit Sub
-         END SELECT
-        ENDIF
-        IF STE(T)>=170 THEN
-         STE(T)=52: EAniDelay(T)=0:EAniSpd(T)=3: ESJMP(T)=-3: ESPDY(T)=-3: RealY(T)=RealY(I)
-         Grap(I)=0: GrapE(I)=0: Combo(I)=0: Punch(I)=2: AniDelay(I)=0: AniSpd(I)=0
-        ENDIF
-       ENDIF
-      NEXT I
+     CASE 120 TO 170: GrapPlayer(T)
 
      'RETURN TO THE ORIGINAL STATE IF SOMETHING GOES WRONG ON GAPPLE
      CASE >=171:
@@ -526,7 +464,7 @@ SUB ControlEnemy(T)
     ENDIF
 
     'WALKING
-    IF STE(T)<50 THEN 'CAN WALK OR MAKE ANY ATTACK? -----------------
+    IF STE(T)<50 AND EMV(T)>0 THEN 'CAN WALK OR MAKE ANY ATTACK? -----------------
 
      'DECREASE TO WALK
      INC STE(T),-1
@@ -599,22 +537,22 @@ SUB ControlEnemy(T)
      'LEANING AGAINST THE WALL ----------------------------------------------------------
      CASE 64:
       EAN(T)=35: EAniDelay(T)=0: EAniSPD(T)=10
-      STE(T)=65
-      IF EX(T)<235 THEN STE(T)=35
+      STE(T)=65: EMV(T)=0
+      IF EX(T)<235 THEN STE(T)=35: EMV(T)=1
      CASE 65:
       EAN(T)=35: EAniDelay(T)=0: EAniSPD(T)=10
-      STE(T)=64
-      IF EX(T)<235 THEN STE(T)=35
+      STE(T)=64: EMV(T)=0
+      IF EX(T)<235 THEN STE(T)=35: EMV(T)=1
 
      'SEATED ----------------------------------------------------------------------------
      CASE 66:
       EAN(T)=34: EAniDelay(T)=0: EAniSPD(T)=10
-      STE(T)=67
-      IF EX(T)<235 THEN STE(T)=35
+      STE(T)=67: EMV(T)=0
+      IF EX(T)<235 THEN STE(T)=35: EMV(T)=1
      CASE 67:
       EAN(T)=34: EAniDelay(T)=0: EAniSPD(T)=10
-      STE(T)=66
-      IF EX(T)<235 THEN STE(T)=35
+      STE(T)=66: EMV(T)=0
+      IF EX(T)<235 THEN STE(T)=35: EMV(T)=1
 
      'BLOCKING --------------------------------------------------------------------------
      CASE 68:
@@ -670,38 +608,7 @@ SUB ControlEnemy(T)
      CASE 101: IF EAN(T)>60 THEN EEnergy(T)=-98: STE(T)=0: RealY(T)=999: Exit Sub 'REMOVE DEAD ENEMY
 
      'GRAPPLED BY A PLAYER --------------------------------------------------------------
-     CASE 120 TO 170:
-      'RESIST IF GRAPPLED FOR A WHILE WITHOUT BEING ATTACK
-      EAN(T)=22
-      INC STE(T)
-      FOR I=1 TO MAXPL 
-       IF PlType(I)=3 AND SB THEN INC STE(T),-1 'HAGGAR KEEP GRAPPLE FOR MORE TIME
-       'RELEASE IF PLAYER USE SPECIAL OR JUMP (CODY OR GUY)
-       IF Special(I)=1 OR (PlType(I)<3 AND Jump(I)>0) THEN STE(T)=170: Grap(I)=0: GrapE(I)=0: Kick(I)=0: Punch(I)=1
-       IF GrapE(I)=T THEN
-        EX(T)=X(I)+(SIDE(I)=4)*8-(SIDE(I)=5)*8: RealY(T)=RealY(I)+4-(PlType(I)=3)*18
-        IF PlType(I)=3 THEN
-         EY(T)=Y(I): ESJMP(T)=0: ESPDY(T)=0
-         INC EX(T),(SIDE(I)=4)*(32-(AN(I)=32)*24)-(SIDE(I)=5)*(32-(AN(I)=32)*24)
-         IF AN(I)=32 THEN EAN(T)=21: EY(T)=Y(I)-10
-         'PILE DRIVER ADJUST ENEMY POSITION AND SIDE
-         SELECT CASE Jump(I)
-          CASE 1,2,9 TO 10,21,22,29 TO 30: EY(T)=Y(I)+8
-          CASE 38: ESIDE(T)=(SIDE(I)=4)*7+(SIDE(I)=5)*6        
-          CASE 33:
-           STE(T)=60
-           ESPDX(T)=(SIDE(I)=4)*6-(SIDE(I)=5)*6: RealY(T)=RealY(I)
-           EAniDelay(T)=0:EAniSpd(T)=1: ESJMP(T)=-6: ESPDY(T)=-6
-           Grap(I)=0: GrapE(I)=0: Kick(I)=0: Punch(I)=1
-           Exit Sub
-         END SELECT
-        ENDIF
-        IF STE(T)>=170 THEN
-         STE(T)=52: EAniDelay(T)=0:EAniSpd(T)=3: ESJMP(T)=-3: ESPDY(T)=-3: RealY(T)=RealY(I)
-         Grap(I)=0: GrapE(I)=0: Combo(I)=0: Punch(I)=2: AniDelay(I)=0: AniSpd(I)=0
-        ENDIF
-       ENDIF
-      NEXT I
+     CASE 120 TO 170: GrapPlayer(T)
 
      'RETURN TO THE ORIGINAL STATE IF SOMETHING GOES WRONG ON GAPPLE
      CASE >=171:
@@ -720,7 +627,7 @@ SUB ControlEnemy(T)
     ENDIF
 
     'WALKING
-    IF STE(T)<50 THEN 'CAN WALK OR MAKE ANY ATTACK? -----------------
+    IF STE(T)<50 AND EMV(T)>0 THEN 'CAN WALK OR MAKE ANY ATTACK? -----------------
 
      'DECREASE TO WALK
      INC STE(T),-1
@@ -954,7 +861,7 @@ SUB ControlEnemy(T)
     ENDIF
 
     'WALKING
-    IF STE(T)<50 THEN 'CAN WALK OR MAKE ANY ATTACK? -----------------
+    IF STE(T)<50 AND EMV(T)>0 THEN 'CAN WALK OR MAKE ANY ATTACK? -----------------
 
      'DECREASE TO WALK
      INC STE(T),-1
@@ -1077,44 +984,279 @@ SUB ControlEnemy(T)
      CASE 101: IF EAN(T)>60 THEN EEnergy(T)=-98: STE(T)=0: RealY(T)=999: Exit Sub 'REMOVE DEAD ENEMY
 
      'GRAPPLED BY A PLAYER --------------------------------------------------------------
-     CASE 120 TO 170:
-      'RESIST IF GRAPPLED FOR A WHILE WITHOUT BEING ATTACK
-      EAN(T)=22
-     INC STE(T)
-      FOR I=1 TO MAXPL 
-       IF PlType(I)=3 AND SB THEN INC STE(T),-1 'HAGGAR KEEP GRAPPLE FOR MORE TIME
-       'RELEASE IF PLAYER USE SPECIAL OR JUMP (CODY OR GUY)
-       IF Special(I)=1 OR (PlType(I)<3 AND Jump(I)>0) THEN STE(T)=170: Grap(I)=0: GrapE(I)=0: Kick(I)=0: Punch(I)=1
-       IF GrapE(I)=T THEN
-        EX(T)=X(I)+(SIDE(I)=4)*8-(SIDE(I)=5)*8: RealY(T)=RealY(I)+4-(PlType(I)=3)*18
-        IF PlType(I)=3 THEN
-         EY(T)=Y(I): ESJMP(T)=0: ESPDY(T)=0
-         INC EX(T),(SIDE(I)=4)*(32-(AN(I)=32)*24)-(SIDE(I)=5)*(32-(AN(I)=32)*24)
-         IF AN(I)=32 THEN EAN(T)=21: EY(T)=Y(I)-10
-         'PILE DRIVER ADJUST ENEMY POSITION AND SIDE
-         SELECT CASE Jump(I)
-          CASE 1,2,9 TO 10,21,22,29 TO 30: EY(T)=Y(I)+8
-          CASE 38: ESIDE(T)=(SIDE(I)=4)*7+(SIDE(I)=5)*6        
-          CASE 33:
-           STE(T)=60
-           ESPDX(T)=(SIDE(I)=4)*6-(SIDE(I)=5)*6: RealY(T)=RealY(I)
-           EAniDelay(T)=0:EAniSpd(T)=1: ESJMP(T)=-6: ESPDY(T)=-6
-           Grap(I)=0: GrapE(I)=0: Kick(I)=0: Punch(I)=1
-           Exit Sub
-         END SELECT
-        ENDIF
-        IF STE(T)>=170 THEN
-         STE(T)=52: EAniDelay(T)=0:EAniSpd(T)=3: ESJMP(T)=-3: ESPDY(T)=-3: RealY(T)=RealY(I)
-         Grap(I)=0: GrapE(I)=0: Combo(I)=0: Punch(I)=2: AniDelay(I)=0: AniSpd(I)=0
-        ENDIF
-       ENDIF
-      NEXT I
+     CASE 120 TO 170: GrapPlayer(T)
 
      'RETURN TO THE ORIGINAL STATE IF SOMETHING GOES WRONG ON GAPPLE
      CASE >=171:
       STE(T)=20: EAniDelay(T)=0: EAniSpd(T)=3: ESJMP(T)=0: ESPDY(T)=0
 
     END SELECT 'END ACTION SCRIPTS BILL BULL / G. ORIBER / WONG WHO -------------------------------
+
+
+   CASE 17 TO 18: 'POISON / ROXY ----------------------------------------------------------------
+
+    IF EMV(T)=1 OR (STE(T)>=70 AND STE(T)<=99) THEN INC EAniDelay(T)
+    IF EAniDelay(T)>EAniSpd(T) THEN
+     EAniDelay(T)=0
+     INC EAN(T)
+     IF STE(T)>20 AND STE(T)<52 THEN STE(T)=1
+    ENDIF
+
+    'WALKING
+    IF STE(T)<50 AND EMV(T)>0 THEN 'CAN WALK OR MAKE ANY ATTACK? -----------------
+
+     'DECREASE TO WALK
+     INC STE(T),-1
+
+     IF STE(T)<1 THEN
+      EBACK(T)=1: EBACKX(T)=1: EAN(T)=0
+      STE(T)=1 'KEEP STOPPED UNTIL BACK TO WALK RANDOMLY
+      IF RND<0.3 THEN
+       'ALWAYS WALKING WITH ATTENTION
+       STE(T)=20
+       IF RND>0.6 AND DIST<80 THEN 'MAYBE GO BACK IF NEAR PLAYER IS PUNCHING
+        IF Punch(PL)>0 AND EBACK(T)<>-1 THEN STE(T)=89': EBACKX(T)=-1 
+       ENDIF
+      ENDIF
+     ELSE
+      'GO BACKWARD IF TOO NEAR
+      IF DIST<35 AND STE(T)<50 THEN STE(T)=89': EBACKX(T)=-1 
+      'GO TO DIRECTION OF THE NEAR PLAYER
+      II=ESPD(T): TT=RealY(T)
+      IF RealY(T)<=SMYA THEN INC RealY(T), ABS(ESPD(T))
+      IF RealY(T)>=SMYB THEN INC RealY(T),-ABS(ESPD(T))
+      IF RealY(T)>RealY(PL)+2 THEN INC RealY(T),-ESPD(T)
+      IF RealY(T)<RealY(PL)-2 THEN INC RealY(T), ESPD(T)
+      TT=(EBACKX(T)=-1)*30+(SIDE(PL)=5)*40-(SIDE(PL)=4)*40
+      INC EX(T),((EX(T)<X(PL)-50+TT)*II*EBACKX(T))-((EX(T)>X(PL)+50-TT)*II*EBACKX(T))
+      IF EX(T)<X(PL) THEN ESide(T)=4 ELSE ESide(T)=5
+     ENDIF
+
+    ELSE 'STE(T)>=50 - DON'T WALK! ---------------------------------
+     ESPD(T)=0
+    ENDIF
+
+    'ENEMY STATUS / ACTION SCRIPTS -----------------------------------------------------
+
+    SELECT CASE STE(T)
+
+     'WALKING WITH ATTENTION -----------------------------------------------------------
+     CASE 1 TO 40: 
+      IF ESPD(T)=0 THEN STE(T)=1
+      EAniSpd(T)=3
+      ESPD(T)=ES_SPD(T)*EBACK(T)
+      IF EAN(T)>5 THEN EAN(T)=0
+
+     'GETTING UP ------------------------------------------------------------------------
+     CASE 52:
+      EAN(T)=24: INC STE(T): EAniDelay(T)=0: EAniSpd(T)=30
+      'FIX ENEMY SIDE AFTER THROWED
+      IF ESide(T)=6 THEN ESide(T)=4
+      IF ESide(T)=7 THEN ESide(T)=5
+     CASE 53:      
+      ESPDX(T)=ESPDX(T)\2: IF EAniDelay(T)>20 OR EEnergy(T)<=0 THEN INC STE(T)
+     CASE 54:
+      EAN(T)=24: INC STE(T): EAniDelay(T)=0: EAniSpd(T)=3: ESPDX(T)=0
+      'ENEMY DEAD?
+      IF EEnergy(T)<=0 THEN STE(T)=100: EAN(T)=50: EAniDelay(T)=0: EAniSpd(T)=1       
+     CASE 55:
+      EAN(T)=25: INC STE(T): EAniDelay(T)=0: EAniSpd(T)=10
+     CASE 56: EAN(T)=0: STE(T)=1
+
+     'THROWED UPDOWN --------------------------------------------------------------------
+     CASE 60:
+      EAN(T)=21: STE(T)=61: EAniDelay(T)=0: EAniSpd(T)=15
+      IF ESide(T)=4 THEN ESide(T)=7 ELSE ESide(T)=6
+      INC EX(T),-ESPDX(T)
+     CASE 61:
+      IF EAniDelay(T)>10 THEN INC STE(T)
+     CASE 62:
+      EAN(T)=22: STE(T)=52: EAniDelay(T)=0: EAniSpd(T)=10
+
+     'CROUCHED --------------------------------------------------------------------------
+     CASE 66:
+      EAN(T)=25: EAniDelay(T)=0: EAniSPD(T)=10
+      STE(T)=67: EMV(T)=0
+      IF EX(T)<245 THEN STE(T)=1
+     CASE 67:
+      EAN(T)=25: EAniDelay(T)=0: EAniSPD(T)=10
+      STE(T)=66: EMV(T)=0
+      IF EX(T)<245 THEN STE(T)=1
+
+     'PUNCH -----------------------------------------------------------------------------
+     CASE 70: EAN(T)=13: EAniDelay(T)=0: EAniSpd(T)=4: INC STE(T)
+     CASE 71:       
+      'PUNCH THE PLAYER ONLY IF IS NOT ALREADY BE HURTED AND NOT USING SPECIAL MOVE
+      IF COLLIDE(0)=&HFFFFFF AND PHurted(PL)=0 AND EAN(T)=14 AND Special(PL)=0 THEN
+       InsertWait(PL,T,2)
+       InsertHit(XH(PL),YH(PL),1) 'HIT
+       PLSFX(PL)=27
+       INC Energy(PL),-ES_POW(T)
+       PHurted(PL)=2
+       SIDE(PL)=(ESide(T)=4)*5+(ESide(T)=5)*4 'CHANGE PLAYER SIDE
+       INC HCombo(PL),50
+       WhoE(PL)=T 'SET WHO HURTED THE PLAYER
+       STE(T)=72: EAniDelay(T)=0: EAniSpd(T)=4
+      ENDIF
+     IF EAN(T)>15 THEN STE(T)=72
+     CASE 72: IF EAN(T)>15 THEN STE(T)=1: EAniDelay(T)=0: EAniSpd(T)=4
+
+     'KICK -----------------------------------------------------------------------------
+     CASE 75: EAN(T)=16: EAniDelay(T)=0: EAniSpd(T)=2: INC STE(T)
+     CASE 76:       
+      'PUNCH THE PLAYER ONLY IF IS NOT ALREADY BE HURTED AND NOT USING SPECIAL MOVE
+      IF COLLIDE(0)=&HFFFFFF AND PHurted(PL)=0 AND EAN(T)=18 AND Special(PL)=0 THEN
+       InsertWait(PL,T,2)
+       InsertHit(XH(PL),YH(PL),1) 'HIT
+       PLSFX(PL)=27
+       INC Energy(PL),-ES_POW(T)
+       PHurted(PL)=2
+       SIDE(PL)=(ESide(T)=4)*5+(ESide(T)=5)*4 'CHANGE PLAYER SIDE
+       INC HCombo(PL),350
+       WhoE(PL)=T 'SET WHO HURTED THE PLAYER
+       STE(T)=77: EAniDelay(T)=0: EAniSpd(T)=3
+      ENDIF
+     IF EAN(T)>19 THEN STE(T)=77
+     CASE 77: IF EAN(T)>19 THEN STE(T)=1: EAniDelay(T)=0: EAniSpd(T)=3
+
+     'ACROBATIC JUMP KICK ---------------------------------------------------------------
+     CASE 80: 
+      'TURN ENEMY TO JUMP IN THE ENEMY POSITION
+      IF EX(T)>X(PL) THEN ESIDE(T)=5 ELSE ESIDE(T)=4
+      EAN(T)=25: EAniDelay(T)=0: EAniSpd(T)=20: INC STE(T)
+     CASE 81:
+      EAN(T)=25:
+       IF EAniDelay(T)>5 THEN 'WAIT CROUCHED THEN START TO JUMP
+        EAN(T)=25: EAniDelay(T)=0: EAniSpd(T)=20: INC STE(T)
+        ESPDX(T)=(ESide(T)=4)*3-(ESide(T)=5)*3:ESJMP(T)=-13
+       ENDIF
+     CASE 82: 
+      EAN(T)=34
+      INC EX(T),ESPDX(T): INC ESPDX(T),-SGN(ESPDX(T))*0.06: INC ESJMP(T),-0.75
+      IF EAniDelay(T)>4 THEN
+       EAN(T)=37: INC STE(T): EAniDelay(T)=0: ESIDE(T)=(ESIDE(T)=4)*7+(ESIDE(T)=5)*6 'ROTATE 180`
+      ENDIF
+     CASE 83:
+      EAN(T)=37
+      INC EX(T),ESPDX(T): INC ESPDX(T),-SGN(ESPDX(T))*0.06: INC ESJMP(T),-0.75
+      IF EAniDelay(T)>4 THEN EAN(T)=40: INC STE(T): EAniDelay(T)=0      
+     CASE 84:
+      INC EX(T),ESPDX(T): INC ESPDX(T),-SGN(ESPDX(T))*0.06: INC ESJMP(T),-0.75
+      EAN(T)=40
+      IF EAniDelay(T)>4 THEN
+       EAN(T)=37: INC STE(T): EAniDelay(T)=0: ESIDE(T)=(ESIDE(T)=7)*4+(ESIDE(T)=6)*5 'TURN BACK 180`
+      ENDIF
+     CASE 85:
+      INC EX(T),ESPDX(T): INC ESPDX(T),-SGN(ESPDX(T))*0.06: INC ESJMP(T),-0.75
+      EAN(T)=37: IF EAniDelay(T)>4 THEN INC STE(T): EAniDelay(T)=0
+     CASE 86: 'ATTACK!
+      'KICK THE PLAYER ONLY IF IS NOT ALREADY BE HURTED AND NOT USING SPECIAL MOVE
+      IF COLLIDE(0)=&HFFFFFF AND PHurted(PL)=0 AND Special(PL)=0 THEN
+       InsertWait(PL,T,2)
+       InsertHit(XH(PL),YH(PL),1) 'HIT
+       PLSFX(PL)=24
+       INC Energy(PL),-ES_POW(T)
+       SIDE(PL)=(ESide(T)=4)*5+(ESide(T)=5)*4 'CHANGE PLAYER SIDE
+       PHurted(PL)=2
+       INC HCombo(PL),200
+       WhoE(PL)=T 'SET WHO HURTED THE PLAYER
+      ENDIF
+      INC EX(T),ESPDX(T): INC ESPDX(T),-SGN(ESPDX(T))*0.06: INC ESJMP(T),-0.75
+      EAN(T)=38: IF EAniDelay(T)>10 THEN INC STE(T): EAniDelay(T)=0
+     CASE 87:
+      INC EX(T),ESPDX(T): INC ESPDX(T),-SGN(ESPDX(T))*0.06: INC ESJMP(T),-0.75
+      EAN(T)=37: IF EAniDelay(T)>2 THEN INC STE(T): EAniDelay(T)=0
+     CASE 88:
+      EAN(T)=25 
+      IF EAniDelay(T)>3 THEN
+       ESPDX(T)=0: EAniDelay(T)=0: EaniSpd(T)=40
+       EBACKX(T)=0: EBACK(T)=0: EY(T)=0: ESJMP(T)=0: STE(T)=1
+      ENDIF
+
+
+     'ACROBATIC BACKFLIP ----------------------------------------------------------------
+     CASE 89: 
+      'TURN ENEMY TO JUMP IN THE ENEMY POSITION
+      IF EX(T)>X(PL) THEN ESIDE(T)=5 ELSE ESIDE(T)=4
+      EAN(T)=25: EAniDelay(T)=0: EAniSpd(T)=20: INC STE(T)
+     CASE 90:
+      EAN(T)=25:
+       IF EAniDelay(T)>5 THEN 'WAIT CROUCHED THEN START TO JUMP
+        EAN(T)=25: EAniDelay(T)=0: EAniSpd(T)=20: INC STE(T)
+        ESPDX(T)=(ESide(T)=5)*3-(ESide(T)=4)*3:ESJMP(T)=-8.5
+       ENDIF
+     CASE 91:
+      INC EX(T),ESPDX(T): INC ESPDX(T),-SGN(ESPDX(T))*0.06: INC ESJMP(T),-0.7
+      EAN(T)=16: IF EAniDelay(T)>3 THEN INC STE(T): EAniDelay(T)=0
+     CASE 92: 
+      EAN(T)=39
+      INC EX(T),ESPDX(T): INC ESPDX(T),-SGN(ESPDX(T))*0.06: INC ESJMP(T),-0.7
+      IF EAniDelay(T)>3 THEN
+       ESIDE(T)=(ESIDE(T)=4)*7+(ESIDE(T)=5)*6 'ROTATE 180`
+       EAN(T)=34: INC STE(T): EAniDelay(T)=0
+      ENDIF
+     CASE 93:
+      EAN(T)=34
+      INC EX(T),ESPDX(T): INC ESPDX(T),-SGN(ESPDX(T))*0.06: INC ESJMP(T),-0.7
+      IF EAniDelay(T)>3 THEN
+       EAN(T)=37: INC STE(T): EAniDelay(T)=0      
+      ENDIF
+     CASE 94:
+      INC EX(T),ESPDX(T): INC ESPDX(T),-SGN(ESPDX(T))*0.06: INC ESJMP(T),-0.7
+      EAN(T)=37
+      IF EAniDelay(T)>3 THEN
+       EAN(T)=36: INC STE(T): EAniDelay(T)=0
+       ESIDE(T)=(ESIDE(T)=7)*4+(ESIDE(T)=6)*5 'TURN BACK 180`
+      ENDIF
+     CASE 95:
+      ESPDX(T)=0: EY(T)=1: ESJMP(T)=-2
+      EAN(T)=36
+      IF EAniDelay(T)>3 THEN
+       EAN(T)=35: INC STE(T): EAniDelay(T)=0 'ANIMATE PUSH TO BACKFLIP
+       ESPDX(T)=(ESide(T)=5)*4-(ESide(T)=4)*5:ESJMP(T)=-8.4 'JUMP AGAIN
+      ENDIF
+     CASE 96:      
+      INC EX(T),ESPDX(T): INC ESPDX(T),-SGN(ESPDX(T))*0.06: INC ESJMP(T),-0.7
+      EAN(T)=35
+      IF EAniDelay(T)>4 THEN 'CONTINUE BACKFLIP
+       INC STE(T): EAniDelay(T)=0
+       EAN(T)=38: ESIDE(T)=(ESIDE(T)=4)*7+(ESIDE(T)=5)*6 'ROTATE 180`
+      ENDIF
+     CASE 97:
+      INC EX(T),ESPDX(T): INC ESPDX(T),-SGN(ESPDX(T))*0.06: INC ESJMP(T),-0.7
+      EAN(T)=38
+      IF EAniDelay(T)>6 THEN
+       EAN(T)=34: INC STE(T): EAniDelay(T)=0
+       ESIDE(T)=(ESIDE(T)=7)*4+(ESIDE(T)=6)*5 'TURN BACK 180`
+      ENDIF
+     CASE 98:
+      EAN(T)=34
+      INC EX(T),ESPDX(T): INC ESPDX(T),-SGN(ESPDX(T))*0.06: INC ESJMP(T),-0.7
+      IF EAniDelay(T)>5 THEN
+       EAN(T)=25: INC STE(T): EAniDelay(T)=0      
+      ENDIF
+     CASE 99:
+      EAN(T)=25 
+      IF EAniDelay(T)>3 THEN
+       EAN(T)=25 
+       ESPDX(T)=0: EAniDelay(T)=0: EaniSpd(T)=40
+       EBACKX(T)=0: EBACK(T)=0: EY(T)=0: ESJMP(T)=0: STE(T)=1
+      ENDIF
+
+
+     'ENEMY IS DEAD ---------------------------------------------------------------------
+     CASE 100: EAniSpd(T)=0: IF EAN(T)>60 THEN EAN(T)=50: INC STE(T) ' FLASH BODY AGAIN
+     CASE 101: IF EAN(T)>60 THEN EEnergy(T)=-98: STE(T)=0: RealY(T)=999: Exit Sub 'REMOVE DEAD ENEMY
+
+     'GRAPPLED BY A PLAYER --------------------------------------------------------------
+     CASE 120 TO 170: GrapPlayer(T)
+
+     'RETURN TO THE ORIGINAL STATE IF SOMETHING GOES WRONG ON GAPPLE
+     CASE >=171:
+      STE(T)=20: EAniDelay(T)=0: EAniSpd(T)=3: ESJMP(T)=0: ESPDY(T)=0
+
+    END SELECT 'END ACTION SCRIPTS POISON / ROXY ----------------------------------------
+
 
 
 
@@ -1165,7 +1307,7 @@ SUB ControlEnemy(T)
   ENDIF
 
   'IF IS NOT A JUMP KICK, THEN ENEMY IS FALLING HURTED
-  IF (STE(T)<80 OR STE(T)>=99) AND NOT(PlType(PL)=3 AND GrapE(PL)=T) THEN 
+  IF (STE(T)<80 OR STE(T)>99) AND NOT(PlType(PL)=3 AND GrapE(PL)=T) THEN 
    'KO CONTROL - ENEMY FALLING
    IF EY(T)>0 THEN 
     ESJMP(T)=-ABS(ESJMP(T))\2.5: EY(T)=0: ESPDX(T)=ESPDX(T)/2
@@ -1178,7 +1320,10 @@ SUB ControlEnemy(T)
      InsertHit(XTHit+10+RND*10,YTHit,2)
      INC EEnergy(T),-7+ES_DEF(T) 'LOOSE ENERGY WHEN THROWED
      'DEAD SOUND AND SCORE
-     IF EEnergy(T)<=0 THEN EEnergy(T)=-99: PLAY_SAMPLE 10,4: INC SCORE(PL),ESCORE(T): EXIT SUB
+     IF EEnergy(T)<=0 THEN
+      EEnergy(T)=-99: PLAY_SAMPLE 10+(EType(T)=17 OR EType(T)=18)*16,4
+      INC SCORE(PL),ESCORE(T): EXIT SUB
+     ENDIF
     ELSE
      IF ESJMP(T)<0 THEN
       'ONLY TO GET THE COORDINATES TO THE SMOKE
@@ -1210,19 +1355,22 @@ SUB ControlEnemy(T)
    'CANCEL SCAN IF PLAYER ALREADY GRAPPLED OTHER ENEMY
    IF GrapE(I)<>T AND GrapE(I)>0 AND NOT(PlType(I)=3 AND AN(I)=32) THEN CONTINUE FOR 
 
+   'IF DOESN'T OCCUR ANY COLLISON, JUMP TO NEXT INTERATION
+   IF NOT(COLLIDE(I) OR IS_TR) THEN CONTINUE FOR
+
    ' CONDITIONS TO BE HURTED:
    ' 1 - C_A: SPECIAL MOVE
-   ' 2 - C_B: NOT JUMPING OR FALLING
+   ' 2 - C_B: NOT JUMPING OR FALLING / BUT IF PLAYER AND ENEMY ARE JUMPING IT'S OK
    ' 3 - C_C: GRAPPLED OR ATTACKED BY ANY PLAYER
    ' 4 - C_D: ENEMY WAITING FOR RECEIVE OTHER COMBO (ECOMBO)
    ' 5 - DETECTED COLLISION PLAYER'S ATTACK (&HFF0000) OR IS_TR
    ' 6 - ANIMATION OF THE NEAR PLAYER MUST BE CHANGED (AN <> ANANT)
    C_A=(Special(I)>0 AND (STE(T)<50 OR STE(T)>62))
-   C_B=(STE(T)<50 AND EY(T)=0 AND ESJMP(T)=0)
+   C_B=((STE(T)<50 OR STE(T)>=120 OR (STE(T)>56 AND STE(T)<100)) AND (EY(T)>-2 OR Jump(I)>0)) OR SPECIAL(I)>0
    C_C=(STE(T)>=120 AND GrapE(I)=T AND (Grap(I)=21 OR Grap(I)=22))
    C_D=(ECOMBO(T)<1)
-   C_E=-300*(GrapE(I)=T AND PlType(I)=3 AND STE(T)>=120 AND Jump(PL)>30)
-   IF (COLLIDE(I)=&HFF0000-C_E OR IS_TR) AND (AN(I)<>ANANT(I) OR C_A OR C_B OR C_C) AND C_D THEN
+   C_E=-300*(GrapE(I)=T AND PlType(I)=3 AND STE(T)>=120 AND Jump(PL)>30)      
+   IF (COLLIDE(I)=&HFF0000-C_E OR IS_TR) AND (AN(I)<>ANANT(I) OR C_A OR C_C) AND C_B AND C_D THEN
 
     Hit(I)=T
     EHIT(T)=I
@@ -1232,6 +1380,7 @@ SUB ControlEnemy(T)
     IF (Etype(T)=9 OR Etype(T)=10) THEN
      IF GrapE(I)<>T AND EAN(T)<=19 AND (Kick(I)>0 OR Punch(I)>0) THEN
       IF (RND<0.7 AND COLLIDE(I)>0) OR (STE(T)=68 OR STE(T)=69) THEN 
+       INC EX(T),(ESIDE(T)=5)*4-(ESIDE(T)=4)*4
        InsertHit(XTHit,YTHit,1)
        COLLIDE(I)=0: STE(T)=68: PLAY_SAMPLE 29,3: EXIT SUB
       ENDIF
@@ -1241,7 +1390,8 @@ SUB ControlEnemy(T)
     'HIT AND LOOSE ENERGY ONLY IF IS NOT THROW OR GRAPPLE THE ENEMY
     IF Grap(I)<>21 AND Grap(I)<>22 THEN 
      InsertHit(XTHit,YTHit,1)
-     InsertWait(I,T,2)
+     InsertWait(0,T,1)
+     InsertWait(I,0,4)
      INC EEnergy(T),-10+ES_DEF(T)
      IF C_A THEN INC EEnergy(T),-SPECIAL(I)*10: INC SCORE(I),300     
      STE(T)=50: EAniDelay(T)=0: EAniSpd(T)=10
@@ -1414,11 +1564,51 @@ SUB ControlEnemy(T)
 
   'THE ENEMY IS DEAD?
   IF EEnergy(T)>-99 AND EEnergy(T)<=0 THEN
-   EEnergy(T)=-99: PLAY_SAMPLE 10,4 'DEAD SOUND
+   EEnergy(T)=-99: PLAY_SAMPLE 10+(EType(T)=17 OR EType(T)=18)*16,4 'DEAD SOUND
    INC SCORE(EHIT(T)),ESCORE(T) 'INC PLAYER SCORE
   ENDIF
 
  ENDIF ' END OF WAIT FOR HITS -----------------------------------------------------------  
+
+END SUB
+
+
+
+' GRAPPLED BY A PLAYER --------------------------------------------------------------
+SUB GrapPlayer(T)
+
+ 'STE 120 TO 170:
+ 'RESIST IF GRAPPLED FOR A WHILE WITHOUT BEING ATTACK
+ EAN(T)=22
+ INC STE(T)
+ FOR I=1 TO MAXPL 
+  IF PlType(I)=3 AND SB THEN INC STE(T),-1 'HAGGAR KEEP GRAPPLE FOR MORE TIME
+  'RELEASE IF PLAYER USE SPECIAL OR JUMP (CODY OR GUY)
+  IF Special(I)=1 OR (PlType(I)<3 AND Jump(I)>0) THEN STE(T)=170: Grap(I)=0: GrapE(I)=0: Kick(I)=0: Punch(I)=1
+  IF GrapE(I)=T THEN
+   EX(T)=X(I)+(SIDE(I)=4)*8-(SIDE(I)=5)*8: RealY(T)=RealY(I)+4-(PlType(I)=3)*18
+   IF PlType(I)=3 THEN
+    EY(T)=Y(I): ESJMP(T)=0: ESPDY(T)=0
+    INC EX(T),(SIDE(I)=4)*(32-(AN(I)=32)*24)-(SIDE(I)=5)*(32-(AN(I)=32)*24)
+    IF AN(I)=32 THEN EAN(T)=21: EY(T)=Y(I)-10
+    'PILE DRIVER ADJUST ENEMY POSITION AND SIDE
+    SELECT CASE Jump(I)
+     CASE 1,2,9 TO 10,21,22,29 TO 30: EY(T)=Y(I)+8
+     CASE 38: ESIDE(T)=(SIDE(I)=4)*7+(SIDE(I)=5)*6        
+     CASE 33:
+      STE(T)=60
+      ESPDX(T)=(SIDE(I)=4)*6-(SIDE(I)=5)*6: RealY(T)=RealY(I)
+      EAniDelay(T)=0:EAniSpd(T)=1: ESJMP(T)=-6: ESPDY(T)=-6
+      Grap(I)=0: GrapE(I)=0: Kick(I)=0: Punch(I)=1
+      Exit Sub
+    END SELECT
+   ENDIF
+   IF STE(T)>=170 THEN
+    STE(T)=52: EAniDelay(T)=0:EAniSpd(T)=3: ESJMP(T)=-3: ESPDY(T)=-3: RealY(T)=RealY(I)
+    Grap(I)=0: GrapE(I)=0: Combo(I)=0: Punch(I)=2: AniDelay(I)=0: AniSpd(I)=0
+   ENDIF
+  ENDIF
+ NEXT I
 
 END SUB
 

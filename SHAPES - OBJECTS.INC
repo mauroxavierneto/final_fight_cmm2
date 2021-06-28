@@ -66,7 +66,7 @@ SUB PutObject(xs,ys,num,s,SHOW)
   'FREIGHT
   CASE -39: xa= 48:ya=224:sx=16:sy=16:p=38: AVA$="FREIGHT" 'AVATAR
   CASE 39 : xa=224:ya=  0:sx=80:sy=92:p=39 'OK
-  CASE 40 : xa=224:ya= 92:sx=80:sy=40:p=39 'LOWER BROKEN
+  CASE 40 : xa=240:ya= 92:sx=80:sy=40:p=39 'LOWER BROKEN
   'BILLBOARD
   CASE -41: xa= 64:ya=224:sx=16:sy= 16:p=38: AVA$="BILLBOARD" 'AVATAR
   CASE 41 : xa=  0:ya= 64:sx=64:sy= 94:p=39:'OK - LIGHT 1

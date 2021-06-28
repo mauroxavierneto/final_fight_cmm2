@@ -15,7 +15,7 @@
 
 DEBUG=0
 VSYNC=0
-NOINTRO=1
+NOINTRO=0
 
 'DETECT THE GENERATION OF THE COLOUR MAXIMITE 2
 IF RIGHT$(MM.INFO$(DEVICE),2)="G2" THEN CMG1=0 ELSE CMG1=1
@@ -187,8 +187,8 @@ X(2)=-1000: RealY(2)=-1000: Energy(2)=-100
 IF NOINTRO THEN
  OSDX=20
  MAXPL=1
- PLType(1)=2
- PLType(2)=3
+ PLType(1)=1
+ PLType(2)=2
 ENDIF
 
 'START VARIABLES FOR EACH PLAYER
@@ -221,8 +221,6 @@ PLAY STOP
 PLAY MODFILE ".\SFX\SFX - INGAME.MOD",22050
 
 GameLogic=1
-
-ClearEvents
 
 IF NOINTRO=1 THEN
  PLAY_WAV "The Slums"
@@ -518,7 +516,7 @@ FOR PL=1 TO MAXPL ' ------------------------------------------------------------
    INC Score(PL),1000
    'ENEMY DEAD ON PILE DRIVER?
    IF EEnergy(T)<0 THEN
-    EEnergy(T)=0: PLAY_SAMPLE 10,4 'DEAD SOUND
+    EEnergy(T)=0: PLAY_SAMPLE 10+(EType(T)=17 OR EType(T)=18)*16,4 'DEAD SOUND
     INC Score(PL),ESCORE(T) 'INC PLAYER SCORE
    ENDIF
   ENDIF
@@ -772,16 +770,16 @@ NEXT PL '-----------------------------------------------------------------------
  StageScrollEvent(ScrSide,PLSCR)
 
  'INC TESTA
- 'IF TESTA>5 THEN
+ 'IF TESTA>10 THEN
  ' TESTA=0
  ' INC TEST': IF TEST=2 THEN TEST=13
- ' IF TEST<16 OR TEST>18 THEN TEST=16
+ ' IF TEST<13 OR TEST>15 THEN TEST=13
  'ENDIF
- 'TEST=75
- 'PutEnemy(200,230,TEST,4,14,,1)
+ 'TEST=13
+ 'PutEnemy(200,230,TEST,4,17,,1)
 
 
-' PAUSE(100)
+ 'PAUSE(120)
 
 LOOP
 

@@ -71,6 +71,8 @@ SUB PutEnemy(xs,ys,num,s,Who,pl,SHOW)
                  xa=1014:ya=226:sx= 16:sy= 23:tx=-48-(who=6)*2:ty=20-(who=4)*2-(who=6)*4
     'SEATED
     CASE 34 : xa=1110:ya=241:sx=64:sy=78:tx=5 'ON THE BENCH / SUBWAY
+
+
     'LEAVING THROUGH THE DOOR / LEANING IN THE WALL
     CASE 35 : xa=1040:ya=228:sx=42:sy=44:tx=5:ty= 0:xb=1069:yb=273:sbx=31:sby=45:tbx= 8
     CASE 36 : xa=1040:ya=228:sx=42:sy=44:tx=5:ty= 1:xb=1040:yb=273:sbx=29:sby=45:tbx=12
@@ -245,6 +247,49 @@ SUB PutEnemy(xs,ys,num,s,Who,pl,SHOW)
    INC yb,(Who-14)*255
 
 
+  CASE 17 TO 18: 'POISON / ROXY ---------------------------------------------------------
+   SELECT CASE num
+    'ENERGY AVATAR
+    CASE 99 : xa=1008:ya=599:sx=67:sy=16:tx=-22:ty=0
+    'WALKING
+    CASE  0 : xa= 51:ya=599:sx=43:sy=94:tx=-8:ty= 0
+    CASE  1 : xa= 94:ya=602:sx=39:sy=91:tx=10:ty=-3
+    CASE  2 : xa=133:ya=601:sx=28:sy=92:tx= 0:ty=-2
+    CASE  3 : xa=161:ya=600:sx=45:sy=93:tx=-4:ty=-1
+    CASE  4 : xa=206:ya=599:sx=43:sy=94:tx= 6:ty= 0
+    CASE  5 : xa=249:ya=599:sx=29:sy=94:tx= 0:ty= 0
+    'PUNCHING
+    CASE 13 : xa=785:ya=599:sx=60:sy=44:tx= 34:ty=0:xb=992:yb=639:sbx=69:sby=54:tbx=0:tby=0
+    CASE 14 : xa=537:ya=603:sx=73:sy=30:tx=-36:ty=1:xb=992:yb=639:sbx=69:sby=54:tbx=0:tby=0
+    CASE 15 : xa=612:ya=604:sx=42:sy=29:tx=- 8:ty=1:xb=992:yb=639:sbx=69:sby=54:tbx=0:tby=0
+    'KICKING
+    CASE 16 : xa=278:ya=600:sx=49:sy=93:tx= 30:ty=0
+    CASE 17 : xa=327:ya=600:sx=64:sy=94:tx=-20:ty=0
+    CASE 18 : xa=433:ya=599:sx=60:sy=18:tx=-48:ty=35:xb=493:yb=607:sbx=44:sby=86:tbx=40:tby=0
+    CASE 19 : xa=327:ya=600:sx=64:sy=94:tx=-20:ty=0
+    CASE 20 : xa=278:ya=600:sx=49:sy=93:tx= 30:ty=0
+    'HURT
+    CASE 21 : xa=729:ya=607:sx= 56:sy=86:tx=3 'IN THE STOMACH
+    CASE 22 : xa=680:ya=607:sx= 49:sy=86:tx=9 'IN THE FACE
+    'FALLING
+    CASE 23 : xa=785:ya=646:sx=100:sy=47:tx=5:ty=-20 'FALLING DOWN
+    CASE 24,50,52,54,56,58,60:
+              xa=845:ya=612:sx=122:sy=21:tx=5        'LYING ON THE FLOOR / DEAD
+    'GETTING UP / CROUCHED     
+    CASE 25:  xa=  0:ya=632:sx= 51:sy=61:tx=5
+    'ACROBATICS
+    CASE 34 : xa= 391:ya=617:sx=102:sy=76:tx= 0:ty=0
+    CASE 35 : xa=1047:ya=607:sx= 86:sy=69:tx=88:ty=0:xb=967:yb=599:sbx=40:sby=34:tbx= 0: tby= 0
+    CASE 36 : xa=1047:ya=607:sx= 86:sy=69:tx=80:ty=0:xb=  4:yb=599:sbx=47:sby=29:tbx= 0: tby= 0
+    CASE 37 : xa= 537:ya=633:sx= 48:sy=60:tx= 0:ty=0
+    CASE 38 : xa= 585:ya=633:sx= 96:sy=60:tx= 0:ty=0
+    CASE 39 : xa= 885:ya=633:sx=107:sy=60:tx= 0:ty=0
+    CASE 40 : xa=1133:ya=599:sx= 60:sy=47:tx= 0:ty=0
+
+   END SELECT 'END POISON / ROXY
+   INC ya,(Who-17)*94
+   INC yb,(Who-17)*94
+
   CASE 80: 'DAMND -----------------------------------------------------------------------
    SELECT CASE num
     'ENERGY AVATAR
@@ -317,6 +362,12 @@ SUB PutEnemy(xs,ys,num,s,Who,pl,SHOW)
   CASE  1: ' SHOW =  1 TO SHOW SHAPE ONLY, DON'T WRITE OR READ COLLISION ---------------
 
    PAGE WRITE 1
+   'SHADOW
+   IF NUM<>99 AND EY(PL)<-1 THEN
+    T=sx\((sx<64)+(sx>=64)*2)+EY(PL)\2: IF T<30 THEN T=30
+    CIRCLE xxt+sx\2,RealY(PL)-3,T/10,1,5,&H202020,&H202020
+   ENDIF
+
    'TWO SHAPES TO MAKE ONE
    IF xb>-99 THEN
     xt=xs-(sbx+TBX)\2: yt=ys-sby+TBY
