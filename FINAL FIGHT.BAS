@@ -231,7 +231,7 @@ ELSE
    'ENEMIES
    InsertEnemy(285,205,6)
    InsertEnemy(250,235,5)
-   InsertEnemy(270,190,80): EAN(6)=101
+   InsertEnemy(270,190,81): EAN(6)=101
    'DRUMCAN
    FOR T=0 TO 1: FOR I=0 TO 2
     InsertObject(135+T*60+(T=1 AND I=1)*40-I*15,190+I*25,2)
@@ -773,10 +773,10 @@ NEXT PL '-----------------------------------------------------------------------
  'IF TESTA>10 THEN
  ' TESTA=0
  ' INC TEST': IF TEST=2 THEN TEST=13
- ' IF TEST<13 OR TEST>15 THEN TEST=13
+ ' IF TEST<37 OR TEST>38 THEN TEST=37
  'ENDIF
- 'TEST=13
- 'PutEnemy(200,230,TEST,4,17,,1)
+ 'TEST=39
+ 'PutEnemy(200,230,TEST,4,80,,1)
 
 
  'PAUSE(120)

@@ -145,7 +145,7 @@ SUB StageScrollEvent(xx,PL)
        InsertEnemy(427-xs,174,4,65)
 
        'TESTS
-       'InsertEnemy(340,200,17,1)
+       'InsertEnemy(340,200,80,1)
        'InsertEnemy(340,230,18,1)
        'InsertObject(250,195,19,,-1)
  

@@ -290,13 +290,13 @@ SUB PutEnemy(xs,ys,num,s,Who,pl,SHOW)
    INC ya,(Who-17)*94
    INC yb,(Who-17)*94
 
-  CASE 80: 'DAMND -----------------------------------------------------------------------
+  CASE 80,81: 'DAMND / DAMND FROM THE INTRO ROUND 1-1 -----------------------------------
    SELECT CASE num
     'ENERGY AVATAR
     CASE 99 : xa=2:ya=1084:sx=60:sy=16::tx=-cint(sx/2)
-    'STOPPED
-    CASE  0 : xa=423:ya=1083: sx=86: sy=61: tx=-4: ty= 13:
-              xb=192:yb=1083:sbx=73:sby=61:tbx= 0:tby=  0
+    'STOPPED / WALKING WITH JESSICA (ROUND 1-1)
+    CASE  0,100 : xa=423:ya=1083: sx=86: sy=61: tx=-4: ty= 13:
+                  xb=192:yb=1083:sbx=73:sby=61:tbx= 0:tby=  0
     'WALKING / WALKING WITH JESSICA (ROUND 1-1)
     CASE  1,101 : xa=423:ya=1083: sx=86: sy=61: tx=-4: ty=13:
                   xb=265:yb=1083:sbx=62:sby=65:tbx=-4:tby= 0
@@ -304,13 +304,73 @@ SUB PutEnemy(xs,ys,num,s,Who,pl,SHOW)
                   xb=327:yb=1083:sbx=51:sby=65:tbx= 2:tby= 0
     CASE  3,103 : xa=423:ya=1083: sx=86: sy=61: tx=-4: ty=12:
                   xb=378:yb=1083:sbx=45:sby=65:tbx= 8:tby= 0
+    CASE  4,104 : xa=423:ya=1083: sx=86: sy=61: tx=-4: ty=12:
+                  xb=327:yb=1083:sbx=51:sby=65:tbx= 2:tby= 0
+    CASE  5,105 : xa=423:ya=1083: sx=86: sy=61: tx=-4: ty=13:
+                  xb=265:yb=1083:sbx=62:sby=65:tbx=-4:tby= 0
     'LAUGHING / LAUGHING WITH JESSICA (ROUND 1-1)
-    CASE  4,104 : xa=995:ya=1085: sx=86: sy=61: tx=-4: ty= 13:
-                  xb=192:yb=1083:sbx=73:sby=61:tbx= 0:tby=  0
-    CASE  5,105 : xa=505:ya=1144: sx=86: sy=54: tx=-4: ty= 13:
-                  xb=192:yb=1083:sbx=73:sby=61:tbx= 0:tby=  0
+    CASE  10,110 : xa=995:ya=1085: sx=86: sy=61: tx=-4: ty= 13:
+                   xb=192:yb=1083:sbx=73:sby=61:tbx= 0:tby=  0
+    CASE  11,111 : xa=505:ya=1144: sx=86: sy=54: tx=-4: ty= 13:
+                   xb=192:yb=1083:sbx=73:sby=61:tbx= 0:tby=  0
+    'PUNCHING
+    CASE  13: xa= 192:ya=1148:sx =80: sy=51: tx= 20: ty=  0:
+              xb= 102:yb=1083:sbx=90:sby=42:tbx=  0:tby=  0
+    CASE  14: xa= 272:ya=1148:sx =53: sy=51: tx=  8: ty=  0:
+              xb= 102:yb=1083:sbx=90:sby=42:tbx=  0:tby=  0
+    CASE  15: xa= 325:ya=1148:sx =70: sy=51: tx=-20: ty=  0:
+              xb= 102:yb=1083:sbx=90:sby=42:tbx=  0:tby=  0
+    CASE  16: xa= 395:ya=1148:sx=110: sy=51: tx=-42: ty=  0:
+              xb= 102:yb=1083:sbx=90:sby=42:tbx=  0:tby=  0
+    CASE  17: xa= 325:ya=1148:sx =70: sy=51: tx=-20: ty=  0:
+              xb= 102:yb=1083:sbx=90:sby=42:tbx=  0:tby=  0
+    CASE  18: xa= 272:ya=1148:sx =53: sy=51: tx=  8: ty=  0:
+              xb= 102:yb=1083:sbx=90:sby=42:tbx=  0:tby=  0
+    CASE  19: xa= 192:ya=1148:sx =80: sy=51: tx= 20: ty=  0:
+              xb= 102:yb=1083:sbx=90:sby=42:tbx=  0:tby=  0
+    'HURT
+    CASE 21 : xa=677:ya=1083: sx=78: sy=41: tx=12: ty=  0: 'IN THE STOMACH
+              xb=591:yb=1150:sbx=66:sby=49:tbx= 0:tby=  0
+    CASE 22 : xa=509:ya=1083: sx=78: sy=61: tx=-4: ty= 12: 'IN THE FACE
+              xb=192:yb=1083:sbx=73:sby=61:tbx= 0:tby=  0
+    'FALLING
+    CASE 23 : xa=978:ya=1146:sx=116:sy=53:tx=5:ty=-20 'FALLING DOWN
+    CASE 24,50,52,54,56,58,60:
+              xa=903:ya=1123:sx= 75:sy= 37:tx=140:ty=42 'LYING ON THE FLOOR / DEAD
+              xb=924:yb=1083:sbx=70:sby=40:tbx= 0
+    'GET UP
+    CASE 25 : xa=657:ya=1159: sx=70: sy=40: tx=10: ty= 85
+              xb=423:yb=1083:sbx=86:sby=61:tbx= 0:tby=-26: 'GET UP
+              
+    CASE 26 : xa=677:ya=1083: sx=78: sy=41:tx=-12: ty= 0: 'SUFFERING (AFTER STOMACH ANIMATION)
+              xb=658:yb=1132:sbx=68:sby=27:tbx= 0:tby= 0
+    CASE 27:  xa=903:ya=1160:sx= 75:sy= 39:tx=140:ty=42 'LYING ON THE FLOOR / TRYING TO GET UP
+              xb=924:yb=1083:sbx=70:sby=40:tbx= 0
+    'SHAKING HEAD
+    CASE 28:  xa=729:ya=1128:sx= 58:sy= 71:tx=122:ty=42 'LYING ON THE FLOOR / SHAKING HEAD RIGHT
+              xb=924:yb=1083:sbx=70:sby=40:tbx= 0
+    CASE 29:  xa=787:ya=1128:sx= 58:sy= 71:tx=122:ty=42 'LYING ON THE FLOOR / SHAKING HEAD FRONT
+              xb=924:yb=1083:sbx=70:sby=40:tbx= 0
+    CASE 30:  xa=729:ya=1128:sx= 58:sy= 71:tx=122:ty=42 'LYING ON THE FLOOR / SHAKING HEAD RIGHT
+              xb=924:yb=1083:sbx=70:sby=40:tbx= 0
+    CASE 31:  xa=845:ya=1128:sx= 58:sy= 71:tx=122:ty=42 'LYING ON THE FLOOR / SHAKING HEAD BACK
+              xb=924:yb=1083:sbx=70:sby=40:tbx= 0
+    'JUMPING
+    CASE 34 : xa= 129:ya=1131:sx= 63:sy=68:tx=0:ty=0
+    CASE 35 : xa=1245:ya=1136:sx= 68:sy=63:tx=0:ty=0
+    CASE 36 : xa=   1:ya=1123:sx=128:sy=76:tx=0:ty=0 'KICKING
+    'WHISTLE
+    CASE 37 : xa=755:ya=1083: sx=82: sy=45: tx=-10: ty=  0:
+              xb=589:yb=1083:sbx=73:sby=51:tbx=  0:tby=  0
+    CASE 38 : xa=841:ya=1083: sx=79: sy=45: tx=- 6: ty=  0:
+              xb=589:yb=1083:sbx=73:sby=51:tbx=  0:tby=  0
+    'SEATED AT THE WALL
+    CASE 39 : xa=505:ya=1144: sx=86: sy=54: tx=-10: ty= 15:
+              xb=589:yb=1083:sbx=73:sby=51:tbx= 0:tby=  0
+
 
    END SELECT 'END DAMND
+
 
   CASE 99: 'SPECIAL CASES ---------------------------------------------------------------
    SELECT CASE num
@@ -395,13 +455,16 @@ SUB PutEnemy(xs,ys,num,s,Who,pl,SHOW)
  ENDIF
 
  'INSERT JESSICA ON THE DAMND HANDS
- IF Who=80 THEN
+ IF Who=81 THEN
   SELECT CASE NUM
+   CASE 100: PutEnemy(xs+10,ys-24,997,4,99,,1)
    CASE 101: PutEnemy(xs+10,ys-24,997,4,99,,1)
    CASE 102: PutEnemy(xs+ 9,ys-22,999,4,99,,1)
    CASE 103: PutEnemy(xs+ 9,ys-22,999,4,99,,1)
-   CASE 104: PutEnemy(xs+10,ys-20,997,4,99,,1)
-   CASE 105: PutEnemy(xs+ 5,ys-20,998,4,99,,1)
+   CASE 104: PutEnemy(xs+ 9,ys-22,999,4,99,,1)
+   CASE 105: PutEnemy(xs+10,ys-24,997,4,99,,1)
+   CASE 110: PutEnemy(xs+10,ys-20,997,4,99,,1)
+   CASE 111: PutEnemy(xs+ 5,ys-20,998,4,99,,1)
   END SELECT
  ENDIF
 

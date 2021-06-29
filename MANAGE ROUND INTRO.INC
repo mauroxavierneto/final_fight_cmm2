@@ -39,7 +39,7 @@ SUB RoundIntro(Ending)
         INC EANIDelay(6)
         IF EANIDelay(6)>3 THEN 
          EANIDelay(6)=0: INC EAN(6)
-         IF EAN(6)>104 THEN EAN(6)=101 
+         IF EAN(6)>105 THEN EAN(6)=100
         ENDIF
 
         FOR T=4 TO 5
@@ -68,13 +68,13 @@ SUB RoundIntro(Ending)
       END SELECT 'END CASE OSDX
 
       'DAMND LAUGH
-      IF OSDX=1550 THEN EAN(6)=104: PLAY_SAMPLE 30,3,,100
+      IF OSDX=1550 THEN EAN(6)=110: PLAY_SAMPLE 30,3,,100
       IF OSDX>800 AND OSDX<1550 THEN      
        IF OSDX=1050 THEN PLAY_SAMPLE 30,3,,100
        INC EANIDelay(6)
        IF EANIDelay(6)>4 THEN 
-        EANIDelay(6)=0: INC EAN(6)
-        IF EAN(6)>105 THEN EAN(6)=104
+        EANIDelay(6)=0
+        IF EAN(6)=110 THEN EAN(6)=111 ELSE EAN(6)=110
        ENDIF
       ENDIF
 
