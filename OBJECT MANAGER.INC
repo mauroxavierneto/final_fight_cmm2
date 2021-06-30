@@ -1,10 +1,9 @@
 ' --- GENERAL OBJECTS ROUTINES ---
 
  
-' INSERT NEW OBJECT
-' 1 - DRUMCAN
+' SPAWN NEW OBJECT
 
-SUB InsertObject(x,y,tp,NUM,IT)
+SUB SpawnObject(x,y,tp,NUM,IT)
  LOCAL T
  NUM=0
 
@@ -169,11 +168,11 @@ SUB ControlObject(T)
     CASE  1: EAN(T)=24
     ' REMOVE AND CREATE TWO PIECES
     CASE 10:
-     InsertObject(EX(T),RealY(T),EITEM(T))
+     SpawnObject(EX(T),RealY(T),EITEM(T))
      INC SCORE(EHIT(T)),900
-     InsertObject(EX(T),RealY(T),3,NUM): EY(NUM)=EY(T)-46
+     SpawnObject(EX(T),RealY(T),3,NUM): EY(NUM)=EY(T)-46
      ESJMP(NUM)=ESJMP(T)    : ESIDE(NUM)=ESIDE(T): ESPDX(NUM)=ESPDX(T)    :EMV(NUM)=1
-     InsertObject(EX(T),RealY(T),4,NUM)
+     SpawnObject(EX(T),RealY(T),4,NUM)
      ESJMP(NUM)=ESJMP(T)/1.3: ESIDE(NUM)=ESIDE(T): ESPDX(NUM)=ESPDX(T)/1.2:EMV(NUM)=1
      STE(T)=0
      PLAY_SAMPLE 3,4,20000
@@ -186,14 +185,14 @@ SUB ControlObject(T)
     CASE  1: EAN(T)=27
     ' REMOVE AND CREATE TWO PIECES
     CASE 10:
-     InsertObject(EX(T),RealY(T),EITEM(T))
+     SpawnObject(EX(T),RealY(T),EITEM(T))
      INC SCORE(EHIT(T)),1500
-     InsertObject(EX(T),RealY(T),6,NUM): EY(NUM)=EY(T)-64
+     SpawnObject(EX(T),RealY(T),6,NUM): EY(NUM)=EY(T)-64
      ESJMP(NUM)=ESJMP(T)-5: ESIDE(NUM)=ESIDE(T): EMV(NUM)=1
-     InsertObject(EX(T),RealY(T),7,NUM)
+     SpawnObject(EX(T),RealY(T),7,NUM)
      ESJMP(NUM)=ESJMP(T)  : ESIDE(NUM)=ESIDE(T): EMV(NUM)=1
      FOR II=-2 TO 2
-      InsertObject(EX(T),RealY(T),200,NUM): EY(NUM)=EY(T)-40+II*10
+      SpawnObject(EX(T),RealY(T),200,NUM): EY(NUM)=EY(T)-40+II*10
       ESJMP(NUM)=ESJMP(T)-6+RND*5: ESIDE(NUM)=ESIDE(T): EMV(NUM)=1
       ESPDX(NUM)=II*2+(RND*6-3)
      NEXT II
@@ -208,12 +207,12 @@ SUB ControlObject(T)
     CASE  1: EAN(T)=30+(EType(T)=17)*9+(EType(T)=19)*11+(EType(T)=19)*SW
     ' REMOVE AND CREATE TWO PIECES
     CASE 10:
-     InsertObject(EX(T),RealY(T),EITEM(T))
+     SpawnObject(EX(T),RealY(T),EITEM(T))
      INC SCORE(EHIT(T)),900
-     InsertObject(EX(T),RealY(T),10+(EType(T)=17)*8+(EType(T)=19)*11,NUM)
+     SpawnObject(EX(T),RealY(T),10+(EType(T)=17)*8+(EType(T)=19)*11,NUM)
      ESJMP(NUM)=ESJMP(T)/2: ESIDE(NUM)=ESIDE(T): EMV(NUM)=1
      FOR II=-3 TO 3
-      InsertObject(EX(T),RealY(T),201+INT(RND*3.99),NUM): EY(NUM)=EY(T)-40+II*10
+      SpawnObject(EX(T),RealY(T),201+INT(RND*3.99),NUM): EY(NUM)=EY(T)-40+II*10
       ESJMP(NUM)=ESJMP(T)-6+RND*(6+II*2): ESIDE(NUM)=ESIDE(T): EMV(NUM)=1
       ESPDX(NUM)=II*2+(RND*6-3)
      NEXT II
@@ -228,9 +227,9 @@ SUB ControlObject(T)
     CASE  1: EAN(T)=33
     ' REMOVE AND EXCHANGE FOR THE SMASHED
     CASE 10:
-     InsertObject(EX(T),RealY(T),EITEM(T))
+     SpawnObject(EX(T),RealY(T),EITEM(T))
      INC SCORE(EHIT(T)),600
-     InsertObject(EX(T),RealY(T),12,NUM): EY(NUM)=EY(T)-8
+     SpawnObject(EX(T),RealY(T),12,NUM): EY(NUM)=EY(T)-8
      ESJMP(NUM)=ESJMP(T): ESIDE(NUM)=ESIDE(T): ESPDX(NUM)=ESPDX(T)*1.3:EMV(NUM)=1
      STE(T)=0
      PLAY_SAMPLE 3,4,26000
@@ -243,15 +242,15 @@ SUB ControlObject(T)
     CASE  1: EAN(T)=35
     ' REMOVE AND EXCHANGE FOR THE SMASHED
     CASE 10:
-     InsertObject(EX(T),RealY(T),EITEM(T))
+     SpawnObject(EX(T),RealY(T),EITEM(T))
      INC SCORE(EHIT(T)),600
-     InsertObject(EX(T),RealY(T),14,NUM): EY(NUM)=EY(T)-8
+     SpawnObject(EX(T),RealY(T),14,NUM): EY(NUM)=EY(T)-8
      ESJMP(NUM)=ESJMP(T)-5: ESIDE(NUM)=ESIDE(T)+2: ESPDX(NUM)=ESPDX(T)/1.1:EMV(NUM)=1
-     InsertObject(EX(T),RealY(T),16,NUM): EY(NUM)=EY(T)-8
+     SpawnObject(EX(T),RealY(T),16,NUM): EY(NUM)=EY(T)-8
      ESJMP(NUM)=ESJMP(T)-2: ESIDE(NUM)=ESIDE(T): ESPDX(NUM)=ESPDX(T)/1.2:EMV(NUM)=1
-     InsertObject(EX(T),RealY(T),15,NUM): EY(NUM)=EY(T)-8
+     SpawnObject(EX(T),RealY(T),15,NUM): EY(NUM)=EY(T)-8
      ESJMP(NUM)=ESJMP(T)  : ESIDE(NUM)=ESIDE(T): ESPDX(NUM)=ESPDX(T)/1.25:EMV(NUM)=1
-     InsertObject(EX(T),RealY(T),16,NUM): EY(NUM)=EY(T)-8
+     SpawnObject(EX(T),RealY(T),16,NUM): EY(NUM)=EY(T)-8
      ESJMP(NUM)=ESJMP(T)+2: ESIDE(NUM)=(ESIDE(T)=4)*5+(ESIDE(T)=5)*4: ESPDX(NUM)=ESPDX(T)/1.3:EMV(NUM)=1
      STE(T)=0
      PLAY_SAMPLE 3,4,18000

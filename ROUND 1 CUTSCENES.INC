@@ -1,10 +1,10 @@
-' -- GENERAL ROUND INTRO CONTROL ---
+' -- ROUND CUTSCENES ---
 
 ' Ending:
 ' 0 = STARTING SECTION
 ' 1 = FINISHING SECTION
 
-SUB RoundIntro(Ending)
+SUB Round_1_Cutscenes(Ending)
 
  LOCAL PL,T
 
@@ -17,7 +17,7 @@ SUB RoundIntro(Ending)
 
    SELECT CASE Section
 
-    'START OF THE STAGE ---- ROUND 1 INTRO --------------------------------------------------------
+    'START OF THE STAGE ---- ROUND 1 CUTSCENE -----------------------------------------------------
     CASE 1:    
 
      ' ** SECTION 1 START: DAMND KIDNAPPED JESSICA **
@@ -144,7 +144,7 @@ SUB RoundIntro(Ending)
       ENDIF
 
       ' NEXT SECTION
-      IF GO=MAXPL THEN FadeOut: Inc Section: LoadRound: OSDX=2210: RoundIntro(0)
+      IF GO=MAXPL THEN FadeOut: Inc Section: LoadRound: OSDX=2210: Round_1_Cutscenes(0)
 
       FOR PL=1 TO MAXPL
        SIDE(PL)=4
@@ -184,7 +184,7 @@ SUB RoundIntro(Ending)
        CASE 2100:
         KSHIFT=1
         FOR II=0 TO 3
-         InsertObject(38,197,201+INT(RND*3.99),NUM): EY(NUM)=-40-II*15
+         SpawnObject(38,197,201+INT(RND*3.99),NUM): EY(NUM)=-40-II*15
          ESJMP(NUM)=-10+RND*(3+II*2): ESIDE(NUM)=5: EMV(NUM)=1
          ESPDX(NUM)=II*2+(RND*6-3)
         NEXT II
@@ -238,7 +238,7 @@ SUB RoundIntro(Ending)
       IF OSDX=7000 THEN
        KSHIFT=1
        FOR II=0 TO 3
-        InsertObject(250,197,201+INT(RND*3.99),NUM): EY(NUM)=-40-II*15
+        SpawnObject(250,197,201+INT(RND*3.99),NUM): EY(NUM)=-40-II*15
         ESJMP(NUM)=-10+RND*(3+II*2): ESIDE(NUM)=5: EMV(NUM)=1
         ESPDX(NUM)=-II*2-(RND*6-3)
        NEXT II
@@ -257,7 +257,7 @@ SUB RoundIntro(Ending)
       ENDIF
 
       ' NEXT SECTION
-      IF GO=MAXPL THEN FadeOut: Inc Section: LoadRound: OSDX=2210: RoundIntro(0)
+      IF GO=MAXPL THEN FadeOut: Inc Section: LoadRound: OSDX=2210: Round_1_Cutscenes(0)
 
       FOR PL=1 TO MAXPL
        SIDE(PL)=4
@@ -275,13 +275,15 @@ SUB RoundIntro(Ending)
       PAGE WRITE 1
 
       'FOREGROUND WALL (MIRRORED)
-      BLIT 213,0,0,56,107,170,12,5
-      BLIT 0,220,0,220,107,20,8,4
-   
+      IF OSDX>20 THEN
+       BLIT 213,0,0,56,107,170,12,5
+       BLIT 0,220,0,220,107,20,8,4
+      ENDIF
+  
       SELECT CASE OSDX
 
        'WALKING UPSTAIRS
-       CASE 20 TO 2050:
+       CASE 30 TO 2050:
         GO=1
         FOR PL=1 TO MAXPL
          IF X(PL)>80 THEN T=4 ELSE T=(AN(PL) MOD 5 <=2)*4: INC RealY(PL),-T/1.8

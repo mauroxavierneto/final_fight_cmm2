@@ -1,0 +1,208 @@
+SUB Enemy_DAMND(T,PL)
+ LOCAL II,TT
+
+ IF EMV(T)=1 OR (STE(T)>=70 AND STE(T)<=99) THEN INC EAniDelay(T)
+ IF EAniDelay(T)>EAniSpd(T) THEN
+  EAniDelay(T)=0
+  INC EAN(T)
+  IF STE(T)>40 AND STE(T)<52 THEN STE(T)=1
+ ENDIF
+
+ 'WALKING
+ IF STE(T)<50 AND EMV(T)>0 THEN 'CAN WALK OR MAKE ANY ATTACK? -----------------
+
+  'DECREASE TO WALK
+  INC STE(T),-1
+  IF EY(T)=0 THEN EMV(T)=1
+
+  IF STE(T)<1 THEN
+   EBACK(T)=1: EBACKX(T)=1
+   STE(T)=1 'KEEP STOPPED UNTIL BACK TO WALK RANDOMLY
+   IF RND<0.3 THEN
+    'ALWAYS WALKING WITH ATTENTION
+    STE(T)=40
+    IF RND>0.6 AND DIST<80 THEN 'MAYBE JUMP BACK IF NEAR PLAYER IS PUNCHING
+     IF Punch(PL)>0 AND EBACK(T)<>-1 THEN EBACK(T)=-1: STE(T)=75
+    ENDIF
+   ENDIF
+   IF DIST>80 AND RND>0.9 AND CNTE>1 THEN STE(T)=73: EBACK(T)=1 'LAUGHING
+  ELSE
+   'GO BACKWARD IF TOO NEAR
+   IF DIST<35 AND STE(T)<50 THEN EBACKX(T)=-1
+   'GO TO DIRECTION OF THE NEAR PLAYER
+   II=ESPD(T): TT=RealY(T)
+   IF RealY(T)<=SMYA THEN INC RealY(T), ABS(ESPD(T))
+   IF RealY(T)>=SMYB THEN INC RealY(T),-ABS(ESPD(T))
+   IF RealY(T)>RealY(PL)+2 THEN INC RealY(T),-ESPD(T)
+   IF RealY(T)<RealY(PL)-2 THEN INC RealY(T), ESPD(T)
+   TT=(EBACKX(T)=-1)*60
+   INC EX(T),((EX(T)<X(PL)-70+TT)*II*EBACKX(T))-((EX(T)>X(PL)+70-TT)*II*EBACKX(T))
+   IF EX(T)<X(PL) THEN ESide(T)=4 ELSE ESide(T)=5
+  ENDIF
+
+ ELSE 'STE(T)>=50 - DON'T WALK! ---------------------------------
+  ESPD(T)=0
+ ENDIF
+
+ 'ENEMY STATUS / ACTION SCRIPTS -----------------------------------------------------
+
+ SELECT CASE STE(T)
+
+  'WALKING WITH ATTENTION -----------------------------------------------------------
+  CASE 1 TO 40: 
+   EAniSpd(T)=3
+   ESPD(T)=((ES_SPD(T)+(5-EAN(T)))/2)*EBACK(T)
+   IF EAN(T)<0 OR EAN(T)>5 THEN EAN(T)=0
+
+  'GETTING UP ------------------------------------------------------------------------
+  CASE 52:
+   EAN(T)=24: INC STE(T): EAniDelay(T)=0: EAniSpd(T)=30
+   'FIX ENEMY SIDE AFTER THROWED
+   IF ESide(T)=6 THEN ESide(T)=4
+   IF ESide(T)=7 THEN ESide(T)=5
+  CASE 53:      
+   ESPDX(T)=ESPDX(T)\2: IF EAniDelay(T)>20 OR EEnergy(T)<=0 THEN INC STE(T)
+  CASE 54:
+   EAN(T)=27: INC STE(T): EAniDelay(T)=0: EAniSpd(T)=3: ESPDX(T)=0
+   'ENEMY DEAD?
+   IF EEnergy(T)<=0 THEN STE(T)=100: EAN(T)=50: EAniDelay(T)=0: EAniSpd(T)=1       
+  CASE 55: IF EAniDelay(T)>=2 THEN EAniDelay(T)=0: EAN(T)=28: INC STE(T)
+  CASE 56: IF EAN(T)>31 THEN EAniDelay(T)=0: EAN(T)=28: INC STE(T)
+  CASE 57: IF EAN(T)>31 THEN INC STE(T): EAN(T)=26: EAniDelay(T)=0:EAniSpd(T)=10
+  CASE 58: EAN(T)=26: IF EAniDelay(T)>=3 THEN EAniDelay(T)=0: INC STE(T)
+  CASE 59: EAN(T)=21: IF EAniDelay(T)>=3 THEN EAniDelay(T)=0: STE(T)=1
+
+  'THROWED UPDOWN --------------------------------------------------------------------
+  CASE 60:
+   EAN(T)=21: STE(T)=61: EAniDelay(T)=0: EAniSpd(T)=15
+   IF ESide(T)=4 THEN ESide(T)=7 ELSE ESide(T)=6
+   INC EX(T),-ESPDX(T)
+  CASE 61:
+   EAN(T)=21:IF EAniDelay(T)>10 THEN INC STE(T)
+  CASE 62:
+   EAN(T)=22: STE(T)=52: EAniDelay(T)=0: EAniSpd(T)=10
+
+  'PUNCH -----------------------------------------------------------------------------
+  CASE 70: EAN(T)=13: EAniDelay(T)=0: EAniSpd(T)=1: INC STE(T)
+  CASE 71:       
+   EAniSpd(T)=1
+   'PUNCH THE PLAYER ONLY IF IS NOT ALREADY BE HURTED AND NOT USING SPECIAL MOVE
+   IF COLLIDE(0)=&HFFFFFF AND PHurted(PL)=0 AND EAN(T)=16 AND Special(PL)=0 THEN
+    InsertWait(PL,T,2)
+    InsertHit(XH(PL),YH(PL),1) 'HIT
+    PLSFX(PL)=27
+    INC Energy(PL),-ES_POW(T)
+    PHurted(PL)=2
+    SIDE(PL)=(ESide(T)=4)*5+(ESide(T)=5)*4 'CHANGE PLAYER SIDE
+    INC HCombo(PL),75
+    WhoE(PL)=T 'SET WHO HURTED THE PLAYER
+    STE(T)=72: EAniDelay(T)=0: EAniSpd(T)=4
+   ENDIF
+  IF EAN(T)>=19 THEN STE(T)=72
+  CASE 72: IF EAN(T)>=19 THEN STE(T)=1: EAniDelay(T)=0: EAniSpd(T)=4
+
+  'LAUGHING --------------------------------------------------------------------------
+  CASE 73: EAN(T)=10: EAniDelay(T)=0: EAniSpd(T)=200: INC STE(T)
+  CASE 74:
+    SELECT CASE EAniDelay(T)
+     CASE  6: EAN(T)=11: PLAY_SAMPLE 30,3
+     CASE 12, 24, 36, 48: EAN(T)=10
+     CASE 18, 30, 42, 54: EAN(T)=11
+     CASE 60: STE(T)=1
+    END SELECT
+
+  'JUMP BACKWARD ---------------------------------------------------------------------
+  CASE 75:
+   EAN(T)=25: EAniDelay(T)=0: EAniSpd(T)=200: STE(T)=82
+   IF EX(T)<X(PL) THEN ESIDE(T)=4 ELSE ESIDE(T)=5 'TURN TO THE PLAYER SIDE
+   ESJMP(T)=-11: ESPDX(T)=(ESIDE(T)=5)*3-(ESIDE(T)=4)*3
+  CASE 82:
+   INC ESJMP(T),-0.8
+   SELECT CASE EAniDelay(T)
+    CASE  5: EAN(T)=34 
+    CASE 10: EAN(T)=35: ESIDE(T)=(ESIDE(T)=4)*6+(ESIDE(T)=5)*7 'TURN 180` 
+    CASE 15: EAN(T)=34
+    CASE 20: EAN(T)=35: ESIDE(T)=(ESIDE(T)=6)*4+(ESIDE(T)=7)*5 'TURN BACK 
+    CASE 25: EAN(T)=34
+    CASE 30: EAN(T)=25: ESPDX(T)=0
+    CASE 35: EAN(T)=25: ESJMP(T)=0: STE(T)=1: EAniSpd(T)=4: EAniDelay(T)=0
+   END SELECT
+
+  'JUMP TO THE WALL ------------------------------------------------------------------
+  CASE 76: 'START
+   EAN(T)=25: EAniDelay(T)=0: EAniSpd(T)=200: STE(T)=83
+   ESIDE(T)=5: INC EMV(T)=2
+   ESJMP(T)=-11: ESPDX(T)=ABS((1120-SCRX)-EX(T))/25
+  CASE 83: 'JUMP
+
+   'GO TO THE SUBWAY ENTRY WALL
+   INC ESJMP(T),-0.85: EMV(T)=2   
+   IF EX(T)>1120-SCRX THEN EX(T)=1120-SCRX
+   IF RealY(T)>218 THEN INC RealY(T),-4
+   IF RealY(T)<212 THEN INC RealY(T), 4
+
+   SELECT CASE EAniDelay(T)
+    CASE  5: EAN(T)=34 
+    CASE 10: EAN(T)=35: ESIDE(T)=(ESIDE(T)=4)*6+(ESIDE(T)=5)*7 'TURN 180` 
+    CASE 15: EAN(T)=34
+    CASE 20: EAN(T)=35: ESIDE(T)=(ESIDE(T)=6)*4+(ESIDE(T)=7)*5 'TURN BACK 
+    CASE 25: EAN(T)=34
+    CASE 30: EAN(T)=25: ESPDX(T)=0
+    CASE 35: EAN(T)=39: STE(T)=84: EAniSpd(T)=500: EAniDelay(T)=0 'SEAT
+   END SELECT
+  CASE 84: 'SEAT
+   ESJMP(T)=-3: EY(T)=-20: RealY(T)=215
+   SELECT CASE EAniDelay(T)
+    CASE  20: EAN(T)=37 
+    CASE  25: EAN(T)=38: PLAY_SAMPLE 31,3,,255 'WHISTLE TO CALL ENEMIES ROUND EVENT
+    CASE  40: EAN(T)=37: EMV(T)=3 
+    CASE  45: EAN(T)=39 
+    CASE 200: STE(T)=80: 'GO JUMP KICK NEAR PLAYER
+   END SELECT
+
+  'JUMP KICK -------------------------------------------------------------------------
+  CASE 80:
+   EAN(T)=25: EAniDelay(T)=0: EAniSpd(T)=200: STE(T)=81
+   IF EX(T)<X(PL) THEN ESIDE(T)=4 ELSE ESIDE(T)=5 'TURN TO THE PLAYER SIDE
+   TT=DIST/25
+   ESJMP(T)=-11: ESPDX(T)=(ESIDE(T)=4)*TT-(ESIDE(T)=5)*TT
+  CASE 81:
+   INC ESJMP(T),-0.9
+   SELECT CASE EAniDelay(T)
+    CASE  4: EAN(T)=34 
+    CASE  8: EAN(T)=35 
+    CASE 12: EAN(T)=34: ESIDE(T)=(ESIDE(T)=4)*6+(ESIDE(T)=5)*7 'TURN 180` 
+    CASE 16: EAN(T)=35 
+    CASE 20: EAN(T)=34: ESIDE(T)=(ESIDE(T)=6)*4+(ESIDE(T)=7)*5 'TURN BACK 
+    CASE 24 TO 35:
+     EAN(T)=36
+     'KICK THE PLAYER ONLY IF IS NOT ALREADY BE HURTED AND NOT USING SPECIAL MOVE
+     IF COLLIDE(0)=&HFFFFFF AND PHurted(PL)=0 AND Special(PL)=0 THEN
+      InsertWait(PL,T,2)
+      InsertHit(XH(PL),YH(PL),1) 'HIT
+      PLSFX(PL)=24
+      INC Energy(PL),-ES_POW(T)
+      PHurted(PL)=2
+      SIDE(PL)=(ESide(T)=4)*5+(ESide(T)=5)*4 'CHANGE PLAYER SIDE
+      INC HCombo(PL),200
+      WhoE(PL)=T 'SET WHO HURTED THE PLAYER
+      EAniDelay(T)=0: EAniSpd(T)=4
+     ENDIF
+    CASE 36: EAN(T)=25: ESPDX(T)=0
+    CASE 40: EAN(T)=25: ESJMP(T)=0: STE(T)=1: EAniSpd(T)=4: EAniDelay(T)=0
+   END SELECT
+
+  'ENEMY IS DEAD ---------------------------------------------------------------------
+  CASE 100: EAniSpd(T)=0: IF EAN(T)>60 THEN EAN(T)=50: INC STE(T) ' FLASH BODY AGAIN
+  CASE 101: IF EAN(T)>60 THEN EEnergy(T)=-99: STE(T)=0: RealY(T)=999: Exit Sub 'REMOVE DEAD ENEMY
+
+  'GRAPPLED BY A PLAYER --------------------------------------------------------------
+  CASE 120 TO 170: GrapPlayer(T) 
+
+  'RETURN TO THE ORIGINAL STATE IF SOMETHING GOES WRONG ON GAPPLE
+  CASE >=171:
+   STE(T)=40: EAniDelay(T)=0: EAniSpd(T)=3: ESJMP(T)=0: ESPDY(T)=0
+
+ END SELECT 'END ACTION DAMND -------------------------------------------------------
+ 
+END SUB

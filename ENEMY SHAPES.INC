@@ -7,7 +7,7 @@
 ' SHOW =  1 TO SHOW SHAPE ONLY, DON'T WRITE OR READ COLLISION
 ' SHOW >  1 TO WRITE COLLISION BLOCK TO AN SELECT PAGE
 SUB PutEnemy(xs,ys,num,s,Who,pl,SHOW)
- local I,T,xa,ya,xb,yb,sbx,sby,sx,sy,p,pb,tx,ty,tbx,tby,xt,yt,xxt,yyt
+ local I,T,xa,ya,xb,yb,sbx,sby,sx,sy,p,pb,tx,ty,tbx,tby,xt,yt,xxt,yyt,xp,yp
 
  'I,T - TEMPORARY VARIABLES
  '
@@ -20,6 +20,7 @@ SUB PutEnemy(xs,ys,num,s,Who,pl,SHOW)
  'tx,tbx - X CORRECTION
  'ty,tby - Y CORRECTION
  'xt,yt  - CENTER OF THE SHAPE
+ 'xp,yp  - ADJUST ATTACK COLLISION 
 
  xa=-200: xb=-200
 
@@ -144,7 +145,7 @@ SUB PutEnemy(xs,ys,num,s,Who,pl,SHOW)
     CASE 19 : xa=332:ya=  0:sx=54:sy=91:tx=0:ty=0: if who=10 then xa=398: ya=116-107: sy=92
     'HURT
     CASE 21 : xa=852:ya= 21:sx=59:sy= 84:tx=0 'IN THE STOMACH
-    CASE 22 : xa=911:ya=  6:sx=64:sy=100:tx=0 'IN THE FACE
+    CASE 22 : xa=911:ya=  6:sx=64:sy=100:tx=0:yp=20 'IN THE FACE
     'FALLING
     CASE 23 : xa=975:ya= 41:sx=112:sy=59:tx=0:ty=0    'FALLING DOWN
     CASE 24,50,52,54,56,58,60:
@@ -293,81 +294,80 @@ SUB PutEnemy(xs,ys,num,s,Who,pl,SHOW)
   CASE 80,81: 'DAMND / DAMND FROM THE INTRO ROUND 1-1 -----------------------------------
    SELECT CASE num
     'ENERGY AVATAR
-    CASE 99 : xa=2:ya=1084:sx=60:sy=16::tx=-cint(sx/2)
+    CASE 99 : xa=2:ya=1084:sx=60:sy=16:tx=-16
     'STOPPED / WALKING WITH JESSICA (ROUND 1-1)
-    CASE  0,100 : xa=423:ya=1083: sx=86: sy=61: tx=-4: ty= 13:
+    CASE  0,100: xa=423:ya=1083: sx=86: sy=61: tx=-4: ty= 13:
                   xb=192:yb=1083:sbx=73:sby=61:tbx= 0:tby=  0
     'WALKING / WALKING WITH JESSICA (ROUND 1-1)
-    CASE  1,101 : xa=423:ya=1083: sx=86: sy=61: tx=-4: ty=13:
+    CASE  1,101: xa=423:ya=1083: sx=86: sy=61: tx=-4: ty=13:
                   xb=265:yb=1083:sbx=62:sby=65:tbx=-4:tby= 0
-    CASE  2,102 : xa=423:ya=1083: sx=86: sy=61: tx=-4: ty=12:
+    CASE  2,102: xa=423:ya=1083: sx=86: sy=61: tx=-4: ty=12:
                   xb=327:yb=1083:sbx=51:sby=65:tbx= 2:tby= 0
-    CASE  3,103 : xa=423:ya=1083: sx=86: sy=61: tx=-4: ty=12:
+    CASE  3,103: xa=423:ya=1083: sx=86: sy=61: tx=-4: ty=12:
                   xb=378:yb=1083:sbx=45:sby=65:tbx= 8:tby= 0
-    CASE  4,104 : xa=423:ya=1083: sx=86: sy=61: tx=-4: ty=12:
+    CASE  4,104: xa=423:ya=1083: sx=86: sy=61: tx=-4: ty=12:
                   xb=327:yb=1083:sbx=51:sby=65:tbx= 2:tby= 0
-    CASE  5,105 : xa=423:ya=1083: sx=86: sy=61: tx=-4: ty=13:
+    CASE  5,105: xa=423:ya=1083: sx=86: sy=61: tx=-4: ty=13:
                   xb=265:yb=1083:sbx=62:sby=65:tbx=-4:tby= 0
     'LAUGHING / LAUGHING WITH JESSICA (ROUND 1-1)
-    CASE  10,110 : xa=995:ya=1085: sx=86: sy=61: tx=-4: ty= 13:
+    CASE 10,110: xa=995:ya=1085: sx=86: sy=61: tx=-4: ty= 13:
                    xb=192:yb=1083:sbx=73:sby=61:tbx= 0:tby=  0
-    CASE  11,111 : xa=505:ya=1144: sx=86: sy=54: tx=-4: ty= 13:
+    CASE 11,111: xa=505:ya=1144: sx=86: sy=54: tx=-4: ty= 13:
                    xb=192:yb=1083:sbx=73:sby=61:tbx= 0:tby=  0
     'PUNCHING
-    CASE  13: xa= 192:ya=1148:sx =80: sy=51: tx= 20: ty=  0:
-              xb= 102:yb=1083:sbx=90:sby=42:tbx=  0:tby=  0
-    CASE  14: xa= 272:ya=1148:sx =53: sy=51: tx=  8: ty=  0:
-              xb= 102:yb=1083:sbx=90:sby=42:tbx=  0:tby=  0
-    CASE  15: xa= 325:ya=1148:sx =70: sy=51: tx=-20: ty=  0:
-              xb= 102:yb=1083:sbx=90:sby=42:tbx=  0:tby=  0
-    CASE  16: xa= 395:ya=1148:sx=110: sy=51: tx=-42: ty=  0:
-              xb= 102:yb=1083:sbx=90:sby=42:tbx=  0:tby=  0
-    CASE  17: xa= 325:ya=1148:sx =70: sy=51: tx=-20: ty=  0:
-              xb= 102:yb=1083:sbx=90:sby=42:tbx=  0:tby=  0
-    CASE  18: xa= 272:ya=1148:sx =53: sy=51: tx=  8: ty=  0:
-              xb= 102:yb=1083:sbx=90:sby=42:tbx=  0:tby=  0
-    CASE  19: xa= 192:ya=1148:sx =80: sy=51: tx= 20: ty=  0:
-              xb= 102:yb=1083:sbx=90:sby=42:tbx=  0:tby=  0
+    CASE 13: xa= 192:ya=1148:sx =80: sy=51: tx= 20: ty=  0:
+             xb= 102:yb=1083:sbx=90:sby=42:tbx=  0:tby=  0
+    CASE 14: xa= 272:ya=1148:sx =53: sy=51: tx=  8: ty=  0:
+             xb= 102:yb=1083:sbx=90:sby=42:tbx=  0:tby=  0
+    CASE 15: xa= 325:ya=1148:sx =70: sy=51: tx=-20: ty=  0:
+             xb= 102:yb=1083:sbx=90:sby=42:tbx=  0:tby=  0
+    CASE 16: xa= 395:ya=1148:sx=110: sy=51: tx=-42: ty=  0:
+             xb= 102:yb=1083:sbx=90:sby=42:tbx=  0:tby=  0
+    CASE 17: xa= 325:ya=1148:sx =70: sy=51: tx=-20: ty=  0:
+             xb= 102:yb=1083:sbx=90:sby=42:tbx=  0:tby=  0
+    CASE 18: xa= 272:ya=1148:sx =53: sy=51: tx=  8: ty=  0:
+             xb= 102:yb=1083:sbx=90:sby=42:tbx=  0:tby=  0
+    CASE 19: xa= 192:ya=1148:sx =80: sy=51: tx= 20: ty=  0:
+             xb= 102:yb=1083:sbx=90:sby=42:tbx=  0:tby=  0
     'HURT
-    CASE 21 : xa=677:ya=1083: sx=78: sy=41: tx=12: ty=  0: 'IN THE STOMACH
-              xb=591:yb=1150:sbx=66:sby=49:tbx= 0:tby=  0
-    CASE 22 : xa=509:ya=1083: sx=78: sy=61: tx=-4: ty= 12: 'IN THE FACE
-              xb=192:yb=1083:sbx=73:sby=61:tbx= 0:tby=  0
+    CASE 21: xa=677:ya=1083: sx=78: sy=41: tx=12: ty=  0: 'IN THE STOMACH
+             xb=591:yb=1150:sbx=66:sby=49:tbx= 0:tby=  0
+    CASE 22: xa=509:ya=1083: sx=78: sy=61: tx=-4: ty= 12: 'IN THE FACE
+             xb=192:yb=1083:sbx=73:sby=61:tbx= 0:tby=  0
     'FALLING
-    CASE 23 : xa=978:ya=1146:sx=116:sy=53:tx=5:ty=-20 'FALLING DOWN
+    CASE 23: xa=978:ya=1146:sx=116:sy=53:tx=5:ty=-20 'FALLING DOWN
     CASE 24,50,52,54,56,58,60:
-              xa=903:ya=1123:sx= 75:sy= 37:tx=140:ty=42 'LYING ON THE FLOOR / DEAD
-              xb=924:yb=1083:sbx=70:sby=40:tbx= 0
+             xa=903:ya=1123:sx= 75:sy= 37:tx=140:ty=42 'LYING ON THE FLOOR / DEAD
+             xb=924:yb=1083:sbx=70:sby=40:tbx= 0
     'GET UP
-    CASE 25 : xa=657:ya=1159: sx=70: sy=40: tx=10: ty= 85
-              xb=423:yb=1083:sbx=86:sby=61:tbx= 0:tby=-26: 'GET UP
+    CASE 25: xa=657:ya=1159: sx=70: sy=40: tx=10: ty= 85
+             xb=423:yb=1083:sbx=86:sby=61:tbx= 0:tby=-26: 'GET UP
               
-    CASE 26 : xa=677:ya=1083: sx=78: sy=41:tx=-12: ty= 0: 'SUFFERING (AFTER STOMACH ANIMATION)
-              xb=658:yb=1132:sbx=68:sby=27:tbx= 0:tby= 0
-    CASE 27:  xa=903:ya=1160:sx= 75:sy= 39:tx=140:ty=42 'LYING ON THE FLOOR / TRYING TO GET UP
-              xb=924:yb=1083:sbx=70:sby=40:tbx= 0
+    CASE 26: xa=677:ya=1083: sx=78: sy=41:tx=-12: ty= 0: 'SUFFERING (AFTER STOMACH ANIMATION)
+             xb=658:yb=1132:sbx=68:sby=27:tbx= 0:tby= 0
+    CASE 27: xa=903:ya=1160:sx= 75:sy= 39:tx=140:ty=42 'LYING ON THE FLOOR / TRYING TO GET UP
+             xb=924:yb=1083:sbx=70:sby=40:tbx= 0
     'SHAKING HEAD
-    CASE 28:  xa=729:ya=1128:sx= 58:sy= 71:tx=122:ty=42 'LYING ON THE FLOOR / SHAKING HEAD RIGHT
-              xb=924:yb=1083:sbx=70:sby=40:tbx= 0
-    CASE 29:  xa=787:ya=1128:sx= 58:sy= 71:tx=122:ty=42 'LYING ON THE FLOOR / SHAKING HEAD FRONT
-              xb=924:yb=1083:sbx=70:sby=40:tbx= 0
-    CASE 30:  xa=729:ya=1128:sx= 58:sy= 71:tx=122:ty=42 'LYING ON THE FLOOR / SHAKING HEAD RIGHT
-              xb=924:yb=1083:sbx=70:sby=40:tbx= 0
-    CASE 31:  xa=845:ya=1128:sx= 58:sy= 71:tx=122:ty=42 'LYING ON THE FLOOR / SHAKING HEAD BACK
-              xb=924:yb=1083:sbx=70:sby=40:tbx= 0
+    CASE 28: xa=729:ya=1128:sx= 58:sy= 71:tx=122:ty=42 'LYING ON THE FLOOR / SHAKING HEAD RIGHT
+             xb=924:yb=1083:sbx=70:sby=40:tbx= 0
+    CASE 29: xa=787:ya=1128:sx= 58:sy= 71:tx=122:ty=42 'LYING ON THE FLOOR / SHAKING HEAD FRONT
+             xb=924:yb=1083:sbx=70:sby=40:tbx= 0
+    CASE 30: xa=729:ya=1128:sx= 58:sy= 71:tx=122:ty=42 'LYING ON THE FLOOR / SHAKING HEAD RIGHT
+             xb=924:yb=1083:sbx=70:sby=40:tbx= 0
+    CASE 31: xa=845:ya=1128:sx= 58:sy= 71:tx=122:ty=42 'LYING ON THE FLOOR / SHAKING HEAD BACK
+             xb=924:yb=1083:sbx=70:sby=40:tbx= 0
     'JUMPING
-    CASE 34 : xa= 129:ya=1131:sx= 63:sy=68:tx=0:ty=0
-    CASE 35 : xa=1245:ya=1136:sx= 68:sy=63:tx=0:ty=0
-    CASE 36 : xa=   1:ya=1123:sx=128:sy=76:tx=0:ty=0 'KICKING
+    CASE 34: xa= 129:ya=1131:sx= 63:sy=68:tx=0:ty=0
+    CASE 35: xa=1245:ya=1136:sx= 68:sy=63:tx=0:ty=0
+    CASE 36: xa=   1:ya=1123:sx=128:sy=76:tx=0:ty=0: xp=0: yp=42 'KICKING
     'WHISTLE
-    CASE 37 : xa=755:ya=1083: sx=82: sy=45: tx=-10: ty=  0:
-              xb=589:yb=1083:sbx=73:sby=51:tbx=  0:tby=  0
-    CASE 38 : xa=841:ya=1083: sx=79: sy=45: tx=- 6: ty=  0:
-              xb=589:yb=1083:sbx=73:sby=51:tbx=  0:tby=  0
+    CASE 37: xa=755:ya=1083: sx=82: sy=45: tx=-10: ty=  0:
+             xb=589:yb=1083:sbx=73:sby=51:tbx=  0:tby=  0
+    CASE 38: xa=841:ya=1083: sx=79: sy=45: tx=- 6: ty=  0:
+             xb=589:yb=1083:sbx=73:sby=51:tbx=  0:tby=  0
     'SEATED AT THE WALL
-    CASE 39 : xa=505:ya=1144: sx=86: sy=54: tx=-10: ty= 15:
-              xb=589:yb=1083:sbx=73:sby=51:tbx= 0:tby=  0
-
+    CASE 39: xa=505:ya=1144: sx=86: sy=54: tx=-10: ty= 15:
+             xb=589:yb=1083:sbx=73:sby=51:tbx= 0 :tby=  0
 
    END SELECT 'END DAMND
 
@@ -383,10 +383,12 @@ SUB PutEnemy(xs,ys,num,s,Who,pl,SHOW)
  END SELECT 'END SELECT Who
 
  'ADJUST SIDE
- if s=5 OR s=7 THEN TX=-TX: TBX=-TBX
+ if s=5 OR s=7 THEN TX=-TX: TBX=-TBX: xp=-xp
 
  ' SET THE SUPERIOR PART OF THE SHAPE
  xxt=xs-(sx+TX)\2: yyt=ys-sy+TY-(xb>-99)*(SBY-TBY)
+
+ IF num=50 THEN EEnergy(PL)=-99
 
  SELECT CASE SHOW
   CASE <=-1: ' SHOW = -1 TO READ COLLISION, NO SHAPE IS DISPLAYED ------------------------
@@ -395,11 +397,9 @@ SUB PutEnemy(xs,ys,num,s,Who,pl,SHOW)
    FOR I=0 TO 2
     COLLIDE(I)=0     
     PAGE WRITE 34+I 
-    'T=PIXEL(xs+sx\2-tx\2,yyt+8):    IF T>0 AND COLLIDE(I)=0 THEN COLLIDE(I)=T
-    'T=PIXEL(xs-sx\2-tx\2,yyt+8):    IF T>0 AND COLLIDE(I)=0 THEN COLLIDE(I)=T
-    T=PIXEL(xs+sx\2-tx\2,yyt+sy\2): IF T>0 AND COLLIDE(I)=0 THEN COLLIDE(I)=T
-    T=PIXEL(xs-sx\2-tx\2,yyt+sy\2): IF T>0 AND COLLIDE(I)=0 THEN COLLIDE(I)=T
-    T=PIXEL(xs          ,yyt+sy\2): IF T>0 AND COLLIDE(I)=0 THEN COLLIDE(I)=T
+    T=PIXEL(xs+xp+sx\2-tx\2,yyt+yp+sy\2): IF T>0 AND COLLIDE(I)=0 THEN COLLIDE(I)=T
+    T=PIXEL(xs+xp-sx\2-tx\2,yyt+yp+sy\2): IF T>0 AND COLLIDE(I)=0 THEN COLLIDE(I)=T
+    T=PIXEL(xs+xp          ,yyt+yp+8+(WHO>=80)*32): IF T>0 AND COLLIDE(I)=0 THEN COLLIDE(I)=T
    NEXT I
    'SET HIT POSITION ALWAYS BASED ON THE FIRST PART OF THE SHAPE (FASTER)
    XTHit=xxt+sx\2: YTHit=yyt+sy\2
@@ -436,11 +436,9 @@ SUB PutEnemy(xs,ys,num,s,Who,pl,SHOW)
    BLIT xa,ya,xxt,yyt,sx,sy,FRAMEBUFFER,s
 
    IF DEBUG THEN
-    PIXEL xs+sx\2-tx\2,yyt+8    , RGB(255,0,0)
-    PIXEL xs-sx\2-tx\2,yyt+8    , RGB(255,0,0)
-    PIXEL xs+sx\2-tx\2,yyt+sy\2 , RGB(255,0,0)
-    PIXEL xs-sx\2-tx\2,yyt+sy\2 , RGB(255,0,0)
-    PIXEL xs     -tx\2,yyt+sy\2 , RGB(255,0,0)
+    PIXEL xs+sx\2-tx\2+xp,yyt+yp+sy\2, RGB(255,0,0)
+    PIXEL xs-sx\2-tx\2+xp,yyt+yp+sy\2, RGB(255,0,0)
+    PIXEL xs     -tx\2+xp,yyt+yp+8+(WHO>=80)*32, RGB(255,0,0)
    ENDIF
 
  END SELECT 'END SELECT SHOW -----------------------------------------------------------
