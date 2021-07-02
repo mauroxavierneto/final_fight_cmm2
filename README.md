@@ -8,6 +8,16 @@ PS.: The current enemies probably will not be implemented because of some memory
 
 Changelog:
 
+2021-07-02
+- Implemented optional 384x240 resolution mode (only for CMM2 G2)
+- Implemented optional 16-bit colour mode, but it's slower than the 8-bit mode
+- Adjusted OSD and the engine to support 320 or 384 width pixel mode
+- Fixed the freeze effects on the enemies when hurted
+- Restaured scream sound of the the "fat runners"
+- Fixed Damnd jumping kick freeze
+- Fixed many fixes in the enemies animations that caused unexpected behaviors
+- Fixed vertical flip when using two parts to make one shape
+
 2021-06-29
 - Fixed many bugs when players throw enemies
 - Reorganized source code and INC files
