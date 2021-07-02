@@ -87,13 +87,17 @@ SUB StageScrollEvent(xx,PL)
 
  IF ScrX>=LIMRD THEN
   ScrX=LIMRD
+  IF CNTE<>0 THEN WaitRound=0
   'LOAD END OF SECTION EVENT ONLY WHEN PLAYERS ARE STOPPED
   IF CNTE=0 AND OSDX<5000 THEN
-   GO=1
-   FOR T=1 TO MAXPL
-    IF Punch(T)>0 OR Kick(T)>0 OR Special(T)>0 OR PHurted(T)>0 OR AN(T)>14 THEN GO=0
-   NEXT T
-   IF GO THEN OSDX=9990': RoundIntro(1)
+   INC WaitRound
+   IF WaitRound>100 THEN
+    GO=1
+    FOR T=1 TO MAXPL
+     IF Punch(T)>0 OR Kick(T)>0 OR Special(T)>0 OR PHurted(T)>0 OR AN(T)>14 THEN GO=0
+    NEXT T
+    IF GO THEN OSDX=9990': RoundIntro(1)
+   ENDIF
   ENDIF
  ENDIF
 

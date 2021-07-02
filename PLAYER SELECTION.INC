@@ -37,7 +37,7 @@ SUB SelectPlayer
  Y(1)=99: Y(2)=99
 
  'CLEAR BUFFER
- IF CtrlType(PL)=1 THEN Classic_Mini_Read(CtrlExist(1))
+ IF TCType(PL)=1 THEN Classic_Mini_Read(CtrlExist(1))
 
  MAXPL=1
 
@@ -47,7 +47,7 @@ SUB SelectPlayer
 
   'ENTER THE SECOND PLAYER
   IF MAXPL=1 THEN
-   IF CtrlType(2)=1 THEN
+   IF TCType(2)=1 THEN
     Classic_Mini_Read(CtrlExist(1))
     IF (PEEK(VAR KCM$, 06)=48 OR PEEK(VAR KCM$, 10)=48 OR PEEK(VAR KCM$, 12)=48) AND Y(PL)=0 THEN
      MAXPL=2: PLAY_SAMPLE 2,2: Y(2)=99
@@ -77,7 +77,7 @@ SUB SelectPlayer
 
   IF Y(PL)=2 THEN CONTINUE DO
   IF Y(PL)=1 THEN PLAY_SAMPLE 3,PL: Y(PL)=2
-  SELECT CASE CtrlType(PL)
+  SELECT CASE TCType(PL)
    CASE 0: 'KEYBOARD CONTROL -------------------------------------------------------------
     FOR T=1 TO 6
      KB=ASC(UCASE$(CHR$(KEYDOWN(T))))

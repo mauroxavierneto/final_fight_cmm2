@@ -9,6 +9,8 @@ PS.: The current enemies on the CMM2 G1 probably will not be implemented because
 Changelog:
 
 2021-07-02
+- Implemented an option menu
+- Implemented optional 400x300 resolution mode (only in 8-bit and need a CMM2 G2)
 - Implemented optional 384x240 resolution mode (only for CMM2 G2)
 - Implemented optional 16-bit colour mode, but it's slower than the 8-bit mode
 - Adjusted OSD and the engine to support 320 or 384 width pixel mode
