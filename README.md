@@ -2,9 +2,9 @@
 
 This is a non-profit port of the arcade game Final Fight from CAPCOM, made 100% in MMBasic for the Colour Maximite 2.
 
-I don't have any rights to the images, sound effects and songs in this repository, but I'm counting on the tolerance of CAPCOM about your huge fan games base already made.
+I don't have any rights to the images, sound effects and music in this repository, but I'm counting on the tolerance of CAPCOM about your huge fan games base already present.
 
-PS.: The current enemies probably will not be implemented because of some memory restrictions: Simons, Wong Who and the appearance of the Andore Father, Uncle and Granpa outside the ring stage.
+PS.: The current enemies on the CMM2 G1 probably will not be implemented because of some memory restrictions: Simons, Wong Who and the appearance of the Andore Father, Uncle and Granpa outside the ring stage.
 
 Changelog:
 
