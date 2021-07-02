@@ -45,9 +45,9 @@ SUB PutObject(xs,ys,num,s,SHOW)
   CASE 26 : xa=126:ya=160:sx=61:sy=48:p=38 'LOWER BROKEN
   'TELEPHONE BOOTH
   CASE -27: xa= 64:ya=224:sx=16:sy= 16:p=38: AVA$="TEL` BOOTH" 'AVATAR
-  CASE 27 : xa= 64:ya=  0:sx=80:sy=128:p=39 'OK
-  CASE 28 : xa=144:ya=  0:sx=80:sy= 43:p=39 'UPPER BROKEN
-  CASE 29 : xa=144:ya= 43:sx=80:sy= 50:p=39 'LOWER BROKEN
+  CASE 27 : xa= 64:ya=  0:sx=80:sy=128:p=33 'OK
+  CASE 28 : xa=144:ya=  0:sx=80:sy= 43:p=33 'UPPER BROKEN
+  CASE 29 : xa=144:ya= 43:sx=80:sy= 50:p=33 'LOWER BROKEN
   'BARREL
   CASE -30: xa=48:ya=224:sx=16:sy=16:p=38: AVA$="BARREL" 'AVATAR
   CASE 30 : xa= 0:ya=  0:sx=58:sy=69:p=38 'OK
@@ -65,15 +65,15 @@ SUB PutObject(xs,ys,num,s,SHOW)
   CASE 38 : xa=152:ya=  0:sx=39:sy=30:tx=-8:p=38 'INCLINED TIRE
   'FREIGHT
   CASE -39: xa= 48:ya=224:sx=16:sy=16:p=38: AVA$="FREIGHT" 'AVATAR
-  CASE 39 : xa=224:ya=  0:sx=80:sy=92:p=39 'OK
-  CASE 40 : xa=240:ya= 92:sx=80:sy=40:p=39 'LOWER BROKEN
+  CASE 39 : xa=224:ya=  0:sx=80:sy=92:p=33 'OK
+  CASE 40 : xa=240:ya= 92:sx=80:sy=40:p=33 'LOWER BROKEN
   'BILLBOARD
   CASE -41: xa= 64:ya=224:sx=16:sy= 16:p=38: AVA$="BILLBOARD" 'AVATAR
-  CASE 41 : xa=  0:ya= 64:sx=64:sy= 94:p=39:'OK - LIGHT 1
+  CASE 41 : xa=  0:ya= 64:sx=64:sy= 94:p=33:'OK - LIGHT 1
             xxt=xs-(sx+TX)\2: yyt=ys-sy+TY: BLIT 311,0,xxt+49,yyt+1,9,78,p,s            
-  CASE 42 : xa=  0:ya= 64:sx=64:sy= 94:p=39:'OK - LIGHT 2
+  CASE 42 : xa=  0:ya= 64:sx=64:sy= 94:p=33:'OK - LIGHT 2
             xxt=xs-(sx+TX)\2: yyt=ys-sy+TY: BLIT 311,4,xxt+49,yyt+1,9,78,p,s            
-  CASE 43 : xa=  0:ya=  0:sx=64:sy= 64:p=39 'LOWER BROKEN
+  CASE 43 : xa=  0:ya=  0:sx=64:sy= 64:p=33 'LOWER BROKEN
 
   'POINTS -------------------------------------------------------------------------------
 
@@ -198,6 +198,7 @@ SUB PutObject(xs,ys,num,s,SHOW)
   CASE 205 : xa=188:ya=207:sx=17:sy=33:p=38:tx=-6      :s=5
   CASE 206 : xa=216:ya=173:sx=10:sy=37:p=38:tx= 6:ty= 2:s=4
   CASE 207 : xa=206:ya=210:sx=26:sy=30:p=38:      ty=-1:s=4
+
   'PIECES OF WOOD
   CASE 208 : xa=226:ya=185:sx=32:sy=13:p=38:tx=-4:ty= 6:s=4 'FIRST BLOCK (PIECE)
   CASE 209 : xa=274:ya=178:sx=28:sy=21:p=38:      ty= 0:s=4
@@ -218,6 +219,29 @@ SUB PutObject(xs,ys,num,s,SHOW)
   CASE 221 : xa=304:ya=167:sx=14:sy=14:p=38:s=6
   CASE 222 : xa=304:ya=167:sx=14:sy=14:p=38:s=5
   CASE 223 : xa=304:ya=167:sx=14:sy=14:p=38:s=7
+
+  'MOLOTOV
+  CASE 250 : xa=300:ya=192:sx=20:sy=20:p=38                   '  | 1
+  CASE 251 : xa=188:ya=185:sx=27:sy=22:p=38                   '  / 2
+  CASE 252 : xa=231:ya=116:sx=20:sy=20:p=38                   '  - 3
+  CASE 253 : xa=209:ya=109:sx=22:sy=27:p=38                   '  \ 4
+  CASE 254 : xa=300:ya=192:sx=20:sy=20:p=38:s=(s=4)*6+(s=5)*7 '  | 5
+  CASE 255 : xa=188:ya=185:sx=27:sy=22:p=38:s=(s=4)*6+(s=5)*7 '  / 6
+  CASE 256 : xa=231:ya=116:sx=20:sy=20:p=38:s=(s=4)*6+(s=5)*7 '  - 7
+  CASE 257 : xa=209:ya=109:sx=22:sy=27:p=38:s=(s=4)*6+(s=5)*7 '  \ 8
+
+  'MOLOTOV FIRE
+  CASE 260 : xa=64:ya=128:sx=14:sy=24:p=33
+  CASE 261 : xa=78:ya=128:sx=23:sy=32:p=33
+  CASE 262 : xa= 1:ya=163:sx=30:sy=57:p=33
+  CASE 263 : xa=32:ya=158:sx=31:sy=62:p=33
+
+  'BLOOD
+  CASE 265 : xa= 0:ya=223:sx= 7:sy=13:p=33
+  CASE 266 : xa= 8:ya=223:sx=12:sy=14:p=33
+  CASE 267 : xa=23:ya=221:sx=19:sy=19:p=33
+
+
 
  END SELECT
 

@@ -54,6 +54,7 @@ SUB Enemy_HOLLY_WOOD_EL_GADO(T,PL)
    IF EAN(T)>5 THEN EAN(T)=0
 
   'GETTING UP ------------------------------------------------------------------------
+  CASE 51: 'NOTHING
   CASE 52:
    EAN(T)=24: INC STE(T): EAniDelay(T)=0: EAniSpd(T)=30
    'FIX ENEMY SIDE AFTER THROWED
@@ -197,6 +198,9 @@ SUB Enemy_HOLLY_WOOD_EL_GADO(T,PL)
   'RETURN TO THE ORIGINAL STATE IF SOMETHING GOES WRONG ON GAPPLE
   CASE >=171:
    STE(T)=20: EAniDelay(T)=0: EAniSpd(T)=3: ESJMP(T)=0: ESPDY(T)=0
+
+  'FOR ALL OTHER CASES, GET UP!
+  CASE ELSE: EAN(T)=1: STE(T)=1
 
  END SELECT 'END ACTION SCRIPTS HOLLY WOOD / EL GADO -------------------------------------------
  

@@ -162,7 +162,7 @@ SUB PutEnemy(xs,ys,num,s,Who,pl,SHOW)
    INC yb,(who-9)*107
 
 
-  CASE 11 TO 13: 'HOLLY WOOD / EL GADO ----------------------------------------------------
+  CASE 11 TO 12: 'HOLLY WOOD / EL GADO ----------------------------------------------------
    SELECT CASE num
     'ENERGY AVATAR
     CASE 99 : xa=0:ya=787:sx=99:sy=16:tx=-54:ty=0
@@ -210,6 +210,34 @@ SUB PutEnemy(xs,ys,num,s,Who,pl,SHOW)
    END SELECT 'END HOLLY WOOD / EL GADO
    INC ya,(who-11)*100
    INC yb,(who-11)*100
+
+
+  CASE 13: 'HOLLY WOOD MOLOTOV ---------------------------------------------------------
+   SELECT CASE num
+    'ENERGY AVATAR
+    CASE 99 : xa=1155:ya=898:sx=99:sy=16:tx=-54:ty=0
+    'STOPPED
+    CASE  0 : xa=1045:ya=787:sx=42:sy=53:tx=0:ty=15:xb=1214:yb=599:sbx=45:sby=58:tbx=-16:tby=0
+    'WALKING
+    CASE  1 : xa=1045:ya=787:sx=42:sy=53:tx=0:ty=15:xb=1051:yb=841:sbx=33:sby=59:tbx=- 8:tby=0
+    CASE  2 : xa=1045:ya=787:sx=42:sy=53:tx=0:ty=15:xb=1193:yb=693:sbx=48:sby=58:tbx=-22:tby=0
+    CASE  3 : xa=1045:ya=787:sx=42:sy=53:tx=0:ty=15:xb=1051:yb=841:sbx=33:sby=59:tbx=- 8:tby=0
+    CASE  4 : xa=1045:ya=787:sx=42:sy=53:tx=0:ty=15:xb=1214:yb=599:sbx=45:sby=58:tbx=-16:tby=0
+    CASE  5 : xa=1045:ya=787:sx=42:sy=53:tx=0:ty=15:xb=1095:yb=790:sbx=68:sby=59:tbx=-10:tby=0
+    'HURT
+    CASE 21 : xa=1167:ya=790:sx=59:sy=78:tx=0:ty=0 'IN THE STOMACH
+    CASE 22 : xa=1133:ya=741:sx=51:sy=49:tx=8:ty=8:xb=1051:yb=841:sbx=33:sby=59:tbx=-8:tby=0 'FACE
+    'FALLING
+    CASE 23 : xa=1049:ya=900:sx=107:sy=62:tx=0:ty=-20 'FALLING DOWN
+    CASE 24,50,52,54,56,58,60:
+              xa= 924:ya=865:sx=127:sy=22:tx=0:ty=0   'LYING ON THE FLOOR / DEAD
+    'THROWING A MOLOTOV
+    CASE 70 : xa=1084:ya=849:sx=93:sy=50:tx= 12:ty=7:xb=1051:yb=841:sbx=33:sby=59:tbx=- 8:tby=0
+    CASE 71 : xa=1226:ya=769:sx=35:sy=47:tx=-14:ty=7:xb=1214:yb=599:sbx=45:sby=58:tbx=-16:tby=0
+    CASE 72 : xa=1133:ya=649:sx=81:sy=44:tx=-36:ty=7:xb=1095:yb=790:sbx=68:sby=59:tbx=-12:tby=0
+
+   END SELECT 'END HOLLY WOOD MOLOTOV
+
 
   CASE 14 TO 16: 'BILL BILL / G. ORIBER / WONG WHO --------------------------------------
    SELECT CASE num
@@ -383,7 +411,18 @@ SUB PutEnemy(xs,ys,num,s,Who,pl,SHOW)
  END SELECT 'END SELECT Who
 
  'ADJUST SIDE
- if s=5 OR s=7 THEN TX=-TX: TBX=-TBX: xp=-xp
+ IF S=5 OR S=7 THEN TX=-TX: TBX=-TBX: xp=-xp
+
+ 'ADJUST VERTICAL FLIP
+ IF S>5 AND XB>-99 THEN
+  T=XA: XA=XB : XB=T
+  T=YA: YA=YB : YB=T
+  T=SX: SX=SBX: SBX=T
+  T=SY: SY=SBY: SBY=T
+  T=TX: TX=TBX: TBX=T
+  'T=TY: TY=TBY: TBY=T
+  'TY=-TY: TBY=-TBY
+ ENDIF
 
  ' SET THE SUPERIOR PART OF THE SHAPE
  xxt=xs-(sx+TX)\2: yyt=ys-sy+TY-(xb>-99)*(SBY-TBY)

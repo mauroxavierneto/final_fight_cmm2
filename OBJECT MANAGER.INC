@@ -23,7 +23,7 @@ SUB SpawnObject(x,y,tp,NUM,IT)
 
    IF tp=-1 THEN Etype(T)=100+INT(RND*13.99) 'RANDOM POINTS
    IF tp=-2 THEN Etype(T)=121+INT(RND*19.99) 'RANDOM FOOD
-   IF tp=-3 THEN Etype(T)=150+INT(RND*3.99) 'RANDOM WEAPONS
+   IF tp=-3 THEN Etype(T)=150+INT(RND*3.99)  'RANDOM WEAPONS
 
    SELECT CASE Etype(T) 
     CASE 1,2: EAN(T)= 24   'INTACT DRUMCAN
@@ -95,6 +95,11 @@ SUB SpawnObject(x,y,tp,NUM,IT)
     CASE 202: EAN(T)=212: EEnergy(NUM)=30  'PIECES OF WOOD 2
     CASE 203: EAN(T)=216: EEnergy(NUM)=30  'PIECES OF WOOD 3
     CASE 204: EAN(T)=220: EEnergy(NUM)=30  'PIECES OF WOOD 4
+    'MOLOTOV
+    CASE 210,211: EAN(T)=250: EEnergy(NUM)=999: EAniSpd(T)=2: ESJMP(T)=-10
+    'MOLOTOV FIRE
+    CASE 212: EAN(T)=260: EEnergy(NUM)=50: EAniSpd(T)=0: EMV(T)=1
+
    END SELECT
    EXIT SUB
   ENDIF
@@ -285,6 +290,36 @@ SUB ControlObject(T)
    INC EAN(T)
    IF EAN(T)>211+(EType(T)-201)*4 THEN EAN(T)=208+(EType(T)-201)*4
    IF EAN(T)<208+(EType(T)-201)*4 THEN EAN(T)=211+(EType(T)-201)*4
+
+  'MOLOTOV
+  CASE 210,211: '210 - PL1 / 211 - PL2
+   INC EAN(T)
+   IF EAN(T)>257 THEN EAN(T)=250
+   IF RealY(T)>RealY(EType(T)-209)-5 THEN INC RealY(T),-5
+   IF RealY(T)<RealY(EType(T)-209)+5 THEN INC RealY(T), 5
+   IF EY(T)=0 THEN
+    PLAY_SAMPLE 1,4: EEnergy(T)=-99
+    InsertHit(XTHit,YTHit,1)
+    FOR II=-1 TO 1
+     InsertHit(XTHit-II*10,YTHit,2)     
+     SpawnObject(EX(T),RealY(T)+10,212,NUM)
+     RealY(NUM)=RealY(T)+II*10: EMV(NUM)=1: ESPDX(NUM)=-2-II/2
+     SpawnObject(EX(T),RealY(T)+10,212,NUM)
+     RealY(NUM)=RealY(T)+II*10: EMV(NUM)=1: ESPDX(NUM)= 2+II/2
+    NEXT II
+   ENDIF
+   IF STE(T)=10 THEN PLAY_SAMPLE 27,4,44100: InsertHit(XTHit,YTHit,1): STE(T)=0
+
+  'MOLOTOV FIRE
+  CASE 212: 
+   INC EAN(T)
+   IF SB THEN EMV(T)=-1 ELSE EMV(T)=1
+   IF EAN(T)>263-(EEnergy(T)<10) THEN EAN(T)=260
+   INC EEnergy(T),-1   
+   ' IF ANY PLAYER GET BURNED
+   FOR I=1 TO MAXPL
+    'IF (COLLIDE(0)=&HFFFFFF) THEN INC HCombo(I),150: INC Energy(I),-5
+   NEXT I
 
  END SELECT 'END OF OBJECT TYPE
 

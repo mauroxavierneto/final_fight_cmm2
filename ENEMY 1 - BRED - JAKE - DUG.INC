@@ -16,7 +16,7 @@ SUB Enemy_BRED_JAKE_DUG(T,PL)
 
   IF STE(T)<1 THEN
    EBACK(T)=1: EBACKX(T)=1
-   STE(T)=1 'KEEP STOPPED UNTIL BACK TO WALK RANDOMLY
+   STE(T)=1: EAN(T)=9 'KEEP STOPPED UNTIL BACK TO WALK RANDOMLY
    IF RND<0.3 THEN
     'WALKING WITH ATTENTION OR NORMAL ACCORDLY THE DISTANCE
     IF DIST<120 THEN STE(T)=20 ELSE STE(T)=40
@@ -60,6 +60,7 @@ SUB Enemy_BRED_JAKE_DUG(T,PL)
    IF STE(T)=21 AND DIST>120 THEN STE(T)=40
 
   'GETTING UP ------------------------------------------------------------------------
+  CASE 51: 'NOTHING 
   CASE 52:
    EAN(T)=24: INC STE(T): EAniDelay(T)=0: EAniSpd(T)=30
    'FIX ENEMY SIDE AFTER THROWED
@@ -92,31 +93,31 @@ SUB Enemy_BRED_JAKE_DUG(T,PL)
   CASE 64:
    EAN(T)=35: EAniDelay(T)=0: EAniSPD(T)=10
    STE(T)=65
-   IF EX(T)<235 THEN STE(T)=35
+   IF EX(T)<245+RXX THEN STE(T)=35
   CASE 65:
    EAN(T)=35: EAniDelay(T)=0: EAniSPD(T)=10
    STE(T)=64
-   IF EX(T)<235 THEN STE(T)=35
+   IF EX(T)<245+RXX THEN STE(T)=35
 
   'SEATED ----------------------------------------------------------------------------
   CASE 66:
    EAN(T)=34: EAniDelay(T)=0: EAniSPD(T)=10
    STE(T)=67: EMV(T)=0
-   IF EX(T)<235 THEN STE(T)=65
+   IF EX(T)<245+RXX THEN STE(T)=65
   CASE 67:
    EAN(T)=34: EAniDelay(T)=0: EAniSPD(T)=10
    STE(T)=66: EMV(T)=0
-   IF EX(T)<235 THEN STE(T)=65
+   IF EX(T)<245+RXX THEN STE(T)=65
 
   'SEATED CROUCHED -------------------------------------------------------------------
   CASE 68:
    EAN(T)=6: EAniDelay(T)=0: EAniSPD(T)=10
    STE(T)=69: EMV(T)=0
-   IF EX(T)<235 THEN STE(T)=65
+   IF EX(T)<245+RXX THEN STE(T)=65
   CASE 69:
    EAN(T)=6: EAniDelay(T)=0: EAniSPD(T)=10
    STE(T)=68: EMV(T)=0
-   IF EX(T)<235 THEN STE(T)=65
+   IF EX(T)<245+RXX THEN STE(T)=65
 
   'PUNCH -----------------------------------------------------------------------------
   CASE 70: EAN(T)=13: EAniDelay(T)=0: EAniSpd(T)=4: INC STE(T)
@@ -194,6 +195,9 @@ SUB Enemy_BRED_JAKE_DUG(T,PL)
   'RETURN TO THE ORIGINAL STATE IF SOMETHING GOES WRONG ON GAPPLE
   CASE >=171:
    STE(T)=20: EAniDelay(T)=0: EAniSpd(T)=3: ESJMP(T)=0: ESPDY(T)=0
+
+  'FOR ALL OTHER CASES, GET UP!
+  CASE ELSE: EAN(T)=1: STE(T)=1
 
  END SELECT 'END ACTION SCRIPTS BRED / JAKE -----------------------------------------
 

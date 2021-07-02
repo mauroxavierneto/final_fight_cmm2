@@ -27,12 +27,12 @@ SUB Round_1_Cutscenes(Ending)
        CASE           10: STE(4)=0: STE(5)=0: STE(6)=0 'REMOVE PROCESSED ENEMIES
        CASE   20 TO  799:
         'SPECIAL MOVES TO BREAK THE DRUMCANS
-        IF OSDX=790 THEN KALT=1: KCTRL=1
+        IF OSDX=790 OR (OSDX=780 AND MAXPL=2) THEN KALT=1: KCTRL=1
 
         'BREAK ALL DRUMCANS
         IF OSDX=700 THEN PAGE WRITE 35: CLS &HFF0000
-        IF OSDX=600 THEN PAGE WRITE 35: CLS 0: PLAY_WAV "The Slums"
-        IF OSDX=500 THEN OSDX=10: ClearEvents
+        IF OSDX=600 THEN PAGE WRITE 35: CLS 0: PLAY_WAV "The Slums": MV=0: MVLR(PL)=0
+        IF OSDX=500-(RXX=64)*10 THEN OSDX=10: ClearEvents: KALT=0: KCTRL=0
 
         'DAMND WALKING BACKWARD
         INC EX(6),4
@@ -43,8 +43,8 @@ SUB Round_1_Cutscenes(Ending)
         ENDIF
 
         FOR T=4 TO 5
-         IF (OSDX<700 AND T=4) OR (T=5 AND OSDX<750) THEN
-          ESIDE(T)=4: INC EX(T),4 'ENEMIES GO AWAY (DOUG AND BRAD)
+         IF (OSDX<700+(RXX=64)*40 AND T=4) OR (T=5 AND OSDX<750+(RXX=64)*40) THEN
+          ESIDE(T)=4: INC EX(T),4+(RXX=64) 'ENEMIES GO AWAY (DOUG AND BRAD)
           INC EANIDelay(T)
           IF EANIDelay(T)>2 THEN
            EANIDelay(T)=0
@@ -54,14 +54,45 @@ SUB Round_1_Cutscenes(Ending)
         NEXT T
 
        'PLAYERS WALKING TO BREAK THE DRUMCANS
-       CASE 800 TO 850:
-        FOR PL=1 TO 2
-         INC X(PL), SPD(PL): MV=1: MVLR(PL)=1
+       CASE 800 TO 850+(RXX=64)*40:
+        FOR PL=1 TO MAXPL
+         INC X(PL), 4: MV=1: MVLR(PL)=1
         NEXT PL 
 
        CASE 1450 TO 1549: ShowRoundMap(SW,OSDX-1549) 'MAP UP
-       CASE 1550 TO 2099: ShowRoundMap(SW,0)         'KEEP MAP
-       CASE 2100 TO 2200:
+
+       CASE 1550 TO 2099:
+        ShowRoundMap(SW,0)         'KEEP MAP
+
+        'PLAYERS WALKING TO START
+        IF OSDX>1770+(RXX=0)*32 AND OSDX<2050 THEN
+          FOR PL=1 TO MAXPL
+           INC X(PL), 4: MV=1: MVLR(PL)=1
+          NEXT PL 
+         ELSE
+          FOR PL=1 TO MAXPL
+           AN(PL)=0: MV=0: MVLR(PL)=0
+          NEXT PL
+        ENDIF
+
+       CASE 2100 TO 2210:
+        IF OSDX=2210 THEN
+         'SLUMS INTRO
+         SELECT CASE Round
+          CASE 1:
+           LoadRoundMap(Round,0) 'LOAD INTRO MAP
+           'ENEMIES
+           SpawnEnemy(MM.HRES-35-RXX\2,205,6)
+           SpawnEnemy(MM.HRES-70-RXX\2,235,5)
+           SpawnEnemy(MM.HRES-50-RXX\2,190,81): EAN(6)=101
+           'DRUMCAN
+           'FOR T=34 TO 36: PAGE WRITE T: CLS RGB(0,0,0): NEXT T
+           'PAGE WRITE 1
+           FOR T=0 TO 1: FOR I=0 TO 2
+            SpawnObject(MM.HRES-185-RXX\2+T*60+(T=1 AND I=1)*40-I*15,190+I*25,2)
+           NEXT T,I
+         END SELECT
+        ENDIF
         IF OSDX=2200 THEN PLAY_WAV "Slums Start",1
         ShowRoundMap(SW,2100-OSDX) 'MAP DOWN
 
@@ -104,13 +135,15 @@ SUB Round_1_Cutscenes(Ending)
      ' ** SECTION 1 ENDING: DOWNSTAIRS TO THE SLUMS GALLERY ** ------------------------------------
      ELSE
 
+      IF RXX=64 THEN SCRX=1130
+
       ' REMOVE A BLOCK OF ANIMATED DOOR TO FIX THE DOWNSTAIRS SCENE FOREGROUND
       PAGE WRITE 12
       BOX 213,0,7,105,1,0,0
 
       ' INSERT SCENE INTO THE FOREGROUND
       PAGE WRITE 1
-      BLIT 213,0,227,56,93,184,12,4
+      BLIT 213,0,MM.HRES-93+(RXX=64)*5,56,93,184,12,4
        
       GO=1
       ' A LITTLE PAUSE (LIKE THE ARCADE)
@@ -119,9 +152,9 @@ SUB Round_1_Cutscenes(Ending)
       ' PLAYERS WALKING TO THE DOWNSTAIRS
       IF OSDX>7000 AND OSDX<9600 THEN
        FOR PL=1 TO MAXPL
-        IF X(PL)<=200 THEN
+        IF X(PL)<=MM.HRES-120 THEN
          INC X(PL), SPD(PL): MV=1: MVLR(PL)= 1
-         IF X(PL)>200 THEN X(PL)=200 ELSE GO=0
+         IF X(PL)>MM.HRES-120 THEN X(PL)=MM.HRES-120 ELSE GO=0
         ENDIF
         IF RealY(PL)<189 THEN INC RealY(PL), SPD(PL): MV=1: MVUD(PL)= 1: GO=0
         IF RealY(PL)>196 THEN INC RealY(PL),-SPD(PL): MV=1: MVUD(PL)=-1: GO=0
@@ -135,16 +168,16 @@ SUB Round_1_Cutscenes(Ending)
       IF OSDX=7000 THEN
        GO=0
        FOR PL=1 TO MAXPL 
-        IF X(PL)<245 THEN T=4 ELSE T=(AN(PL) MOD 5 <=2)*3
+        IF X(PL)<MM.HRES-75 THEN T=4 ELSE T=(AN(PL) MOD 5 <=2)*3
         INC X(PL), T: MV=1: MVLR(PL)= 1
-        IF X(PL)>240 THEN INC RealY(PL), T/1.3: MVUD(PL)= 1
+        IF X(PL)>MM.HRES-80 THEN INC RealY(PL), T/1.3: MVUD(PL)= 1
         ' REACH THE LIMIT
-        IF X(PL)>350 THEN INC GO
+        IF X(PL)>MM.HRES+30 THEN INC GO
        NEXT PL
       ENDIF
 
       ' NEXT SECTION
-      IF GO=MAXPL THEN FadeOut: Inc Section: LoadRound: OSDX=2210: Round_1_Cutscenes(0)
+      IF GO=MAXPL THEN FadeOut: Inc Section: LoadRound: OSDX=2220: Round_1_Cutscenes(0)
 
       FOR PL=1 TO MAXPL
        SIDE(PL)=4
@@ -206,6 +239,8 @@ SUB Round_1_Cutscenes(Ending)
      ' ** SECTION 2 ENDING: BREAK DOOR AND UPSTAIRS TO THE SLUMS ** -------------------------------
      ELSE
 
+      IF RXX=64 THEN SCRX=940
+
       'BROKEN DOOR
       IF OSDX=6990 THEN PAGE WRITE 7: BLIT 101,105,244,74,15,124,12,0
 
@@ -213,7 +248,7 @@ SUB Round_1_Cutscenes(Ending)
 
       'FOREGROUND WALL
       ScrX=320
-      BLIT 256,0,256,0,64,240,7,4
+      BLIT 256,0,MM.HRES-64+(RXX=64)*5,0,64,240,7,4
        
       ' A LITTLE PAUSE (LIKE THE ARCADE)
       IF OSDX>=9600 THEN GO=0: MV=0: FOR PL=1 TO MAXPL: AN(PL)=0: NEXT PL
@@ -222,10 +257,10 @@ SUB Round_1_Cutscenes(Ending)
       IF OSDX>7020 AND OSDX<9600 THEN
        GO=1
        FOR PL=1 TO MAXPL
-        IF X(PL)<205-(PLType(PL)=3)*15 THEN
+        IF X(PL)<MM.HRE-115-(PLType(PL)=3)*15 THEN
          INC X(PL), SPD(PL): MV=1: MVLR(PL)=1: GO=0
         ELSE
-         X(PL)=205-(PLType(PL)=3)*15
+         X(PL)=MM.HRES-115-(PLType(PL)=3)*15
         ENDIF
         IF RealY(PL)<193 THEN INC RealY(PL), SPD(PL): MV=1: MVUD(PL)= 1: GO=0
         IF RealY(PL)>201 THEN INC RealY(PL),-SPD(PL): MV=1: MVUD(PL)=-1: GO=0
@@ -238,7 +273,7 @@ SUB Round_1_Cutscenes(Ending)
       IF OSDX=7000 THEN
        KSHIFT=1
        FOR II=0 TO 3
-        SpawnObject(250,197,201+INT(RND*3.99),NUM): EY(NUM)=-40-II*15
+        SpawnObject(MM.HRES-70,197,201+INT(RND*3.99),NUM): EY(NUM)=-40-II*15
         ESJMP(NUM)=-10+RND*(3+II*2): ESIDE(NUM)=5: EMV(NUM)=1
         ESPDX(NUM)=-II*2-(RND*6-3)
        NEXT II
@@ -257,7 +292,7 @@ SUB Round_1_Cutscenes(Ending)
       ENDIF
 
       ' NEXT SECTION
-      IF GO=MAXPL THEN FadeOut: Inc Section: LoadRound: OSDX=2210: Round_1_Cutscenes(0)
+      IF GO=MAXPL THEN FadeOut: Inc Section: LoadRound: OSDX=2220: Round_1_Cutscenes(0)
 
       FOR PL=1 TO MAXPL
        SIDE(PL)=4

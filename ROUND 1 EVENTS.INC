@@ -1,20 +1,22 @@
 ' --- ROUND 1 EVENTS ---
 
-SUB Round_1_Events
+SUB Round_1_Events(xx)
  
  SELECT CASE Section
 
   CASE 1: ' ROUND 1-1: SLUMS -----------------------------------------------------------    
 
    'PARALLAX CITY BACKGROUND
-   IF MVSCR=1 THEN PAGE SCROLL 11,-xx\2,0
+   IF MVSCR THEN PAGE SCROLL 11,-xx\2,0
    PAGE COPY 11 TO 1  
 
    SELECT CASE Levelpart
 
     CASE 0: 
 
-     BLIT xs,0,0,0,320-xs,240,2,4: BLIT 0,0,320-xs,0,xs,240,3,4
+     BLIT xs,0,0,0,(320-xs)*RX,240,2,4
+     BLIT 0,0,320-xs,0,xs+RXX,240,3,4
+     IF RXX=64 THEN BLIT 0,0,640-xs,0,xs+RXX,240,4,4
 
      'OPEN DOOR 1
      IF XS>230 AND XS<240 AND Event(0)=0 THEN Event(0)=1
@@ -41,14 +43,16 @@ SUB Round_1_Events
       SpawnEnemy(427-xs,174,4,65)
 
       'TESTS
-      'SpawnEnemy(340,200,80,1)
+      'SpawnEnemy(340,200,HOLLY_WOOD_RED,1)
       'SpawnEnemy(340,230,18,1)
       'SpawnObject(250,195,19,,-1)
      ENDIF
 
     CASE 1:
 
-     BLIT xs,0,0,0,320-xs,240,3,4: BLIT 0,0,320-xs,0,xs,240,4,4
+     BLIT xs,0,0,0,(320-xs)*RX,240,3,4
+     BLIT 0,0,320-xs,0,xs+RXX,240,4,4
+     IF RXX=64 THEN BLIT 0,0,640-xs,0,xs+RXX,240,5,4
 
      'SPAWN OBJECTS - 2 DUSTBINS
      IF MVSCR=0 THEN 
@@ -74,7 +78,8 @@ SUB Round_1_Events
 
     CASE 2:
 
-     BLIT xs,0,0,0,320-xs,240,4,4: BLIT 0,0,320-xs,0,xs,240,5,4
+     BLIT xs,0,0,0,(320-xs)*RX,240,4,4
+     BLIT 0,0,320-xs,0,xs+RXX,240,5,4
 
      'SPAWN OBJECTS - 3 DUSTBINS
      IF MVSCR=0 THEN 
@@ -110,7 +115,8 @@ SUB Round_1_Events
 
    'ONLY ONE PART
    PAGE WRITE 1: CLS 0
-   BLIT xs,0,0,0,320-xs,240,6,4: BLIT 0,0,320-xs,0,xs,240,7,4
+   BLIT xs,0,0,0,(320-xs)*RX,240,6,4
+   BLIT 0,0,320-xs,0,xs+RXX,240,7,4
    
    IF EVENT(0)=0 THEN
     SpawnObject(140,200,17,,-3)
@@ -123,6 +129,11 @@ SUB Round_1_Events
    ENDIF
    INC EVENT(0)
    ' "WAKE UP" ENEMIES
+   IF EVENT(0)<60 THEN STE(5)=68
+   IF EVENT(0)<70 THEN STE(4)=66
+   IF EVENT(0)<80 THEN STE(6)=68
+
+   ' "WAKE UP" ENEMIES
    IF EVENT(0)=60 THEN STE(5)=1: EMV(5)=1
    IF EVENT(0)=70 THEN STE(4)=1: EMV(4)=1
    IF EVENT(0)=80 THEN STE(6)=1: EMV(6)=1
@@ -132,19 +143,21 @@ SUB Round_1_Events
    ' G. ORIBER RUNNING + J - LEFT
    IF EVENT(1)=20 THEN SpawnEnemy(-20,190,15,80,5): SpawnEnemy(-40,210,7,1,5)
    ' BILL BULL + TWO P - RIGHT
-   IF EVENT(1)=35 THEN SpawnEnemy(335,210,14,1,5): SpawnEnemy(355,230,8,1,4)
+   IF EVENT(1)=35 THEN SpawnEnemy(335+RXX,210,14,1,5): SpawnEnemy(355+RXX,230,8,1,4)
 
   CASE 3: ' ROUND 1-3: SLUMS MAD GEAR'S LAIR ----------------------------------------------
 
    'PARALLAX CITY BACKGROUND
-   IF MVSCR=1 THEN PAGE SCROLL 11,-xx\2,0
+   IF MVSCR THEN PAGE SCROLL 11,-xx\2,0
    PAGE COPY 11 TO 1  
 
    SELECT CASE Levelpart
 
     CASE 0: 
 
-     BLIT xs,0,0,0,320-xs,240,8,4: BLIT 0,0,320-xs,0,xs,240,9,4
+     BLIT xs,0,0,0,(320-xs)*RX,240,8,4
+     BLIT 0,0,320-xs,0,xs+RXX,240,9,4
+     IF RXX=64 THEN BLIT 0,0,640-xs,0,xs+RXX,240,10,4
 
      IF OSDX=2200 THEN
       'SPAWN OBJECT - TIRES
@@ -157,13 +170,16 @@ SUB Round_1_Events
 
     CASE 1:
 
-     BLIT xs,0,0,0,320-xs,240,9,4: BLIT 0,0,320-xs,0,xs,240,10,4
+     BLIT xs,0,0,0,(320-xs)*RX,240,9,4
+     BLIT 0,0,320-xs,0,xs+RXX,240,10,4
 
      'SPAWN ENEMY
      IF MVSCR=0 THEN SpawnEnemy(440,185, 8,66,4) 'TWO P
 
      'DAMND BREAK THE DOOR
      IF EVENT(0)=0 AND xs>120 THEN
+      LEFTLIM=1 'TURN ON THE SCROLL TO LEFT
+      LIMLD=700 'DEFINE LIMIT TO LEFT SCROLL
       INC EVENT(0)
       PAGE WRITE  9: BLIT  0,118,295,52,25,122,12,0
       PAGE WRITE 10: BLIT 25,118,  0,52,73,122,12,0
@@ -181,7 +197,8 @@ SUB Round_1_Events
 
     CASE 2:
 
-     BLIT xs,0,0,0,320-xs,240,10,4
+     BLIT xs,0,0,0,(320-xs)*RX,240,9,4
+     BLIT 0,0,320-xs,0,xs+RXX,240,10,4
 
    END SELECT 'END OF LevelPart -----------------------------------------------------------
 
@@ -206,10 +223,10 @@ SUB Round_1_Events
     IF EVENT(1)=115 THEN SpawnEnemy(     -30,230,G_ORIBER,80,4) 
     IF EVENT(1)=130 THEN SpawnEnemy(910-SCRX,180,BRED    ,1 ,5) 
     IF EVENT(1)=150 THEN SpawnEnemy(910-SCRX,180,DUG     ,1 ,5)
-    IF EVENT(1)=190 THEN
-     EMV(BOSS)=2: EVENT(1)=200
-     'SpawnEnemy(-35,200,HOLLY_WOOD_RED,1,4)
-     'SpawnEnemy(-45,230,HOLLY_WOOD_RED,1,4)
+    IF EVENT(1)=200 AND CNTE<5 THEN
+     EMV(BOSS)=2: EVENT(1)=201
+     SpawnEnemy(-35,200,HOLLY_WOOD_RED,1,4)
+     SpawnEnemy(-45,230,HOLLY_WOOD_RED,1,4)
     ENDIF
    ENDIF
 

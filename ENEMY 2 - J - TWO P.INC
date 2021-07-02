@@ -16,12 +16,12 @@ SUB Enemy_J_TWO_P(T,PL)
 
   IF STE(T)<1 THEN
    EBACK(T)=1: EBACKX(T)=1
-   STE(T)=1 'KEEP STOPPED UNTIL BACK TO WALK RANDOMLY
+   STE(T)=1: EAN(T)=9 'KEEP STOPPED UNTIL BACK TO WALK RANDOMLY
    IF RND<0.3 THEN
     'ALWAYS WALKING WITH ATTENTION
     STE(T)=20
     IF RND>0.6 AND DIST<80 THEN 'MAYBE GO BACK IF NEAR PLAYER IS PUNCHING
-     IF Punch(PL)>0 AND EBACK(T)<>-1 THEN EBACK(T)=-1: STE(T)=40
+     IF Punch(PL)>0 AND EBACK(T)<>-1 THEN EBACK(T)=-1: STE(T)=20
     ENDIF
    ENDIF
   ELSE
@@ -53,6 +53,7 @@ SUB Enemy_J_TWO_P(T,PL)
    IF EAN(T)<9 OR EAN(T)>12 THEN EAN(T)=9
 
   'GETTING UP ------------------------------------------------------------------------
+  CASE 51: 'NOTHING
   CASE 52:
    EAN(T)=24: INC STE(T): EAniDelay(T)=0: EAniSpd(T)=30
    'FIX ENEMY SIDE AFTER THROWED
@@ -82,21 +83,21 @@ SUB Enemy_J_TWO_P(T,PL)
   CASE 64:
    EAN(T)=35: EAniDelay(T)=0: EAniSPD(T)=10
    STE(T)=65: EMV(T)=0
-   IF EX(T)<235 THEN STE(T)=35: EMV(T)=1
+   IF EX(T)<245+RXX THEN STE(T)=35: EMV(T)=1
   CASE 65:
    EAN(T)=35: EAniDelay(T)=0: EAniSPD(T)=10
    STE(T)=64: EMV(T)=0
-   IF EX(T)<235 THEN STE(T)=35: EMV(T)=1
+   IF EX(T)<245+RXX THEN STE(T)=35: EMV(T)=1
 
   'SEATED ----------------------------------------------------------------------------
   CASE 66:
    EAN(T)=34: EAniDelay(T)=0: EAniSPD(T)=10
    STE(T)=67: EMV(T)=0
-   IF EX(T)<235 THEN STE(T)=65
+   IF EX(T)<245+RXX THEN STE(T)=65
   CASE 67:
    EAN(T)=34: EAniDelay(T)=0: EAniSPD(T)=10
    STE(T)=66: EMV(T)=0
-   IF EX(T)<235 THEN STE(T)=65
+   IF EX(T)<245+RXX THEN STE(T)=65
 
   'PUNCH AND FAST BACKWARD -----------------------------------------------------------
   CASE 70: EAN(T)=13: EAniDelay(T)=0: EAniSpd(T)=2: INC STE(T)
@@ -129,6 +130,9 @@ SUB Enemy_J_TWO_P(T,PL)
   'RETURN TO THE ORIGINAL STATE IF SOMETHING GOES WRONG ON GAPPLE
   CASE >=171:
    STE(T)=20: EAniDelay(T)=0: EAniSpd(T)=3: ESJMP(T)=0: ESPDY(T)=0
+
+  'FOR ALL OTHER CASES, GET UP!
+  CASE ELSE: EAN(T)=1: STE(T)=1
 
  END SELECT 'END ACTION SCRIPTS J / TWO P --------------------------------------------
  

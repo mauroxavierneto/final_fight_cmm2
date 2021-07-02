@@ -48,6 +48,11 @@ SUB ClearEvents
  Scroll=0
  LevelPart=0
  ScrX=240
+ FOR T=34 TO 36
+  PAGE WRITE T
+  CLS RGB(0,0,0)
+ NEXT T
+ PAGE WRITE 1
 END SUB
 
 
@@ -106,7 +111,7 @@ SUB StageScrollEvent(xx,PL)
  PAGE WRITE 1
 
  'CALL ROUND EVENTS
- EXECUTE "Round_" + STR$(Round) + "_Events"
+ EXECUTE "Round_" + STR$(Round) + "_Events(xx)"
 
  Scroll=xs
 

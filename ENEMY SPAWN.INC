@@ -22,7 +22,7 @@ SUB SpawnEnemy(x,y,tp,st,sd,NUM)
    IF ST=0 THEN ST=1
    EAN(T)=0: EAniDelay(T)=0:EAniSpd(T)=5: EWait(T)=0
    EMV(T)=1: EBACK(T)=1: EHIT(T)=0
-   ESJMP(T)=0: STE(T)=st
+   ESJMP(T)=0: STE(T)=st: EHURT(T)=0
    ESPDX(T)=0: ESPDY(T)=0: ETR(T)=0: ECOMBO(T)=0
 
    'SET SPECIFIC START PARAMETERS FOR EACH ENEMY ----------------------------------------
@@ -45,8 +45,8 @@ SUB SpawnEnemy(x,y,tp,st,sd,NUM)
      ES_SPD(T)=4: ESPD(T)=ES_SPD(T): ES_DEF(T)=3: ES_POW(T)=20: EDIST(T)=90
 
     CASE HOLLY_WOOD_RED:
-     EEnMAX(T)=55+Round*5: ESCORE(T)=3000+EEnMAX(T)
-     ES_SPD(T)=4: ESPD(T)=ES_SPD(T): ES_DEF(T)=1: ES_POW(T)=15: EDIST(T)=120
+     EEnMAX(T)=20: ESCORE(T)=3000+EEnMAX(T)
+     ES_SPD(T)=6: ESPD(T)=ES_SPD(T): ES_DEF(T)=0: ES_POW(T)=15: EDIST(T)=120
 
     CASE BILL_BULL, G_ORIBER, WONG_WHO:
      EEnMAX(T)=40+Round*5+(EType(T)-14)*5: ESCORE(T)=2500+(EEnMAX(T)*20)\10

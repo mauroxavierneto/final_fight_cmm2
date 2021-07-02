@@ -55,8 +55,9 @@ SUB Enemy_DAMND(T,PL)
    IF EAN(T)<0 OR EAN(T)>5 THEN EAN(T)=0
 
   'GETTING UP ------------------------------------------------------------------------
+  CASE 51: 'NOTHING
   CASE 52:
-   EAN(T)=24: INC STE(T): EAniDelay(T)=0: EAniSpd(T)=30
+   EAN(T)=24: INC STE(T): EAniDelay(T)=0: EAniSpd(T)=40
    'FIX ENEMY SIDE AFTER THROWED
    IF ESide(T)=6 THEN ESide(T)=4
    IF ESide(T)=7 THEN ESide(T)=5
@@ -138,6 +139,7 @@ SUB Enemy_DAMND(T,PL)
    'GO TO THE SUBWAY ENTRY WALL
    INC ESJMP(T),-0.85: EMV(T)=2   
    IF EX(T)>1120-SCRX THEN EX(T)=1120-SCRX
+   IF EX(T)>1110-SCRX THEN IF EY(T)>-25 THEN EY(T)=-25
    IF RealY(T)>218 THEN INC RealY(T),-4
    IF RealY(T)<212 THEN INC RealY(T), 4
 
@@ -186,10 +188,10 @@ SUB Enemy_DAMND(T,PL)
       SIDE(PL)=(ESide(T)=4)*5+(ESide(T)=5)*4 'CHANGE PLAYER SIDE
       INC HCombo(PL),200
       WhoE(PL)=T 'SET WHO HURTED THE PLAYER
-      EAniDelay(T)=0: EAniSpd(T)=4
+      'EAniDelay(T)=36
      ENDIF
     CASE 36: EAN(T)=25: ESPDX(T)=0
-    CASE 40: EAN(T)=25: ESJMP(T)=0: STE(T)=1: EAniSpd(T)=4: EAniDelay(T)=0
+    CASE >=40: EAN(T)=25: ESJMP(T)=0: STE(T)=1: EAniSpd(T)=4: EAniDelay(T)=0
    END SELECT
 
   'ENEMY IS DEAD ---------------------------------------------------------------------
@@ -202,6 +204,9 @@ SUB Enemy_DAMND(T,PL)
   'RETURN TO THE ORIGINAL STATE IF SOMETHING GOES WRONG ON GAPPLE
   CASE >=171:
    STE(T)=40: EAniDelay(T)=0: EAniSpd(T)=3: ESJMP(T)=0: ESPDY(T)=0
+
+  'FOR ALL OTHER CASES, GET UP!
+  CASE ELSE: EAN(T)=1: STE(T)=1
 
  END SELECT 'END ACTION DAMND -------------------------------------------------------
  

@@ -7,6 +7,22 @@ SUB ControlEnemy(T)
 
  IF EWAIT(T)>0 THEN INC EWAIT(T),-1
 
+ ' DECREASE HIT STATUS
+ IF EAN(T)=23 THEN ECOMBO(T)=0 'RESET HIT STATUS IF FALLING
+
+ INC ECOMBO(T),-1 
+ IF ECOMBO(T)<0 THEN ECOMBO(T)=0
+
+ INC EHURT(T),-1
+ IF EHURT(T)<=0 THEN
+  EHURT(T)=0
+ ELSE
+  ' HITTED IN THE FACE OR IN THE STOMACH?
+  IF STE(T)<=40 THEN
+   IF Combo(PL)<=2 THEN EAN(T)=22 ELSE EAN(T)=21
+  ENDIF
+ ENDIF
+
  'IS THE ENEMY FREEZED IN A WAIT STATE?
  IF EWAIT(T)=0 THEN
 
@@ -24,30 +40,26 @@ SUB ControlEnemy(T)
   'OR IF THE PLAYER IS USING SPECIAL
   IF COLLIDE(0)>0 AND (RealY(T)<RealY(PL)-5 or RealY(T)>RealY(PL)+5) THEN COLLIDE(0)=0
 
-  ' DECREASE HIT STATUS
-  INC ECOMBO(T),-1
-  IF ECOMBO(T)<0 THEN ECOMBO(T)=0
-
-  ' CALL CONTROL BY THE ENEMY TYPE
-  SELECT CASE EType(T)
-
-   CASE BRED TO DUG:             Enemy_BRED_JAKE_DUG(T,PL)
-   CASE J,TWO_P    :             Enemy_J_TWO_P(T,PL) 
-   CASE AXL, SLASH :             Enemy_AXL_SLASH(T,PL)
-   CASE HOLLY_WOOD, EL_GADO:     Enemy_HOLLY_WOOD_EL_GADO(T,PL)
-   CASE HOLLY_WOOD_RED:          Enemy_HOLLY_WOOD_RED(T,PL)
-   CASE BILL_BULL TO WONG_WHO:   Enemy_BILL_ORIBER_WONG(T,PL)
-   CASE POISON, ROXY:            Enemy_POISON_ROXY(T,PL)
-  'CASE ANDORE TO ANDORE_GRANPA: Enemy_ANDORE(T,PL)
-   CASE DAMND:                   Enemy_DAMND(T,PL)
-   CASE DAMND_INTRO:             EXIT SUB
-  'CASE SODOM:                   Enemy_SODOM(T,PL)
-  'CASE EDI_E:                   Enemy_EDI_E(T,PL)
-  'CASE ROLENTO:                 Enemy_ROLENTO(T,PL)
-  'CASE ABIGAIL:                 Enemy_ABIGAIL(T,PL)
-  'CASE BELGER:                  Enemy_BELGER(T,PL)
-  
-  END SELECT
+  ' CALL CONTROL BY THE ENEMY TYPE, BUT NOT WHEN FREEZED HURTED
+  IF EHURT(T)=0 THEN
+   SELECT CASE EType(T)
+    CASE BRED TO DUG:             Enemy_BRED_JAKE_DUG(T,PL)
+    CASE J,TWO_P    :             Enemy_J_TWO_P(T,PL) 
+    CASE AXL, SLASH :             Enemy_AXL_SLASH(T,PL)
+    CASE HOLLY_WOOD, EL_GADO:     Enemy_HOLLY_WOOD_EL_GADO(T,PL)
+    CASE HOLLY_WOOD_RED:          Enemy_HOLLY_WOOD_RED(T,PL)
+    CASE BILL_BULL TO WONG_WHO:   Enemy_BILL_ORIBER_WONG(T,PL)
+    CASE POISON, ROXY:            Enemy_POISON_ROXY(T,PL)
+   'CASE ANDORE TO ANDORE_GRANPA: Enemy_ANDORE(T,PL)
+    CASE DAMND:                   Enemy_DAMND(T,PL)
+    CASE DAMND_INTRO:             EXIT SUB
+   'CASE SODOM:                   Enemy_SODOM(T,PL)
+   'CASE EDI_E:                   Enemy_EDI_E(T,PL)
+   'CASE ROLENTO:                 Enemy_ROLENTO(T,PL)
+   'CASE ABIGAIL:                 Enemy_ABIGAIL(T,PL)
+   'CASE BELGER:                  Enemy_BELGER(T,PL)
+   END SELECT
+  ENDIF
 
   'GENERIC RULES FOR ALL THE ENEMIES ----------------------------------------------------
 
@@ -110,6 +122,7 @@ SUB ControlEnemy(T)
      'DEAD SOUND AND SCORE
      IF EEnergy(T)>-99 AND EEnergy(T)<=0 THEN
       EEnergy(T)=-99: PLAY_SAMPLE 10+(EType(T)=POISON OR EType(T)=ROXY)*16,4
+      IF STE(T)<50 THEN STE(T)=52
       INC SCORE(PL),ESCORE(T): EXIT SUB
      ENDIF
     ENDIF
@@ -139,6 +152,14 @@ SUB ControlEnemy(T)
 
   FOR I=1 TO MAXPL ' * SCAN FOR BOTH PLAYERS *
 
+   'FIX ANIMATION WHEN THROWED - FALLING AND ON THE FLOOR
+   IF ESJMP(T)>0 AND ETR(T)>0 THEN
+    INC EY(T),(ESIDE(T)=6 OR ESIDE(T)=7)*15
+    IF ESIDE(T)=6 THEN ESIDE(T)=5
+    IF ESIDE(T)=7 THEN ESIDE(T)=4
+    EAN(T)=23: IF EY(T)>-5 THEN EAN(T)=24
+   ENDIF
+
    'CANCEL SCAN IF PLAYER ALREADY GRAPPLED OTHER ENEMY
    IF GrapE(I)<>T AND GrapE(I)>0 AND NOT(PlType(I)=3 AND AN(I)=32) THEN CONTINUE FOR 
 
@@ -164,12 +185,19 @@ SUB ControlEnemy(T)
     Hit(I)=T
     EHIT(T)=I
     Hitting(I)=8
+    ' HITTED IN THE FACE OR IN THE STOMACH?
+    EAniDelay(T)=0: EAniSpd(T)=12
+    IF Combo(I)<=2 THEN EAN(T)=22 ELSE EAN(T)=21
+    ECOMBO(T)=2
+    KO=0
 
     'AXL / SLASH BLOCKING - REMOVE COLLISION AND EXIT SUB
     IF (Etype(T) = AXL OR Etype(T) = SLASH) THEN
      IF GrapE(I)<>T AND EAN(T)<=19 AND (Kick(I)>0 OR Punch(I)>0) THEN
       IF (RND<0.7 AND COLLIDE(I)>0) OR (STE(T)=68 OR STE(T)=69) THEN 
        INC EX(T),(ESIDE(T)=5)*4-(ESIDE(T)=4)*4
+       ECOMBO(T)=3
+       InsertWait(I,T,4)
        InsertHit(XTHit,YTHit,1)
        COLLIDE(I)=0: STE(T)=68: PLAY_SAMPLE 29,3: EXIT SUB
       ENDIF
@@ -179,11 +207,12 @@ SUB ControlEnemy(T)
     'HIT AND LOOSE ENERGY ONLY IF IS NOT THROW OR GRAPPLE THE ENEMY
     IF Grap(I)<>21 AND Grap(I)<>22 THEN 
      InsertHit(XTHit,YTHit,1)
-     InsertWait(0,T,1)
-     InsertWait(I,0,4)
+     InsertWait(I,T,4)
+     ECOMBO(T)=5
+     EHURT(T)=15
      INC EEnergy(T),-10+ES_DEF(T)
      IF C_A THEN INC EEnergy(T),-SPECIAL(I)*10: INC SCORE(I),300     
-     STE(T)=50: EAniDelay(T)=0: EAniSpd(T)=10
+     STE(T)=50: EAniDelay(T)=0: EAniSpd(T)=20
      'SOME SOUND CONTROL WHEN THE ENEMY IS HURTED:
      '1 - ENEMY PUNCHED SOUND OVERWRITING PREVIOUS PLAYER SOUND (LIKE THE ARCADE)
      '2 - IF IS A JUMP KICK, PLAY A KNEE SOUND STOPPING ANY ENEMY CHANNEL SOUND
@@ -195,12 +224,6 @@ SUB ControlEnemy(T)
      ENDIF
      INC SCORE(I),100
     ENDIF
-    EAniDelay(T)=0: EAniSpd(T)=12
-
-    ' HITTED IN THE FACE OR IN THE STOMACH?
-    IF Combo(I)<=2 THEN EAN(T)=22 ELSE EAN(T)=21
-    ECOMBO(T)=5
-    KO=0
 
     ' IF PLAYER IS HURTING ENEMY WHEN GRAPPLED
     IF (Grap(I)=21 AND GrapE(I)=T) AND SPECIAL(I)=0 THEN
@@ -210,7 +233,7 @@ SUB ControlEnemy(T)
      INC SCORE(I),100
      INC Combo(I)
      InsertHit(XTHit,YTHit,1)
-     InsertWait(I,T,2)
+     InsertWait(I,T,4)
      Grap(I)=20: STE(T)=120: INC EEnergy(T),-15+ES_DEF(T): PLSFX(I)=24
      ' IF KILLED BY THE PLAYER OR COMBO WAS FINISHED
      IF Combo(I)>=3 OR EEnergy(T)<=0 THEN
@@ -256,11 +279,11 @@ SUB ControlEnemy(T)
        MVLR(I)=1-(SIDE(I)=5)*2
       ENDIF
       STE(T)=60: InsertWait(I,T,3)
-      ESJMP(T)=-12: RealY(T)=RealY(I)-4
+      ESJMP(T)=-11: RealY(T)=RealY(I)-4
       ESIDE(T)=(Side(I)=4)*5+(Side(I)=5)*4
       IF Combo(I)<3 THEN ESIDE(T)=5-(MVLR(I)=1): Side(I)=4+(MVLR(I)=1)
       'ENEMY THROWED SIDE
-      ESPDX(T)=(ESIDE(T)=4)*10-(ESIDE(T)=5)*10
+      ESPDX(T)=(ESIDE(T)=4)*10-(ESIDE(T)=5)*10      
      ELSE       
       'ENEMY PUNCHED FALLING SIDE
       ESPDX(T)=(ESIDE(T)=5)*7-(ESIDE(T)=4)*7
@@ -273,7 +296,8 @@ SUB ControlEnemy(T)
     ELSE 'ELSE FALL WHEN
      INC AniSPD(I),2 'DELAY HIT ANIMATION FOR A WHILE
     ENDIF
-
+ 
+    IF KO>0 THEN ECOMBO(T)=1
    ENDIF
    ' END OF HURTING COLLISION DETECTION -----------------------------------------------------
 
@@ -295,13 +319,14 @@ SUB ControlEnemy(T)
       IF AN(I)=22 THEN 'GRAPPLE
        ESide(T)=(SIDE(I)=4)*4+(SIDE(I)=5)*5
        EX(T)=X(I)+(SIDE(I)=4)*10-(SIDE(I)=5)*10: RealY(T)=RealY(I)-5
-       EAN(T)=23: ESPDY(T)=0: ESJMP(T)=-10: EY(T)=-1
+       EAN(T)=23: ESPDY(T)=0: ESJMP(T)=-12: EY(T)=-1
        ESPDX(T)=(SIDE(I)=5)*10-(SIDE(I)=4)*10       
        INC SCORE(I),10: INC EEnergy(T),-1
       ENDIF
       IF AN(I)=23 THEN 'THROW
-       ESIDE(T)=(Side(I)=4)*4+(Side(I)=5)*5: RealY(T)=RealY(I)
-       EAN(T)=23: STE(T)=51: Grap(I)=0: GrapE(I)=0
+       ESIDE(T)=(Side(I)=4)*6+(Side(I)=5)*7 'ROTATE 180`
+       RealY(T)=RealY(I)
+       EAN(T)=21: STE(T)=51: Grap(I)=0: GrapE(I)=0
        EAniDelay(T)=0: EAniSpd(T)=15
       ENDIF
 
@@ -316,7 +341,7 @@ SUB ControlEnemy(T)
        ESide(T)=(SIDE(I)=4)*7+(SIDE(I)=5)*6
        EAN(T)=21: ESPDY(T)=0: ESJMP(T)=5: Special(I)=3
       ENDIF
-      IF AN(I)=43 THEN 'GETUP
+      IF AN(I)=43 THEN 'GET UP
        ESPDX(T)=(SIDE(I)=5)*4-(SIDE(I)=4)*4: ESJMP(T)=-4: ESPDY(T)=-4
        ESide(T)=(SIDE(I)=4)*4+(SIDE(I)=5)*5
        Special(I)=0
@@ -355,6 +380,7 @@ SUB ControlEnemy(T)
   IF EEnergy(T)>-99 AND EEnergy(T)<=0 THEN
    EEnergy(T)=-99: PLAY_SAMPLE 10+(EType(T)=POISON OR EType(T)=ROXY)*16,4 'DEAD SOUND
    INC SCORE(EHIT(T)),ESCORE(T) 'INC PLAYER SCORE
+   IF STE(T)<50 THEN STE(T)=52
   ENDIF
 
  ENDIF ' END OF WAIT FOR HITS -----------------------------------------------------------  
