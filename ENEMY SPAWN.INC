@@ -22,7 +22,7 @@ SUB SpawnEnemy(x,y,tp,st,sd,NUM)
    IF ST=0 THEN ST=1
    EAN(T)=0: EAniDelay(T)=0:EAniSpd(T)=5: EWait(T)=0
    EMV(T)=1: EBACK(T)=1: EHIT(T)=0
-   ESJMP(T)=0: STE(T)=st: EHURT(T)=0
+   ESJMP(T)=0: STE(T)=st: EHURT(T)=0: EBURNED(T)=0
    ESPDX(T)=0: ESPDY(T)=0: ETR(T)=0: ECOMBO(T)=0
 
    'SET SPECIFIC START PARAMETERS FOR EACH ENEMY ----------------------------------------
@@ -85,7 +85,12 @@ SUB SpawnEnemy(x,y,tp,st,sd,NUM)
      ES_SPD(T)=2: ESPD(T)=ES_SPD(T): ES_DEF(T)=5: ES_POW(T)=25: EDIST(T)=90
 
    END SELECT
-
+   
+   INC ES_SPD(T),(GLEVEL-1): ESPD(T)=ES_SPD(T)
+   INC ES_DEF(T),(GLEVEL-1)
+   INC ES_POW(T),(GLEVEL-1)*5
+   INC EEnMAX(T),(GLEVEL-1)*EEnMAX(T)\4
+ 
    EEnergy(T)=EEnMAX(T)
    EXIT DO
  

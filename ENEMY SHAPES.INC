@@ -73,13 +73,17 @@ SUB PutEnemy(xs,ys,num,s,Who,pl,SHOW)
     'SEATED
     CASE 34 : xa=1110:ya=241:sx=64:sy=78:tx=5 'ON THE BENCH / SUBWAY
 
-
     'LEAVING THROUGH THE DOOR / LEANING IN THE WALL
     CASE 35 : xa=1040:ya=228:sx=42:sy=44:tx=5:ty= 0:xb=1069:yb=273:sbx=31:sby=45:tbx= 8
     CASE 36 : xa=1040:ya=228:sx=42:sy=44:tx=5:ty= 1:xb=1040:yb=273:sbx=29:sby=45:tbx=12
     CASE 37 : xa=1040:ya=228:sx=42:sy=44:tx=5:ty= 0:xb=1069:yb=273:sbx=31:sby=45:tbx= 8
     CASE 38 : xa=1040:ya=228:sx=42:sy=44:tx=5:ty=-1:xb=1082:yb=227:sbx=28:sby=45:tbx= 3
     CASE 39 : xa=1040:ya=228:sx=42:sy=44:tx=5:ty= 0:xb=1069:yb=273:sbx=31:sby=45:tbx= 8
+    'BURNING
+    CASE 80 : xa=  0:ya=993:sx=121:sy=72
+    CASE 81 : xa=121:ya=993:sx=123:sy=72
+    CASE 82 : xa=244:ya=993:sx=121:sy=72
+
    END SELECT 'END BRED / JAKE / DUG
    INC ya,(Who-4)*93
    INC yb,(Who-4)*93
@@ -112,8 +116,11 @@ SUB PutEnemy(xs,ys,num,s,Who,pl,SHOW)
     CASE 34 : xa=  0:ya=536:sx=52:sy=63:tx=0:ty=0 'ON THE BENCH / FLOOR / SUBWAY
     'LEANING IN THE WALL
     CASE 35 : xa=116:ya=504:sx=47:sy=95:tx=0:ty=0
-    'CASE  9 : xa=  0:ya=  0:sx= 0:sy= 0:tx=0:ty=0
-    'CASE 10 : xa=  0:ya=  0:sx= 0:sy= 0:tx=0:ty=0
+    'BURNING
+    CASE 80 : xa=  0:ya=993:sx=121:sy=72
+    CASE 81 : xa=121:ya=993:sx=123:sy=72
+    CASE 82 : xa=244:ya=993:sx=121:sy=72
+
    END SELECT 'END J / TWO P
    INC xa,(who-7)*796
    INC xb,(who-7)*796
@@ -156,6 +163,10 @@ SUB PutEnemy(xs,ys,num,s,Who,pl,SHOW)
     CASE 34 : xa=  0:ya= 42:sx= 62:sy= 64:tx=0:ty=0 'ON THE BENCH / FLOOR / SUBWAY
     'LEANING IN THE WALL
     CASE 35 : xa= 62:ya=  4:sx= 52:sy=102:tx=0:ty=0
+    'BURNING
+    CASE 80 : xa=  0:ya=993:sx=121:sy=72
+    CASE 81 : xa=121:ya=993:sx=123:sy=72
+    CASE 82 : xa=244:ya=993:sx=121:sy=72
 
    END SELECT 'END AXL / SLASH
    INC ya,(who-9)*107
@@ -207,6 +218,11 @@ SUB PutEnemy(xs,ys,num,s,Who,pl,SHOW)
     CASE 77 : xa=475:ya=788:sx= 66:sy=52:tx=-24:ty=15:xb=394:yb=787:sbx=33:sby=59:tbx=- 8:tby=0
     'DASH
     CASE 78 : xa=647:ya=841:sx=131:sy=46:tx=0:ty=0
+    'BURNING
+    CASE 80 : xa=  0:ya=993:sx=121:sy=72
+    CASE 81 : xa=121:ya=993:sx=123:sy=72
+    CASE 82 : xa=244:ya=993:sx=121:sy=72
+
    END SELECT 'END HOLLY WOOD / EL GADO
    INC ya,(who-11)*100
    INC yb,(who-11)*100
@@ -228,13 +244,17 @@ SUB PutEnemy(xs,ys,num,s,Who,pl,SHOW)
     CASE 21 : xa=1167:ya=790:sx=59:sy=78:tx=0:ty=0 'IN THE STOMACH
     CASE 22 : xa=1133:ya=741:sx=51:sy=49:tx=8:ty=8:xb=1051:yb=841:sbx=33:sby=59:tbx=-8:tby=0 'FACE
     'FALLING
-    CASE 23 : xa=1049:ya=900:sx=107:sy=62:tx=0:ty=-20 'FALLING DOWN
+    CASE 23 : xa=1047:ya=900:sx=107:sy=62:tx=0:ty=-20 'FALLING DOWN
     CASE 24,50,52,54,56,58,60:
               xa= 924:ya=865:sx=127:sy=22:tx=0:ty=0   'LYING ON THE FLOOR / DEAD
     'THROWING A MOLOTOV
     CASE 70 : xa=1084:ya=849:sx=93:sy=50:tx= 12:ty=7:xb=1051:yb=841:sbx=33:sby=59:tbx=- 8:tby=0
     CASE 71 : xa=1226:ya=769:sx=35:sy=47:tx=-14:ty=7:xb=1214:yb=599:sbx=45:sby=58:tbx=-16:tby=0
     CASE 72 : xa=1133:ya=649:sx=81:sy=44:tx=-36:ty=7:xb=1095:yb=790:sbx=68:sby=59:tbx=-12:tby=0
+    'BURNING
+    CASE 80 : xa=  0:ya=993:sx=121:sy=72
+    CASE 81 : xa=121:ya=993:sx=123:sy=72
+    CASE 82 : xa=244:ya=993:sx=121:sy=72
 
    END SELECT 'END HOLLY WOOD MOLOTOV
 
@@ -269,9 +289,12 @@ SUB PutEnemy(xs,ys,num,s,Who,pl,SHOW)
               xa=1337:ya=801:sx=117:sy=37:tx=5        'LYING ON THE FLOOR / DEAD
     'GETTING UP
     CASE 25:  xa= 1531:ya=753:sx= 68:sy= 53:tx=0
+    'BURNING
+    CASE 80 : xa=  0:ya=993:sx=121:sy=72
+    CASE 81 : xa=121:ya=993:sx=123:sy=72
+    CASE 82 : xa=244:ya=993:sx=121:sy=72
+
    END SELECT 'BILL BILL / G. ORIBER / WONG WHO
-    'CASE  9 : xa=  0:ya=  0:sx= 0:sy= 0:tx=0:ty=0
-    'CASE  9 : xa=  0:ya=  0:sx= 0:sy= 0:tx=0:ty=0
    INC ya,(Who-14)*255
    INC yb,(Who-14)*255
 
@@ -314,6 +337,10 @@ SUB PutEnemy(xs,ys,num,s,Who,pl,SHOW)
     CASE 38 : xa= 585:ya=633:sx= 96:sy=60:tx= 0:ty=0
     CASE 39 : xa= 885:ya=633:sx=107:sy=60:tx= 0:ty=0
     CASE 40 : xa=1133:ya=599:sx= 60:sy=47:tx= 0:ty=0
+    'BURNING
+    CASE 80 : xa=  0:ya=993:sx=121:sy=72
+    CASE 81 : xa=121:ya=993:sx=123:sy=72
+    CASE 82 : xa=244:ya=993:sx=121:sy=72
 
    END SELECT 'END POISON / ROXY
    INC ya,(Who-17)*94
@@ -396,9 +423,12 @@ SUB PutEnemy(xs,ys,num,s,Who,pl,SHOW)
     'SEATED AT THE WALL
     CASE 39: xa=505:ya=1144: sx=86: sy=54: tx=-10: ty= 15:
              xb=589:yb=1083:sbx=73:sby=51:tbx= 0 :tby=  0
+    'BURNING
+    CASE 80 : xa=  0:ya=993:sx=121:sy=72
+    CASE 81 : xa=121:ya=993:sx=123:sy=72
+    CASE 82 : xa=244:ya=993:sx=121:sy=72
 
    END SELECT 'END DAMND
-
 
   CASE 99: 'SPECIAL CASES ---------------------------------------------------------------
    SELECT CASE num
@@ -438,7 +468,8 @@ SUB PutEnemy(xs,ys,num,s,Who,pl,SHOW)
     PAGE WRITE 34+I 
     T=PIXEL(xs+xp+sx\2-tx\2,yyt+yp+sy\2): IF T>0 AND COLLIDE(I)=0 THEN COLLIDE(I)=T
     T=PIXEL(xs+xp-sx\2-tx\2,yyt+yp+sy\2): IF T>0 AND COLLIDE(I)=0 THEN COLLIDE(I)=T
-    T=PIXEL(xs+xp          ,yyt+yp+8+(WHO>=80)*32): IF T>0 AND COLLIDE(I)=0 THEN COLLIDE(I)=T
+    T=PIXEL(xs+xp-tx\2     ,yyt+yp+8+(WHO>=80)*32): IF T>0 AND COLLIDE(I)=0 THEN COLLIDE(I)=T
+    'T=PIXEL(xs+xp-tx\2     ,RealY(pl)): IF T>0 AND COLLIDE(I)=0 THEN COLLIDE(I)=T
    NEXT I
    'SET HIT POSITION ALWAYS BASED ON THE FIRST PART OF THE SHAPE (FASTER)
    XTHit=xxt+sx\2: YTHit=yyt+sy\2
@@ -478,6 +509,7 @@ SUB PutEnemy(xs,ys,num,s,Who,pl,SHOW)
     PIXEL xs+sx\2-tx\2+xp,yyt+yp+sy\2, RGB(255,0,0)
     PIXEL xs-sx\2-tx\2+xp,yyt+yp+sy\2, RGB(255,0,0)
     PIXEL xs     -tx\2+xp,yyt+yp+8+(WHO>=80)*32, RGB(255,0,0)
+    'PIXEL xs     -tx\2+xp,RealY(pl), RGB(255,0,0)
    ENDIF
 
  END SELECT 'END SELECT SHOW -----------------------------------------------------------

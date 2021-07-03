@@ -8,6 +8,10 @@ PS.: The current enemies on the CMM2 G1 probably will not be implemented because
 
 Changelog:
 
+2021-07-03
+- Finished Holly Wood molotov and fire (but I need to optimize it)
+- Now enemies and players can be burned with fire
+
 2021-07-02
 - Implemented an option menu
 - Implemented optional 400x300 resolution mode (only in 8-bit and need a CMM2 G2)

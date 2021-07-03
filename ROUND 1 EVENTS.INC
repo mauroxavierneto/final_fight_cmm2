@@ -43,8 +43,10 @@ SUB Round_1_Events(xx)
       SpawnEnemy(427-xs,174,4,65)
 
       'TESTS
-      'SpawnEnemy(340,200,HOLLY_WOOD_RED,1)
-      'SpawnEnemy(340,230,18,1)
+      IF NOINTRO THEN
+       SpawnEnemy(340,200,HOLLY_WOOD_RED,1)
+       SpawnEnemy(180,210,4,1)
+      ENDIF
       'SpawnObject(250,195,19,,-1)
      ENDIF
 

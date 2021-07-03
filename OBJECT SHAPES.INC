@@ -2,7 +2,7 @@
 
 ' LOAD SHAPE NUMBER, ADJUST X,Y AND SIDE, THEN WRITE ON PAGE AND GET COLLISION WITH COLOR
 ' LAST PARAMETER FORCE SET THE OBJECT TO BE SHOWED OR ONLY TO GET COLLISION
-' SHOW <> 0 TO NOT SHOW SHAPE AND READ COLLISION
+' SHOW <> 0 TO NOT SHOW SHAPE AND READ COLLISION AND INSERT BLOCK COLLISION
 ' SHOW =  1 TO SHOW SHAPE ONLY, DON'T WRITE OR READ COLLISION
 SUB PutObject(xs,ys,num,s,SHOW)
  local I,T,xa,ya,xxt,yyt,sx,sy,p,tx,ty
@@ -225,32 +225,33 @@ SUB PutObject(xs,ys,num,s,SHOW)
   CASE 251 : xa=188:ya=185:sx=27:sy=22:p=38                   '  / 2
   CASE 252 : xa=231:ya=116:sx=20:sy=20:p=38                   '  - 3
   CASE 253 : xa=209:ya=109:sx=22:sy=27:p=38                   '  \ 4
-  CASE 254 : xa=300:ya=192:sx=20:sy=20:p=38:s=(s=4)*6+(s=5)*7 '  | 5
-  CASE 255 : xa=188:ya=185:sx=27:sy=22:p=38:s=(s=4)*6+(s=5)*7 '  / 6
-  CASE 256 : xa=231:ya=116:sx=20:sy=20:p=38:s=(s=4)*6+(s=5)*7 '  - 7
-  CASE 257 : xa=209:ya=109:sx=22:sy=27:p=38:s=(s=4)*6+(s=5)*7 '  \ 8
+  CASE 254 : xa=300:ya=192:sx=20:sy=20:p=38:if s=4 then s=6 else if s=5 then s=7 '  | 5
+  CASE 255 : xa=188:ya=185:sx=27:sy=22:p=38:if s=4 then s=6 else if s=5 then s=7 '  / 6
+  CASE 256 : xa=231:ya=116:sx=20:sy=20:p=38:if s=4 then s=6 else if s=5 then s=7 '  - 7
+  CASE 257 : xa=209:ya=109:sx=22:sy=27:p=38:if s=4 then s=6 else if s=5 then s=7 '  \ 8
 
   'MOLOTOV FIRE
   CASE 260 : xa=64:ya=128:sx=14:sy=24:p=33
   CASE 261 : xa=78:ya=128:sx=23:sy=32:p=33
   CASE 262 : xa= 1:ya=163:sx=30:sy=57:p=33
-  CASE 263 : xa=32:ya=158:sx=31:sy=62:p=33
+  CASE 263 : xa=64:ya=128:sx=14:sy=24:p=33
+  CASE 264 : xa=32:ya=158:sx=31:sy=62:p=33
+  CASE 265 : xa=64:ya=128:sx=14:sy=24:p=33
+  CASE 266 : xa= 1:ya=163:sx=30:sy=57:p=33
+  CASE 267 : xa=64:ya=128:sx=14:sy=24:p=33
+  CASE 268 : xa=32:ya=158:sx=31:sy=62:p=33
+  CASE 269 : xa=78:ya=128:sx=14:sy=24:p=33
 
   'BLOOD
-  CASE 265 : xa= 0:ya=223:sx= 7:sy=13:p=33
-  CASE 266 : xa= 8:ya=223:sx=12:sy=14:p=33
-  CASE 267 : xa=23:ya=221:sx=19:sy=19:p=33
-
-
+  CASE 270 : xa= 0:ya=223:sx= 7:sy=13:p=33
+  CASE 271 : xa= 8:ya=223:sx=12:sy=14:p=33
+  CASE 272 : xa=23:ya=221:sx=19:sy=19:p=33
 
  END SELECT
 
  xxt=xs-(sx+TX)\2: yyt=ys-sy+TY
- 
- IF SHOW=1 THEN
-  PAGE WRITE 1
-  BLIT xa,ya,xxt,yyt,sx,sy,p,s
- ELSE
+
+ IF SHOW<1 THEN
   ' CHECK COLLISION - GET THE PIXELS FROM THE FIRST SHAPE ONLY
   FOR I=0 TO 2
    COLLIDE(I)=0
@@ -263,9 +264,12 @@ SUB PutObject(xs,ys,num,s,SHOW)
     T=PIXEL(xs          ,yyt+sy\2): IF T>0 AND COLLIDE(I)=0 THEN COLLIDE(I)=T
    ENDIF
   NEXT I
+ ELSE 'WRITE AND DON'T CHECK COLLISION
+  PAGE WRITE 1
+  BLIT xa,ya,xxt,yyt,sx,sy,p,s
  ENDIF
 
- 'SET HIT POSITION ALWAYS BASED ONF THE FIRST PART OF THE SHAPE (FASTER)
+ 'SET HIT POSITION ALWAYS BASED ON THE FIRST PART OF THE SHAPE (FASTER)
  XTHit=xxt+sx\2: YTHit=yyt+sy\2
 
 END SUB

@@ -20,7 +20,7 @@ SUB Enemy_HOLLY_WOOD_RED(T,PL)
   IF EX(T)>X(PL)-100 AND ESide(T)=4 AND EMV(T)=1 THEN STE(T)=75: EMV(T)=2
 
   INC EX(T),(ESide(T)=4)*6-(ESide(T)=5)*6
-  IF EX(T)<-30 OR EX(T)>360 THEN STE(T)=0
+  IF EX(T)<-50 OR EX(T)>MM.HRES+50 THEN STE(T)=0
 
  ENDIF
 
@@ -63,7 +63,8 @@ SUB Enemy_HOLLY_WOOD_RED(T,PL)
   CASE 76:
    IF EAN(T)>=72 THEN
     STE(T)=77: EAN(T)=72
-    SpawnObject(EX(T),RealY(T)-40,209+PL,NUM)    
+    SpawnObject(EX(T),RealY(T)-45,209+PL,NUM)
+    ESIDE(NUM)=ESIDE(T)
     ESPDX(NUM)=(ESIDE(T)=4)*3-(ESIDE(T)=5)*3
     EAniDelay(T)=0: EAniSpd(T)=200
    ENDIF

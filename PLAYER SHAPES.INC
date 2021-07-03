@@ -100,6 +100,11 @@ SUB PutPlayer(xs,ys,num,s,Who,pl,SHOW)
     CASE 41 : xa= 99:ya= 93:sx=122:sy=27:p=26:tx= 0        'LYING ON THE FLOOR
     CASE 42 : xa= 99:ya=120:sx= 81:sy=40:p=26:tx= 0        'GET UP
     CASE 43 : xa=  0:ya=181:sx= 48:sy=59:p=26:tx=-2        'ALMOST GET UP (GET OBJECT)
+    'GUY BURNING
+    CASE 80 : xa=  0:ya=993:sx=121:sy=72:p=-1
+    CASE 81 : xa=121:ya=993:sx=123:sy=72:p=-1
+    CASE 82 : xa=244:ya=993:sx=121:sy=72:p=-1
+
    END SELECT 
 
   CASE 2: 'CODY -------------------------------------------------------------------------
@@ -171,6 +176,10 @@ SUB PutPlayer(xs,ys,num,s,Who,pl,SHOW)
     CASE 41 : xa=136:ya= 59:sx=119:sy=37:p=26:tx= 0        'LYING ON THE FLOOR
     CASE 42 : xa=227:ya= 96:sx= 93:sy=35:p=26:tx= 0        'GET UP
     CASE 43 : xa= 63:ya= 86:sx= 51:sy=58:p=26:tx=-2        'ALMOST GET UP (GET OBJECT)
+    'CODY BURNING
+    CASE 80 : xa=  0:ya=993:sx=121:sy=72:p=-1
+    CASE 81 : xa=121:ya=993:sx=123:sy=72:p=-1
+    CASE 82 : xa=244:ya=993:sx=121:sy=72:p=-1
    END SELECT 
 
   CASE 3: 'HAGGAR -----------------------------------------------------------------------
@@ -289,6 +298,10 @@ SUB PutPlayer(xs,ys,num,s,Who,pl,SHOW)
               xa=  1:ya=153:sx= 72:sy= 45:p =25:tx=-31-27:ty= 9
     CASE 62 : xb=107:yb=131:sbx=40:sby=66:tbx=6:pb=28
               xa=  1:ya=153:sx= 72:sy= 45:p =25:tx=-33-27:ty= 9
+    'HAGGAR BURNING
+    CASE 80 : xa=  0:ya=993:sx=121:sy=72:p=-1
+    CASE 81 : xa=121:ya=993:sx=123:sy=72:p=-1
+    CASE 82 : xa=244:ya=993:sx=121:sy=72:p=-1
    END SELECT 
 
  END SELECT 'END SELECT Who
@@ -346,9 +359,9 @@ SUB PutPlayer(xs,ys,num,s,Who,pl,SHOW)
     'MAKE A PERFECT FLIP WITHOUT TREMBLING WITH NON INTEGER NUMBERS
     IF SD=-1 THEN xt=xs-CINT((sbx+TBX)/2) ELSE xt=xs-(sbx+TBX)\2
     yt=ys-sby+TBY: if pb=0 then pb=p
-    BLIT xb,yb,xt,yt,sbx,sby,pb,s
+    IF pb<0 THEN BLIT xb,yb,xt,yt,sbx,sby,framebuffer,s ELSE BLIT xb,yb,xt,yt,sbx,sby,pb,s
    ENDIF
-   BLIT xa,ya,xxt,yyt,sx,sy,p,s
+   IF p<0 THEN BLIT xa,ya,xxt,yyt,sx,sy,framebuffer,s ELSE BLIT xa,ya,xxt,yyt,sx,sy,p,s
 
  END SELECT
 

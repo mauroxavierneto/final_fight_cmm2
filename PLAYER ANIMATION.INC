@@ -36,6 +36,7 @@ SUB PlayerAnimation(PL)
  
    CASE 13: 'HIT THE FLOOR AGAIN
     AN(PL)=41: AniSpd(PL)=4: AniDelay(PL)=0: JumpY(PL)=-4: Jump(PL)=98
+    BURNED(PL)=0
     IF SIDE(PL)=4 THEN JumpX(PL)=-TRT*0.3 else JumpX(PL)=TRT*0.3
     'SOUND / READ COLLISION TO MAKE SMOKES
     PLAY_SAMPLE 3,PL
@@ -50,6 +51,7 @@ SUB PlayerAnimation(PL)
 
    CASE 15: 'HIT THE FLOOR 
     AN(PL)=41: AniSpd(PL)=4: AniDelay(PL)=0: JumpY(PL)=-6: Jump(PL)=98
+    BURNED(PL)=0
     IF SIDE(PL)=4 THEN JumpX(PL)=-TRT*0.3 else JumpX(PL)=TRT*0.3
     'SOUND / READ COLLISION TO MAKE SMOKES
     PLAY_SAMPLE 3,PL
@@ -59,6 +61,12 @@ SUB PlayerAnimation(PL)
 
    CASE 16: 'FALLING
     AN(PL)=40: AniSpd(PL)=0: AniDelay(PL)=0: Jump(PL)=98: INC PHurted(PL)
+
+    IF BURNED(PL) THEN
+     INC BURNED(PL): IF BURNED(PL)>3 THEN BURNED(PL)=1
+     AN(PL)=79+BURNED(PL)
+    ENDIF
+
     IF Y(PL)+RealY(PL)>=RealY(PL) THEN INC PHurted(PL),-1
 
    CASE 17: 'START FALLING
@@ -560,10 +568,9 @@ SUB PlayerAnimation(PL)
 
     ENDIF 'END OF HAGGAR JUMPING / FIRE KICK JUMP SEQUENCES ----------------------------------
 
-
    END SELECT
 
-  endif
+  endif 'END PHurted(PL)
 
 END SUB
 

@@ -95,10 +95,11 @@ SUB SpawnObject(x,y,tp,NUM,IT)
     CASE 202: EAN(T)=212: EEnergy(NUM)=30  'PIECES OF WOOD 2
     CASE 203: EAN(T)=216: EEnergy(NUM)=30  'PIECES OF WOOD 3
     CASE 204: EAN(T)=220: EEnergy(NUM)=30  'PIECES OF WOOD 4
+
     'MOLOTOV
-    CASE 210,211: EAN(T)=250: EEnergy(NUM)=999: EAniSpd(T)=2: ESJMP(T)=-10
+    CASE 210,211: EAN(T)=250: EEnergy(NUM)=999: EAniSpd(T)=2: ESJMP(T)=-12
     'MOLOTOV FIRE
-    CASE 212: EAN(T)=260: EEnergy(NUM)=50: EAniSpd(T)=0: EMV(T)=1
+    CASE 212: EAN(T)=260: EEnergy(NUM)=80: EAniSpd(T)=0: EMV(T)=1
 
    END SELECT
    EXIT SUB
@@ -120,7 +121,7 @@ SUB ControlObject(T)
  INC EX(T),ESPDX(T)
  IF EX(T)>R_SCR THEN EX(T)=R_SCR
  'GRAVITY
- INC EY(T),ESJMP(T)
+ IF ETYPE(T)<>212 THEN INC EY(T),ESJMP(T) 'MOLOTOV FIRE DOESN'T HAVE GRAVITY
  IF ESJMP(T)<>0 THEN INC ESJMP(T),1.1: IF ESJMP(T)>10 THEN ESJMP(T)=10
  IF EY(T)>0 THEN
   InsertHit(EX(T),RealY(T),2)
@@ -292,33 +293,58 @@ SUB ControlObject(T)
    IF EAN(T)<208+(EType(T)-201)*4 THEN EAN(T)=211+(EType(T)-201)*4
 
   'MOLOTOV
-  CASE 210,211: '210 - PL1 / 211 - PL2
-   INC EAN(T)
+  CASE 210,211: '210 - PL1 / 211 - PL2 - WHAT PLAYER THE MOLOTOV IS AIMING?
+   IF SW THEN INC EAN(T)
    IF EAN(T)>257 THEN EAN(T)=250
    IF RealY(T)>RealY(EType(T)-209)-5 THEN INC RealY(T),-5
    IF RealY(T)<RealY(EType(T)-209)+5 THEN INC RealY(T), 5
    IF EY(T)=0 THEN
     PLAY_SAMPLE 1,4: EEnergy(T)=-99
-    InsertHit(XTHit,YTHit,1)
-    FOR II=-1 TO 1
-     InsertHit(XTHit-II*10,YTHit,2)     
-     SpawnObject(EX(T),RealY(T)+10,212,NUM)
-     RealY(NUM)=RealY(T)+II*10: EMV(NUM)=1: ESPDX(NUM)=-2-II/2
-     SpawnObject(EX(T),RealY(T)+10,212,NUM)
-     RealY(NUM)=RealY(T)+II*10: EMV(NUM)=1: ESPDX(NUM)= 2+II/2
+    InsertHit(EX(T),RealY(T),1)
+
+    FOR II=10 TO 0 STEP -10
+     SpawnObject(EX(T)+II*3,RealY(T)+10,212,NUM)
+     RealY(NUM)=RealY(T): EMV(NUM)=1: ESIDE(NUM)=4: ES_SPD(NUM)=-II 'FIRE TO RIGHT
+     EAN(NUM)=260+(II=10)*5
+     SpawnObject(EX(T)-II*3,RealY(T)+10,212,NUM)
+     RealY(NUM)=RealY(T): EMV(NUM)=1: ESIDE(NUM)=5: ES_SPD(NUM)=-II 'FIRE TO LEFT
+     EAN(NUM)=260+(II=10)*5
     NEXT II
    ENDIF
    IF STE(T)=10 THEN PLAY_SAMPLE 27,4,44100: InsertHit(XTHit,YTHit,1): STE(T)=0
 
   'MOLOTOV FIRE
-  CASE 212: 
-   INC EAN(T)
-   IF SB THEN EMV(T)=-1 ELSE EMV(T)=1
-   IF EAN(T)>263-(EEnergy(T)<10) THEN EAN(T)=260
+  CASE 212:    
+   INC EAN(T),-1
+   EY(T)=ES_SPD(T)
+   IF EAN(T)<260 THEN
+    EAN(T)=269: INC EX(T),(ESIDE(T)=4)*12-(ESIDE(T)=5)*12
+    IF ES_SPD(T) THEN ES_SPD(T)=0 ELSE ES_SPD(T)=-10
+   ENDIF
    INC EEnergy(T),-1   
-   ' IF ANY PLAYER GET BURNED
-   FOR I=1 TO MAXPL
-    'IF (COLLIDE(0)=&HFFFFFF) THEN INC HCombo(I),150: INC Energy(I),-5
+
+   'PLAYER BURNED
+   FOR I=1 TO MAXPL    
+    IF RealY(T)>RealY(I)-7 AND RealY(T)<RealY(I)+7 THEN
+     IF (COLLIDE(0)=&HFFFFFF) AND PHurted(I)=0 THEN
+      PHurted(I)=3
+      INC HCombo(I),250: INC Energy(I),-15
+      Burned(I)=1:: PLAY_SAMPLE 3,I,10000
+     ENDIF
+    ENDIF
+   NEXT I
+
+   'ENEMY BURNED
+   FOR I=4 TO 9
+    IF STE(I)>0 THEN
+     IF RealY(T)>RealY(I)-7 AND RealY(T)<RealY(I)+7 THEN
+      IF EX(T)+16>EX(I) AND EX(T)-16<EX(I) AND EBURNED(I)=0 AND STE(I)<50 THEN
+       INC EEnergy(I),-15: EBurned(I)=1
+       STE(I)=51: EAniSpd(I)=999: EANiDelay(I)=0: ESJMP(I)=-10: EAN(I)=23
+       ESPDY(I)=0: PLAY_SAMPLE 3,4,10000
+      ENDIF
+     ENDIF
+    ENDIF
    NEXT I
 
  END SELECT 'END OF OBJECT TYPE
