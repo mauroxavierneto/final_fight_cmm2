@@ -44,8 +44,8 @@ SUB Round_1_Events(xx)
 
       'TESTS
       IF NOINTRO THEN
-       SpawnEnemy(340,200,HOLLY_WOOD_RED,1)
-       SpawnEnemy(180,210,4,1)
+       'SpawnEnemy(340,200,HOLLY_WOOD_RED,1)
+       SpawnEnemy(180,210,J,66)
       ENDIF
       'SpawnObject(250,195,19,,-1)
      ENDIF
@@ -111,6 +111,7 @@ SUB Round_1_Events(xx)
      IF Event(2)= 50 THEN SpawnEnemy(-30,170,4,1)
      IF Event(2)=100 THEN SpawnEnemy(-30,160,6,1): SpawnEnemy(-60,200,9,1)
      IF Event(2)=150 THEN SpawnEnemy(-30,170,11,1)
+
    END SELECT 'END OF LevelPart -----------------------------------------------------------
 
   CASE 2: ' ROUND 1-2: SLUMS GALLERY ------------------------------------------------------

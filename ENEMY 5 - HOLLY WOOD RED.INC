@@ -1,3 +1,5 @@
+'HOLLY WOOD RED ENEMY CONTROLLER
+
 SUB Enemy_HOLLY_WOOD_RED(T,PL)
  LOCAL II,TT
 
@@ -20,7 +22,7 @@ SUB Enemy_HOLLY_WOOD_RED(T,PL)
   IF EX(T)>X(PL)-100 AND ESide(T)=4 AND EMV(T)=1 THEN STE(T)=75: EMV(T)=2
 
   INC EX(T),(ESide(T)=4)*6-(ESide(T)=5)*6
-  IF EX(T)<-50 OR EX(T)>MM.HRES+50 THEN STE(T)=0
+  IF EX(T)<-50 OR EX(T)>MM.HRES+50 THEN STE(T)=0: EEnergy(T)=-99: EXIT SUB
 
  ENDIF
 
@@ -89,11 +91,47 @@ SUB Enemy_HOLLY_WOOD_RED(T,PL)
 
   'RETURN TO THE ORIGINAL STATE IF SOMETHING GOES WRONG ON GAPPLE
   CASE >=171:
-   STE(T)=20: EAniDelay(T)=0: EAniSpd(T)=3: ESJMP(T)=0: ESPDY(T)=0
+   STE(T)=20: EAniDelay(T)=0: EAniSpd(T)=3: ESJMP(T)=0
 
   'FOR ALL OTHER CASES, GET UP!
   CASE ELSE: EAN(T)=1: STE(T)=1
 
  END SELECT 'END ACTION SCRIPTS HOLLY WOOD / EL GADO -------------------------------------------
  
+END SUB
+
+
+'DRAW HOLLY WOOD RED
+
+SUB Draw_HOLLY_WOOD_RED(num,who)
+
+ SELECT CASE num
+  'ENERGY AVATAR
+  CASE 99 : xa=1155:ya=898:sx=99:sy=16:tx=-54:ty=0
+  'STOPPED
+  CASE  0 : xa=1045:ya=787:sx=42:sy=53:tx=0:ty=15:xb=1214:yb=599:sbx=45:sby=58:tbx=-16:tby=0
+  'WALKING
+  CASE  1 : xa=1045:ya=787:sx=42:sy=53:tx=0:ty=15:xb=1051:yb=841:sbx=33:sby=59:tbx=- 8:tby=0
+  CASE  2 : xa=1045:ya=787:sx=42:sy=53:tx=0:ty=15:xb=1193:yb=693:sbx=48:sby=58:tbx=-22:tby=0
+  CASE  3 : xa=1045:ya=787:sx=42:sy=53:tx=0:ty=15:xb=1051:yb=841:sbx=33:sby=59:tbx=- 8:tby=0
+  CASE  4 : xa=1045:ya=787:sx=42:sy=53:tx=0:ty=15:xb=1214:yb=599:sbx=45:sby=58:tbx=-16:tby=0
+  CASE  5 : xa=1045:ya=787:sx=42:sy=53:tx=0:ty=15:xb=1095:yb=790:sbx=68:sby=59:tbx=-10:tby=0
+  'HURT
+  CASE 21 : xa=1167:ya=790:sx=59:sy=78:tx=0:ty=0 'IN THE STOMACH
+  CASE 22 : xa=1133:ya=741:sx=51:sy=49:tx=8:ty=8:xb=1051:yb=841:sbx=33:sby=59:tbx=-8:tby=0 'FACE
+  'FALLING
+  CASE 23 : xa=1047:ya=900:sx=107:sy=62:tx=0:ty=-20 'FALLING DOWN
+  CASE 24,50,52,54,56,58,60:
+            xa= 924:ya=865:sx=127:sy=22:tx=0:ty=0   'LYING ON THE FLOOR / DEAD
+  'THROWING A MOLOTOV
+  CASE 70 : xa=1084:ya=849:sx=93:sy=50:tx= 12:ty=7:xb=1051:yb=841:sbx=33:sby=59:tbx=- 8:tby=0
+  CASE 71 : xa=1226:ya=769:sx=35:sy=47:tx=-14:ty=7:xb=1214:yb=599:sbx=45:sby=58:tbx=-16:tby=0
+  CASE 72 : xa=1133:ya=649:sx=81:sy=44:tx=-36:ty=7:xb=1095:yb=790:sbx=68:sby=59:tbx=-12:tby=0
+  'BURNING
+  CASE 80 : xa=  0:ya=993:sx=121:sy=72
+  CASE 81 : xa=121:ya=993:sx=123:sy=72
+  CASE 82 : xa=244:ya=993:sx=121:sy=72
+
+ END SELECT 'END HOLLY WOOD MOLOTOV
+
 END SUB

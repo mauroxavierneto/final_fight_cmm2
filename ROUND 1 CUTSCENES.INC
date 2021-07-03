@@ -135,15 +135,15 @@ SUB Round_1_Cutscenes(Ending)
      ' ** SECTION 1 ENDING: DOWNSTAIRS TO THE SLUMS GALLERY ** ------------------------------------
      ELSE
 
-      IF RXX=64 THEN SCRX=1130
+      'IF RXX=64 THEN SCRX=1130
 
       ' REMOVE A BLOCK OF ANIMATED DOOR TO FIX THE DOWNSTAIRS SCENE FOREGROUND
-      PAGE WRITE 12
+      PAGE WRITE 12 
       BOX 213,0,7,105,1,0,0
 
       ' INSERT SCENE INTO THE FOREGROUND
       PAGE WRITE 1
-      BLIT 213,0,MM.HRES-93+(RXX=64)*5,56,93,184,12,4
+      BLIT 213,0,MM.HRES-93,56,93,184,12,4
        
       GO=1
       ' A LITTLE PAUSE (LIKE THE ARCADE)
@@ -248,7 +248,7 @@ SUB Round_1_Cutscenes(Ending)
 
       'FOREGROUND WALL
       ScrX=320
-      BLIT 256,0,MM.HRES-64+(RXX=64)*5,0,64,240,7,4
+      BLIT 256,0,MM.HRES-64,0,64,240,7,4
        
       ' A LITTLE PAUSE (LIKE THE ARCADE)
       IF OSDX>=9600 THEN GO=0: MV=0: FOR PL=1 TO MAXPL: AN(PL)=0: NEXT PL
@@ -257,7 +257,7 @@ SUB Round_1_Cutscenes(Ending)
       IF OSDX>7020 AND OSDX<9600 THEN
        GO=1
        FOR PL=1 TO MAXPL
-        IF X(PL)<MM.HRE-115-(PLType(PL)=3)*15 THEN
+        IF X(PL)<MM.HRES-115-(PLType(PL)=3)*15 THEN
          INC X(PL), SPD(PL): MV=1: MVLR(PL)=1: GO=0
         ELSE
          X(PL)=MM.HRES-115-(PLType(PL)=3)*15
@@ -287,7 +287,7 @@ SUB Round_1_Cutscenes(Ending)
         INC X(PL), 4: MV=1: MVLR(PL)= 1
         'IF X(PL)>235 THEN INC RealY(PL), -T/1.3: MVUD(PL)= 1
         ' REACH THE LIMIT
-        IF X(PL)>330 THEN INC GO
+        IF X(PL)>MM.HRES+20 THEN INC GO
        NEXT PL
       ENDIF
 

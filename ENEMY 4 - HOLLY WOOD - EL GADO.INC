@@ -1,4 +1,6 @@
-SUB Enemy_HOLLY_WOOD_EL_GADO(T,PL)
+'HOLLY WOOD / EL GADO ENEMY CONTROLLER
+
+SUB Enemy_HOLLY_WOOD_EL_GADO(T,PL,s)
  LOCAL II,TT
 
  IF EMV(T)=1 OR (STE(T)>=70 AND STE(T)<=99) THEN INC EAniDelay(T)
@@ -17,20 +19,20 @@ SUB Enemy_HOLLY_WOOD_EL_GADO(T,PL)
   IF STE(T)<1 THEN
    EBACK(T)=1: EBACKX(T)=1
    STE(T)=1: EAN(T)=0 'KEEP STOPPED UNTIL BACK TO WALK RANDOMLY
-   IF RND<0.3 THEN
+   IF RND<0.2 THEN
     STE(T)=40: EAN(T)=0
     'WALKING
-    IF RND>0.6 AND DIST<80 THEN 'MAYBE GO BACK IF NEAR PLAYER IS PUNCHING
-     IF Punch(PL)>0 AND EBACK(T)<>-1 THEN EBACK(T)=-1
+    IF RND>0.5 AND DIST<80 THEN 'MAYBE GO BACK IF NEAR PLAYER IS PUNCHING
+     IF EBACKX(T)<>-1 THEN EBACKX(T)=-1: EBACK(T)=-1
     ENDIF
    ENDIF
   ELSE
    'GO BACKWARD IF TOO NEAR
-   IF DIST<35 AND STE(T)<50 THEN EBACKX(T)=-1
+   IF DIST<55 AND STE(T)<50 THEN EBACKX(T)=-1
    'GO TO DIRECTION OF THE NEAR PLAYER
    II=ESPD(T): TT=RealY(T)
-   IF RealY(T)<=SMYA THEN INC RealY(T), ABS(ESPD(T))
-   IF RealY(T)>=SMYB THEN INC RealY(T),-ABS(ESPD(T))
+   IF RealY(T)<=SMYA THEN INC RealY(T), ABS(ESPD(T))-(EBACKX(T)=-1)*5
+   IF RealY(T)>=SMYB THEN INC RealY(T),-ABS(ESPD(T))+(EBACKX(T)=-1)*5
    IF RealY(T)>RealY(PL)+2 THEN INC RealY(T),-ESPD(T)
    IF RealY(T)<RealY(PL)-2 THEN INC RealY(T), ESPD(T)
    TT=(EBACKX(T)=-1)*30
@@ -49,8 +51,8 @@ SUB Enemy_HOLLY_WOOD_EL_GADO(T,PL)
   'WALKING --------------------------------------------------------------------------
   CASE 1 TO 40: 
    IF ESPD(T)=0 THEN STE(T)=1
+   ESPD(T)=ES_SPD(T)
    EAniSpd(T)=2
-   ESPD(T)=ES_SPD(T)*EBACK(T)
    IF EAN(T)>5 THEN EAN(T)=0
 
   'GETTING UP ------------------------------------------------------------------------
@@ -87,7 +89,7 @@ SUB Enemy_HOLLY_WOOD_EL_GADO(T,PL)
    IF COLLIDE(0)=&HFFFFFF AND PHurted(PL)=0 AND EAN(T)=14 AND Special(PL)=0 THEN
     InsertWait(PL,T,2)
     InsertHit(XH(PL),YH(PL),1) 'HIT
-    PLSFX(PL)=27
+    PLAY_SAMPLE 27,PL
     INC Energy(PL),-ES_POW(T)
     PHurted(PL)=2
     SIDE(PL)=(ESide(T)=4)*5+(ESide(T)=5)*4 'CHANGE PLAYER SIDE
@@ -105,7 +107,7 @@ SUB Enemy_HOLLY_WOOD_EL_GADO(T,PL)
    IF COLLIDE(0)=&HFFFFFF AND PHurted(PL)=0 AND EAN(T)=75 AND Special(PL)=0 THEN
     InsertWait(PL,T,2)
     InsertHit(XH(PL),YH(PL),1) 'HIT
-    PLSFX(PL)=24 'CHANGE THIS SOUND LATTER
+    PLAY_SAMPLE 16,PL,30000 'CHANGE THIS SOUND LATTER
     INC Energy(PL),-ES_POW(T)
     PHurted(PL)=2
     SIDE(PL)=(ESide(T)=4)*5+(ESide(T)=5)*4 'CHANGE PLAYER SIDE
@@ -133,7 +135,7 @@ SUB Enemy_HOLLY_WOOD_EL_GADO(T,PL)
    IF COLLIDE(0)=&HFFFFFF AND PHurted(PL)=0 AND Special(PL)=0 THEN
     InsertWait(PL,T,2)
     InsertHit(XH(PL),YH(PL),1) 'HIT
-    PLSFX(PL)=24
+    PLAY_SAMPLE 24,PL
     INC Energy(PL),-ES_POW(T)
     SIDE(PL)=(ESide(T)=4)*5+(ESide(T)=5)*4 'CHANGE PLAYER SIDE
     PHurted(PL)=2
@@ -163,7 +165,7 @@ SUB Enemy_HOLLY_WOOD_EL_GADO(T,PL)
    IF COLLIDE(0)=&HFFFFFF AND PHurted(PL)=0 AND Special(PL)=0 THEN
     InsertWait(PL,T,2)
     InsertHit(XH(PL),YH(PL),1) 'HIT
-    PLSFX(PL)=24
+    PLAY_SAMPLE 16,PL,30000
     INC Energy(PL),-ES_POW(T)
     SIDE(PL)=(ESide(T)=4)*5+(ESide(T)=5)*4 'CHANGE PLAYER SIDE
     PHurted(PL)=2
@@ -197,7 +199,7 @@ SUB Enemy_HOLLY_WOOD_EL_GADO(T,PL)
 
   'RETURN TO THE ORIGINAL STATE IF SOMETHING GOES WRONG ON GAPPLE
   CASE >=171:
-   STE(T)=20: EAniDelay(T)=0: EAniSpd(T)=3: ESJMP(T)=0: ESPDY(T)=0
+   STE(T)=20: EAniDelay(T)=0: EAniSpd(T)=3: ESJMP(T)=0
 
   'FOR ALL OTHER CASES, GET UP!
   CASE ELSE: EAN(T)=1: STE(T)=1
@@ -205,3 +207,64 @@ SUB Enemy_HOLLY_WOOD_EL_GADO(T,PL)
  END SELECT 'END ACTION SCRIPTS HOLLY WOOD / EL GADO -------------------------------------------
  
 END SUB
+
+
+'DRAW HOLLY WOOD / EL GADO
+
+SUB Draw_HOLLY_WOOD_EL_GADO(num,who,s)
+
+ SELECT CASE num
+  'ENERGY AVATAR
+  CASE 99 : xa=0:ya=787:sx=99:sy=16:tx=-54:ty=0
+  'STOPPED
+  CASE  0 : xa=239:ya=787:sx=42:sy=53:tx=0:ty=15:xb=349:yb=787:sbx=45:sby=58:tbx=-16:tby=0
+  'WALKING
+  CASE  1 : xa=239:ya=787:sx=42:sy=53:tx=0:ty=15:xb=394:yb=787:sbx=33:sby=59:tbx=- 8:tby=0
+  CASE  2 : xa=239:ya=787:sx=42:sy=53:tx=0:ty=15:xb=427:yb=787:sbx=48:sby=58:tbx=-22:tby=0
+  CASE  3 : xa=239:ya=787:sx=42:sy=53:tx=0:ty=15:xb=394:yb=787:sbx=33:sby=59:tbx=- 8:tby=0
+  CASE  4 : xa=239:ya=787:sx=42:sy=53:tx=0:ty=15:xb=349:yb=787:sbx=45:sby=58:tbx=-16:tby=0
+  CASE  5 : xa=239:ya=787:sx=42:sy=53:tx=0:ty=15:xb=281:yb=787:sbx=68:sby=59:tbx=-10:tby=0
+  'PUNCHING
+  CASE 13 : xa=239:ya=845:sx=34:sy=42:tx=-18:ty=6:xb=394:yb=787:sbx=33:sby=59:tbx=-8:tby=0
+  CASE 14 : xa=274:ya=849:sx=74:sy=38:tx=-56:ty=2:xb=394:yb=787:sbx=33:sby=59:tbx=-8:tby=0
+  CASE 15 : xa=239:ya=845:sx=34:sy=42:tx=-18:ty=6:xb=394:yb=787:sbx=33:sby=59:tbx=-8:tby=0
+  'HURT
+  CASE 21 : xa=878:ya=787:sx=59:sy=78:tx=0:ty=0 'IN THE STOMACH
+  CASE 22 : xa=596:ya=838:sx=51:sy=49:tx=8:ty=8:xb=394:yb=787:sbx=33:sby=59:tbx=-8:tby=0 'FACE
+  'FALLING
+  CASE 23 : xa=938:ya=787:sx=107:sy=62:tx=0:ty=-20 'FALLING DOWN
+  CASE 24,50,52,54,56,58,60:
+            xa=778:ya=865:sx=127:sy=22:tx=0:ty=0   'LYING ON THE FLOOR / DEAD
+  'GETTING UP / READY TO ATTACK
+  CASE 25 : xa=  0:ya=824:sx=56:sy=63:tx=0:ty=0
+  'AIR KNIFE ATTACK
+  CASE 34 : xa= 57:ya=817:sx= 78:sy=70:tx=0:ty=0
+  CASE 35 : xa=135:ya=813:sx=104:sy=74:tx=0:ty=0
+  CASE 36 : xa=844:ya=787:sx= 34:sy=67:tx=0:ty=0:xb=781:yb=787:sbx=63:sby=57:tbx=-12:tby=0
+  CASE 37 : xa=844:ya=787:sx= 34:sy=67:tx=0:ty=0:xb=705:yb=787:sbx=75:sby=43:tbx=  0:tby=0
+  CASE 38 : xa=844:ya=787:sx= 34:sy=67:tx=0:ty=0:xb=781:yb=787:sbx=63:sby=57:tbx=-12:tby=0: s=(s=5)*4+(s=4)*5
+  CASE 39 : xa=135:ya=813:sx=104:sy=74:tx=0:ty=0:s=(s=5)*4+(s=4)*5
+  CASE 40 : xa= 57:ya=817:sx= 78:sy=70:tx=0:ty=0:s=(s=5)*4+(s=4)*5
+  'THROWING A KNIFE
+  CASE 70 : xa=541:ya=787:sx=83:sy=50:tx= 12:ty=7:xb=394:yb=787:sbx=33:sby=59:tbx=- 8:tby=0
+  CASE 71 : xa=561:ya=842:sx=35:sy=45:tx=-14:ty=7:xb=349:yb=787:sbx=45:sby=58:tbx=-16:tby=0
+  CASE 72 : xa=624:ya=787:sx=81:sy=44:tx=-36:ty=7:xb=281:yb=787:sbx=68:sby=59:tbx=-12:tby=0
+  'STAB
+  CASE 73 : xa=475:ya=788:sx= 66:sy=52:tx=-24:ty=15:xb=394:yb=787:sbx=33:sby=59:tbx=- 8:tby=0
+  CASE 74 : xa=475:ya=840:sx= 86:sy=47:tx=-44:ty=10:xb=394:yb=787:sbx=33:sby=59:tbx=- 8:tby=0
+  CASE 75 : xa=348:ya=846:sx=103:sy=41:tx=-60:ty= 8:xb=427:yb=787:sbx=48:sby=58:tbx=-24:tby=0
+  CASE 76 : xa=475:ya=840:sx= 86:sy=47:tx=-44:ty=10:xb=394:yb=787:sbx=33:sby=59:tbx=- 8:tby=0
+  CASE 77 : xa=475:ya=788:sx= 66:sy=52:tx=-24:ty=15:xb=394:yb=787:sbx=33:sby=59:tbx=- 8:tby=0
+  'DASH
+  CASE 78 : xa=647:ya=841:sx=131:sy=46:tx=0:ty=0
+  'BURNING
+  CASE 80 : xa=  0:ya=993:sx=121:sy=72:who=11
+  CASE 81 : xa=121:ya=993:sx=123:sy=72:who=11
+  CASE 82 : xa=244:ya=993:sx=121:sy=72:who=11
+
+ END SELECT 'END HOLLY WOOD / EL GADO
+ INC ya,(who-11)*100
+ INC yb,(who-11)*100
+
+END SUB
+

@@ -1,3 +1,5 @@
+'DAMND ENEMY CONTROLLER
+
 SUB Enemy_DAMND(T,PL)
  LOCAL II,TT
 
@@ -64,7 +66,7 @@ SUB Enemy_DAMND(T,PL)
   CASE 53:      
    ESPDX(T)=ESPDX(T)\2: IF EAniDelay(T)>20 OR EEnergy(T)<=0 THEN INC STE(T)
   CASE 54:
-   EAN(T)=27: INC STE(T): EAniDelay(T)=0: EAniSpd(T)=3: ESPDX(T)=0
+   EAN(T)=27: INC STE(T): EAniDelay(T)=0: EAniSpd(T)=2: ESPDX(T)=0
    'ENEMY DEAD?
    IF EEnergy(T)<=0 THEN STE(T)=100: EAN(T)=50: EAniDelay(T)=0: EAniSpd(T)=1       
   CASE 55: IF EAniDelay(T)>=2 THEN EAniDelay(T)=0: EAN(T)=28: INC STE(T)
@@ -91,7 +93,7 @@ SUB Enemy_DAMND(T,PL)
    IF COLLIDE(0)=&HFFFFFF AND PHurted(PL)=0 AND EAN(T)=16 AND Special(PL)=0 THEN
     InsertWait(PL,T,2)
     InsertHit(XH(PL),YH(PL),1) 'HIT
-    PLSFX(PL)=27
+    PLAY_SAMPLE 27,PL,18000
     INC Energy(PL),-ES_POW(T)
     PHurted(PL)=2
     SIDE(PL)=(ESide(T)=4)*5+(ESide(T)=5)*4 'CHANGE PLAYER SIDE
@@ -182,7 +184,7 @@ SUB Enemy_DAMND(T,PL)
      IF COLLIDE(0)=&HFFFFFF AND PHurted(PL)=0 AND Special(PL)=0 THEN
       InsertWait(PL,T,2)
       InsertHit(XH(PL),YH(PL),1) 'HIT
-      PLSFX(PL)=24
+      PLAY_SAMPLE 24,PL,18000
       INC Energy(PL),-ES_POW(T)
       PHurted(PL)=2
       SIDE(PL)=(ESide(T)=4)*5+(ESide(T)=5)*4 'CHANGE PLAYER SIDE
@@ -203,11 +205,109 @@ SUB Enemy_DAMND(T,PL)
 
   'RETURN TO THE ORIGINAL STATE IF SOMETHING GOES WRONG ON GAPPLE
   CASE >=171:
-   STE(T)=40: EAniDelay(T)=0: EAniSpd(T)=3: ESJMP(T)=0: ESPDY(T)=0
+   STE(T)=40: EAniDelay(T)=0: EAniSpd(T)=3: ESJMP(T)=0
 
   'FOR ALL OTHER CASES, GET UP!
   CASE ELSE: EAN(T)=1: STE(T)=1
 
  END SELECT 'END ACTION DAMND -------------------------------------------------------
  
+END SUB
+
+
+'DRAW DAMND / DAMND FROM THE INTRO ROUND 1-1
+
+SUB Draw_DAMND(num,who)
+
+ SELECT CASE num
+  'ENERGY AVATAR
+  CASE 99 : xa=2:ya=1084:sx=60:sy=16:tx=-16
+  'STOPPED / WALKING WITH JESSICA (ROUND 1-1)
+  CASE  0,100: xa=423:ya=1083: sx=86: sy=61: tx=-4: ty=13:
+               xb=192:yb=1083:sbx=73:sby=61:tbx= 0:tby= 0
+  'WALKING / WALKING WITH JESSICA (ROUND 1-1)
+  CASE  1,101: xa=423:ya=1083: sx=86: sy=61: tx=-4: ty=13:
+               xb=265:yb=1083:sbx=62:sby=65:tbx=-4:tby= 0
+  CASE  2,102: xa=423:ya=1083: sx=86: sy=61: tx=-4: ty=12:
+               xb=327:yb=1083:sbx=51:sby=65:tbx= 2:tby= 0
+  CASE  3,103: xa=423:ya=1083: sx=86: sy=61: tx=-4: ty=12:
+               xb=378:yb=1083:sbx=45:sby=65:tbx= 8:tby= 0
+  CASE  4,104: xa=423:ya=1083: sx=86: sy=61: tx=-4: ty=12:
+               xb=327:yb=1083:sbx=51:sby=65:tbx= 2:tby= 0
+  CASE  5,105: xa=423:ya=1083: sx=86: sy=61: tx=-4: ty=13:
+               xb=265:yb=1083:sbx=62:sby=65:tbx=-4:tby= 0
+  'LAUGHING / LAUGHING WITH JESSICA (ROUND 1-1)
+  CASE 10,110: xa=995:ya=1085: sx=86: sy=61: tx=-4: ty=13:
+               xb=192:yb=1083:sbx=73:sby=61:tbx= 0:tby= 0
+  CASE 11,111: xa=505:ya=1144: sx=86: sy=54: tx=-4: ty=13:
+               xb=192:yb=1083:sbx=73:sby=61:tbx= 0:tby= 0
+  'PUNCHING
+  CASE 13: xa= 192:ya=1148:sx =80: sy=51: tx= 20: ty=  0:
+           xb= 102:yb=1083:sbx=90:sby=42:tbx=  0:tby=  0
+  CASE 14: xa= 272:ya=1148:sx =53: sy=51: tx=  8: ty=  0:
+           xb= 102:yb=1083:sbx=90:sby=42:tbx=  0:tby=  0
+  CASE 15: xa= 325:ya=1148:sx =70: sy=51: tx=-20: ty=  0:
+           xb= 102:yb=1083:sbx=90:sby=42:tbx=  0:tby=  0
+  CASE 16: xa= 395:ya=1148:sx=110: sy=51: tx=-42: ty=  0:
+           xb= 102:yb=1083:sbx=90:sby=42:tbx=  0:tby=  0
+  CASE 17: xa= 325:ya=1148:sx =70: sy=51: tx=-20: ty=  0:
+           xb= 102:yb=1083:sbx=90:sby=42:tbx=  0:tby=  0
+  CASE 18: xa= 272:ya=1148:sx =53: sy=51: tx=  8: ty=  0:
+           xb= 102:yb=1083:sbx=90:sby=42:tbx=  0:tby=  0
+  CASE 19: xa= 192:ya=1148:sx =80: sy=51: tx= 20: ty=  0:
+           xb= 102:yb=1083:sbx=90:sby=42:tbx=  0:tby=  0
+  'HURT
+  CASE 21: xa=677:ya=1083: sx=78: sy=41: tx=12: ty=  0: 'IN THE STOMACH
+           xb=591:yb=1150:sbx=66:sby=49:tbx= 0:tby=  0
+  CASE 22: xa=509:ya=1083: sx=78: sy=61: tx=-4: ty= 12: 'IN THE FACE
+           xb=192:yb=1083:sbx=73:sby=61:tbx= 0:tby=  0
+  'FALLING
+  CASE 23: xa=978:ya=1146:sx=116:sy=53:tx=5:ty=-20 'FALLING DOWN
+  CASE 24,50,52,54,56,58,60:
+           xa=903:ya=1123:sx= 75:sy= 37:tx=140:ty=42 'LYING ON THE FLOOR / DEAD
+           xb=924:yb=1083:sbx=70:sby=40:tbx= 0
+  'GET UP
+  CASE 25: xa=657:ya=1159: sx=70: sy=40: tx=10: ty= 85
+           xb=423:yb=1083:sbx=86:sby=61:tbx= 0:tby=-26: 'GET UP
+              
+  CASE 26: xa=677:ya=1083: sx=78: sy=41:tx=-12: ty= 0: 'SUFFERING (AFTER STOMACH ANIMATION)
+           xb=658:yb=1132:sbx=68:sby=27:tbx= 0:tby= 0
+  CASE 27: xa=903:ya=1160:sx= 75:sy= 39:tx=140:ty=42 'LYING ON THE FLOOR / TRYING TO GET UP
+           xb=924:yb=1083:sbx=70:sby=40:tbx= 0
+  'SHAKING HEAD
+  CASE 28: xa=729:ya=1128:sx= 58:sy= 71:tx=122:ty=42 'LYING ON THE FLOOR / SHAKING HEAD RIGHT
+           xb=924:yb=1083:sbx=70:sby=40:tbx= 0
+  CASE 29: xa=787:ya=1128:sx= 58:sy= 71:tx=122:ty=42 'LYING ON THE FLOOR / SHAKING HEAD FRONT
+           xb=924:yb=1083:sbx=70:sby=40:tbx= 0
+  CASE 30: xa=729:ya=1128:sx= 58:sy= 71:tx=122:ty=42 'LYING ON THE FLOOR / SHAKING HEAD RIGHT
+           xb=924:yb=1083:sbx=70:sby=40:tbx= 0
+  CASE 31: xa=845:ya=1128:sx= 58:sy= 71:tx=122:ty=42 'LYING ON THE FLOOR / SHAKING HEAD BACK
+           xb=924:yb=1083:sbx=70:sby=40:tbx= 0
+  'JUMPING
+  CASE 34: xa= 129:ya=1131:sx= 63:sy=68:tx=0:ty=0
+  CASE 35: xa=1245:ya=1136:sx= 68:sy=63:tx=0:ty=0
+  CASE 36: xa=   1:ya=1123:sx=128:sy=76:tx=0:ty=0: xp=0: yp=42 'KICKING
+  'WHISTLE
+  CASE 37: xa=755:ya=1083: sx=82: sy=45: tx=-10: ty=  0:
+           xb=589:yb=1083:sbx=73:sby=51:tbx=  0:tby=  0
+  CASE 38: xa=841:ya=1083: sx=79: sy=45: tx=- 6: ty=  0:
+           xb=589:yb=1083:sbx=73:sby=51:tbx=  0:tby=  0
+  'SEATED AT THE WALL
+  CASE 39: xa=505:ya=1144: sx=86: sy=54: tx=-10: ty= 15:
+           xb=589:yb=1083:sbx=73:sby=51:tbx= 0 :tby=  0
+  'BURNING
+  CASE 80 : xa=  0:ya=993:sx=121:sy=72
+  CASE 81 : xa=121:ya=993:sx=123:sy=72
+  CASE 82 : xa=244:ya=993:sx=121:sy=72
+
+ CASE 99: 'SPECIAL CASES ---------------------------------------------------------------
+  SELECT CASE num
+   'JESSICA ROUND 1 DAMND INTRO
+   CASE 997: xa=1094:ya=1125:sx=51:sy=75:tx= 0:ty=0
+   CASE 998: xa=1145:ya=1125:sx=49:sy=75:tx=-2:ty=0
+   CASE 999: xa=1194:ya=1125:sx=51:sy=75:tx= 0:ty=0
+  END SELECT 'END SPECIAL CASES
+
+ END SELECT 'END DAMND
+
 END SUB

@@ -1,3 +1,5 @@
+'POISON / ROXY ENEMY CONTROLLER
+
 SUB Enemy_POISON_ROXY(T,PL)
  LOCAL II,TT
 
@@ -13,6 +15,7 @@ SUB Enemy_POISON_ROXY(T,PL)
 
   'DECREASE TO WALK
   INC STE(T),-1
+  INC RealY(T),ESPDY(T)
 
   IF STE(T)<1 THEN
    EBACK(T)=1: EBACKX(T)=1: EAN(T)=0
@@ -26,20 +29,24 @@ SUB Enemy_POISON_ROXY(T,PL)
    ENDIF
   ELSE
    'GO BACKWARD IF TOO NEAR
-   IF DIST<35 AND STE(T)<50 THEN STE(T)=90': EBACKX(T)=-1 
+   IF DIST<35 AND STE(T)<50 AND RND>0.85 THEN STE(T)=90
    'GO TO DIRECTION OF THE NEAR PLAYER
    II=ESPD(T): TT=RealY(T)
-   IF RealY(T)<=SMYA THEN INC RealY(T), ABS(ESPD(T))
-   IF RealY(T)>=SMYB THEN INC RealY(T),-ABS(ESPD(T))
-   IF RealY(T)>RealY(PL)+2 THEN INC RealY(T),-ESPD(T)
-   IF RealY(T)<RealY(PL)-2 THEN INC RealY(T), ESPD(T)
-   TT=(EBACKX(T)=-1)*30+(SIDE(PL)=5)*40-(SIDE(PL)=4)*40
-   INC EX(T),((EX(T)<X(PL)-50+TT)*II*EBACKX(T))-((EX(T)>X(PL)+50-TT)*II*EBACKX(T))
+   IF RealY(T)<=SMYA THEN INC RealY(T), ABS(ESPD(T)): ESPDY(T)=0
+   IF RealY(T)>=SMYB THEN INC RealY(T),-ABS(ESPD(T)): ESPDY(T)=0
+
+   'USE ESPDX AND ESPDY TO MAKE THE MOVEMENT MORE CIRCULAR
+   IF RealY(T)>RealY(PL)+2 THEN INC ESPDY(T),-0.4
+   IF RealY(T)<RealY(PL)-2 THEN INC ESPDY(T), 0.4
+   IF EX(T)<X(PL)-50 THEN INC ESPDX(T), 0.2
+   IF EX(T)>X(PL)+50 THEN INC ESPDX(T),-0.2
+
    IF EX(T)<X(PL) THEN ESide(T)=4 ELSE ESide(T)=5
   ENDIF
 
  ELSE 'STE(T)>=50 - DON'T WALK! ---------------------------------
   ESPD(T)=0
+  ESPDY(T)=0
  ENDIF
 
  'ENEMY STATUS / ACTION SCRIPTS -----------------------------------------------------
@@ -83,21 +90,21 @@ SUB Enemy_POISON_ROXY(T,PL)
   'CROUCHED --------------------------------------------------------------------------
   CASE 66:
    EAN(T)=25: EAniDelay(T)=0: EAniSPD(T)=10
-   STE(T)=67: EMV(T)=0
+   STE(T)=67: EMV(T)=0: ESPDX(T)=0
    IF EX(T)<245 THEN STE(T)=1
   CASE 67:
    EAN(T)=25: EAniDelay(T)=0: EAniSPD(T)=10
-   STE(T)=66: EMV(T)=0
+   STE(T)=66: EMV(T)=0: ESPDX(T)=0
    IF EX(T)<245 THEN STE(T)=1
 
   'PUNCH -----------------------------------------------------------------------------
-  CASE 70: EAN(T)=13: EAniDelay(T)=0: EAniSpd(T)=4: INC STE(T)
+  CASE 70: EAN(T)=13: EAniDelay(T)=0: EAniSpd(T)=4: INC STE(T): ESPDX(T)=0
   CASE 71:       
    'PUNCH THE PLAYER ONLY IF IS NOT ALREADY BE HURTED AND NOT USING SPECIAL MOVE
    IF COLLIDE(0)=&HFFFFFF AND PHurted(PL)=0 AND EAN(T)=14 AND Special(PL)=0 THEN
     InsertWait(PL,T,2)
     InsertHit(XH(PL),YH(PL),1) 'HIT
-    PLSFX(PL)=27
+    PLAY_SAMPLE 27,PL
     INC Energy(PL),-ES_POW(T)
     PHurted(PL)=2
     SIDE(PL)=(ESide(T)=4)*5+(ESide(T)=5)*4 'CHANGE PLAYER SIDE
@@ -109,13 +116,13 @@ SUB Enemy_POISON_ROXY(T,PL)
   CASE 72: IF EAN(T)>15 THEN STE(T)=1: EAniDelay(T)=0: EAniSpd(T)=4
 
   'KICK -----------------------------------------------------------------------------
-  CASE 75: EAN(T)=16: EAniDelay(T)=0: EAniSpd(T)=2: INC STE(T)
+  CASE 75: EAN(T)=16: EAniDelay(T)=0: EAniSpd(T)=2: INC STE(T): ESPDX(T)=0
   CASE 76:       
    'PUNCH THE PLAYER ONLY IF IS NOT ALREADY BE HURTED AND NOT USING SPECIAL MOVE
    IF COLLIDE(0)=&HFFFFFF AND PHurted(PL)=0 AND EAN(T)=18 AND Special(PL)=0 THEN
     InsertWait(PL,T,2)
     InsertHit(XH(PL),YH(PL),1) 'HIT
-    PLSFX(PL)=27
+    PLAY_SAMPLE 24,PL
     INC Energy(PL),-ES_POW(T)
     PHurted(PL)=2
     SIDE(PL)=(ESide(T)=4)*5+(ESide(T)=5)*4 'CHANGE PLAYER SIDE
@@ -130,7 +137,7 @@ SUB Enemy_POISON_ROXY(T,PL)
   CASE 80: 
    'TURN ENEMY TO JUMP IN THE ENEMY POSITION
    IF EX(T)>X(PL) THEN ESIDE(T)=5 ELSE ESIDE(T)=4
-   EAN(T)=25: EAniDelay(T)=0: EAniSpd(T)=20: INC STE(T)
+   EAN(T)=25: EAniDelay(T)=0: EAniSpd(T)=20: INC STE(T): ESPDX(T)=0
   CASE 81:
    EAN(T)=25:
     IF EAniDelay(T)>5 THEN 'WAIT CROUCHED THEN START TO JUMP
@@ -161,7 +168,7 @@ SUB Enemy_POISON_ROXY(T,PL)
    IF COLLIDE(0)=&HFFFFFF AND PHurted(PL)=0 AND Special(PL)=0 THEN
     InsertWait(PL,T,2)
     InsertHit(XH(PL),YH(PL),1) 'HIT
-    PLSFX(PL)=24
+    PLAY_SAMPLE 24,PL
     INC Energy(PL),-ES_POW(T)
     SIDE(PL)=(ESide(T)=4)*5+(ESide(T)=5)*4 'CHANGE PLAYER SIDE
     PHurted(PL)=2
@@ -220,7 +227,7 @@ SUB Enemy_POISON_ROXY(T,PL)
 
   'RETURN TO THE ORIGINAL STATE IF SOMETHING GOES WRONG ON GAPPLE
   CASE >=171:
-   STE(T)=20: EAniDelay(T)=0: EAniSpd(T)=3: ESJMP(T)=0: ESPDY(T)=0
+   STE(T)=20: EAniDelay(T)=0: EAniSpd(T)=3: ESJMP(T)=0
 
   'FOR ALL OTHER CASES, GET UP!
   CASE ELSE: EAN(T)=1: STE(T)=1
@@ -228,3 +235,57 @@ SUB Enemy_POISON_ROXY(T,PL)
  END SELECT 'END ACTION SCRIPTS POISON / ROXY ----------------------------------------
  
 END SUB
+
+
+'DRAW POISON / ROXY
+
+SUB Draw_POISON_ROXY(num,who)
+
+ SELECT CASE num
+  'ENERGY AVATAR
+  CASE 99 : xa=1008:ya=599:sx=67:sy=16:tx=-22:ty=0
+  'WALKING
+  CASE  0 : xa= 51:ya=599:sx=43:sy=94:tx=-8:ty= 0
+  CASE  1 : xa= 94:ya=602:sx=39:sy=91:tx=10:ty=-3
+  CASE  2 : xa=133:ya=601:sx=28:sy=92:tx= 0:ty=-2
+  CASE  3 : xa=161:ya=600:sx=45:sy=93:tx=-4:ty=-1
+  CASE  4 : xa=206:ya=599:sx=43:sy=94:tx= 6:ty= 0
+  CASE  5 : xa=249:ya=599:sx=29:sy=94:tx= 0:ty= 0
+  'PUNCHING
+  CASE 13 : xa=785:ya=599:sx=60:sy=44:tx= 34:ty=0:xb=992:yb=639:sbx=69:sby=54:tbx=0:tby=0
+  CASE 14 : xa=537:ya=603:sx=73:sy=30:tx=-36:ty=1:xb=992:yb=639:sbx=69:sby=54:tbx=0:tby=0
+  CASE 15 : xa=612:ya=604:sx=42:sy=29:tx=- 8:ty=1:xb=992:yb=639:sbx=69:sby=54:tbx=0:tby=0
+  'KICKING
+  CASE 16 : xa=278:ya=600:sx=49:sy=93:tx= 30:ty=0
+  CASE 17 : xa=327:ya=600:sx=64:sy=94:tx=-20:ty=0
+  CASE 18 : xa=433:ya=599:sx=60:sy=18:tx=-48:ty=35:xb=493:yb=607:sbx=44:sby=86:tbx=40:tby=0
+  CASE 19 : xa=327:ya=600:sx=64:sy=94:tx=-20:ty=0
+  CASE 20 : xa=278:ya=600:sx=49:sy=93:tx= 30:ty=0
+  'HURT
+  CASE 21 : xa=729:ya=607:sx= 56:sy=86:tx=3 'IN THE STOMACH
+  CASE 22 : xa=680:ya=607:sx= 49:sy=86:tx=9 'IN THE FACE
+  'FALLING
+  CASE 23 : xa=785:ya=646:sx=100:sy=47:tx=5:ty=-20 'FALLING DOWN
+  CASE 24,50,52,54,56,58,60:
+            xa=845:ya=612:sx=122:sy=21:tx=5        'LYING ON THE FLOOR / DEAD
+  'GETTING UP / CROUCHED     
+  CASE 25:  xa=  0:ya=632:sx= 51:sy=61:tx=5
+  'ACROBATICS
+  CASE 34 : xa= 391:ya=617:sx=102:sy=76:tx= 0:ty=0
+  CASE 35 : xa=1047:ya=607:sx= 86:sy=69:tx=88:ty=0:xb=967:yb=599:sbx=40:sby=34:tbx= 0: tby= 0
+  CASE 36 : xa=1047:ya=607:sx= 86:sy=69:tx=80:ty=0:xb=  4:yb=599:sbx=47:sby=29:tbx= 0: tby= 0
+  CASE 37 : xa= 537:ya=633:sx= 48:sy=60:tx= 0:ty=0
+  CASE 38 : xa= 585:ya=633:sx= 96:sy=60:tx= 0:ty=0
+  CASE 39 : xa= 885:ya=633:sx=107:sy=60:tx= 0:ty=0
+  CASE 40 : xa=1133:ya=599:sx= 60:sy=47:tx= 0:ty=0
+  'BURNING
+  CASE 80 : xa=  0:ya=993:sx=121:sy=72:who=17
+  CASE 81 : xa=121:ya=993:sx=123:sy=72:who=17
+  CASE 82 : xa=244:ya=993:sx=121:sy=72:who=17
+
+ END SELECT 'END POISON / ROXY
+ INC ya,(Who-17)*94
+ INC yb,(Who-17)*94
+
+END SUB
+

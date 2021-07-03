@@ -99,7 +99,7 @@ SUB PlayerAnimation(PL)
 
      CASE 130: 'THROW ENEMY GRAPPLED - SOUND FIX
       AN(PL)=22: AniSpd(PL)=0: AniDelay(PL)=0: Grap(PL)=AN(PL)
-      IF Combo(PL)=0 THEN PLAY_SAMPLE 4,PL,,2000+Punch(PL)
+      PLAY_SAMPLE 4,PL,,2000+Punch(PL)
      CASE 129: 'THROW ENEMY GRAPPLED
       AN(PL)=22: AniSpd(PL)=3: AniDelay(PL)=0: Grap(PL)=AN(PL)
      CASE 128: 'THROW ENEMY GRAPPLED - 2 
@@ -125,12 +125,10 @@ SUB PlayerAnimation(PL)
        AN(PL)=15: AniSpd(PL)=3: AniDelay(PL)=0 
      CASE 12: 'LONG PUNCH (THIRD COMBO)
        AN(PL)=16: AniSpd(PL)=3: AniDelay(PL)=0
-       If Hitting(PL)>3 THEN PLAY_SAMPLE 27,PL,,-1: INC Combo(PL): Hitting(PL)=5
      CASE 11: 'ELBOW (FORTH COMBO)
        AN(PL)=17: AniSpd(PL)=3: AniDelay(PL)=0
      CASE 10: 'ELBOW PUNCH (FORTH COMBO)
        AN(PL)=18: AniSpd(PL)=3: AniDelay(PL)=0
-       If Hitting(PL)>3 THEN PLAY_SAMPLE 27,PL,,-1: INC Combo(PL): Hitting(PL)=5
      CASE 9: 'STARTING COMBO KICK
       AN(PL)=32: AniSpd(PL)=2: AniDelay(PL)=0: Combo(PL)=0
       INC X(PL),10*(SIDE(PL)=4)-10*(SIDE(PL)=5) 'PUSH PLAYER A LITTLE FORWARD
@@ -264,7 +262,7 @@ SUB PlayerAnimation(PL)
 
       CASE 130: 'THROW ENEMY GRAPPLED - SOUND FIX
        AN(PL)=22: AniSpd(PL)= 0: AniDelay(PL)=0: Grap(PL)=AN(PL)
-       IF Combo(PL)=0 THEN PLAY_SAMPLE 4,PL,,255
+       PLAY_SAMPLE 4,PL,,255
       CASE 129: 'THROW ENEMY GRAPPLED
        AN(PL)=22: AniSpd(PL)= 3: AniDelay(PL)=0: Grap(PL)=AN(PL)
       CASE 128: 'THROW ENEMY GRAPPLED - 2 
@@ -290,17 +288,17 @@ SUB PlayerAnimation(PL)
        AN(PL)=15: AniSpd(PL)= 3: AniDelay(PL)=0 
       CASE  11: 'LONG PUNCH (THIRD COMBO)
        AN(PL)=16: AniSpd(PL)= 4: AniDelay(PL)=0
-       If Hitting(PL)>3 THEN Hitting(PL)=5: INC Combo(PL): PLAY_SAMPLE 27,PL,,-1
+       If Hitting(PL)>3 THEN Hitting(PL)=5: INC Combo(PL)
       CASE  10: 'RETURNING TO MAKE THE UPPERCUT
        AN(PL)=15: AniSpd(PL)= 2: AniDelay(PL)=0
       CASE   9: 'UPPERCUT SOUND (LAG)
        AN(PL)=17: AniSpd(PL)= 1: AniDelay(PL)=0: Combo(PL)=0
-       PLAY_SAMPLE 7,PL,,100: PLSFX(PL)=0
+       PLAY_SAMPLE 7,PL,,100
       CASE   8: 'PRE-UPPERCUT
        AN(PL)=18: AniSpd(PL)= 3: AniDelay(PL)=0: Combo(PL)=0
       CASE   7: 'UPPERCUT! - FORTH COMBO
        AN(PL)=19: AniSpd(PL)= 8: AniDelay(PL)=0: Combo(PL)=0
-       PLAY_SAMPLE 7,PL,,100: PLSFX(PL)=0: Hitting(PL)=0
+       PLAY_SAMPLE 7,PL,,100: Hitting(PL)=0
       CASE   6: 'BACK FROM UPPERCUT
        AN(PL)=18: AniSpd(PL)= 3: AniDelay(PL)=0: Combo(PL)=0
       CASE   5: 'ALMOST NORMAL
@@ -312,7 +310,7 @@ SUB PlayerAnimation(PL)
        AN(PL)=13: AniSpd(PL)=2: AniDelay(PL)=0
       CASE   2:
        AN(PL)=14: AniSpd(PL)=3: AniDelay(PL)=0
-       If Hitting(PL)>1 THEN INC Combo(PL): PLAY_SAMPLE 27,PL,,-1
+       If Hitting(PL)>1 THEN INC Combo(PL)
       CASE   1:
        AN(PL)=13: AniSpd(PL)=2: AniDelay(PL)=0
       CASE   0:
@@ -445,8 +443,8 @@ SUB PlayerAnimation(PL)
       CASE  10: 'STARTING STRONG PUNCH
        AN(PL)=16: AniSpd(PL)= 2: AniDelay(PL)=0 
       CASE   9: 'STARTING STRONG PUNCH
-       AN(PL)=17: AniSpd(PL)= 3: AniDelay(PL)=0: Combo(PL)=0
-       PLSFX(PL)=0: Hitting(PL)=0: IF MVUD(PL)=0 THEN PLAY_SAMPLE 21,PL,,100 'HAGGAR COMBO! (SND DELAY)
+       AN(PL)=17: AniSpd(PL)= 3: AniDelay(PL)=0: Combo(PL)=0: Hitting(PL)=0
+       IF MVUD(PL)=0 THEN PLAY_SAMPLE 21,PL,,999 'HAGGAR COMBO! (SND DELAY)
       CASE   8: 'LONG STRONG PUNCH
        AN(PL)=18: AniSpd(PL)= 5: AniDelay(PL)=0: Combo(PL)=0: Hitting(PL)=0
       CASE   7: 'RETURNING TO NORMAL
@@ -460,7 +458,7 @@ SUB PlayerAnimation(PL)
        AN(PL)=14: AniSpd(PL)=2: AniDelay(PL)=0
       CASE   3:
        AN(PL)=15: AniSpd(PL)=3: AniDelay(PL)=0
-       If Hitting(PL)>0 THEN INC Combo(PL): PLAY_SAMPLE 27,PL,,-1
+       If Hitting(PL)>0 THEN INC Combo(PL)
       CASE   2:
        AN(PL)=14: AniSpd(PL)=2: AniDelay(PL)=0
        If Combo(PL)=1 then Punch(PL)=11

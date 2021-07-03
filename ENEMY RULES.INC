@@ -73,7 +73,7 @@ SUB ControlEnemy(T)
    IF EX(T)>R_SCR AND GrapE(PL)<>T THEN
     EX(T)=R_SCR
     'HOLLY WOOD RED RUNS TO ANOTHER SIDE IF TOUCH A INVISIBLE BARRIER
-    IF EType(T)=HOLLY_WOOD_RED THEN ESIDE(T)=(ESIDE(T)=4)*5-(ESIDE(T)=5)*4
+    IF EType(T)=HOLLY_WOOD_RED THEN ESIDE(T)=(ESIDE(T)=4)*5+(ESIDE(T)=5)*4
    ENDIF
   ELSE
    IF EMV(T)=1 AND EX(T)>R_SCR AND GrapE(PL)<>T THEN EX(T)=R_SCR
@@ -82,7 +82,7 @@ SUB ControlEnemy(T)
   IF EX(T)<L_SCR AND GrapE(PL)<>T THEN
    EX(T)=L_SCR
    'HOLLY WOOD RED RUNS TO ANOTHER SIDE IF TOUCH A INVISIBLE BARRIER
-   IF EType(T)=HOLLY_WOOD_RED THEN ESIDE(T)=(ESIDE(T)=4)*5-(ESIDE(T)=5)*4
+   IF EType(T)=HOLLY_WOOD_RED THEN ESIDE(T)=(ESIDE(T)=4)*5+(ESIDE(T)=5)*4
   ENDIF
 
   'RESET ENEMY STATUS IF IT'S OUT OF THE SCREEN FOR TOO MUCH TIME / FIX A BUG
@@ -91,7 +91,7 @@ SUB ControlEnemy(T)
    IF EMV(PL)>200 OR EEnergy(PL)<=0 THEN 
     EX(T)=-50: EY(T)=0: EAN(T)=0: EAniDelay(T)=0: EWait(T)=0
     EMV(T)=1: EBACK(T)=1: EHIT(T)=0: ESJMP(T)=0: STE(T)=1
-    ESPDX(T)=0: ESPDY(T)=0: ETR(T)=0: ECOMBO(T)=0
+    ESPDX(T)=0: ETR(T)=0: ECOMBO(T)=0
     FOR PL=1 TO MAXPL
      IF GrapE(PL)=T THEN GrapE(PL)=0
     NEXT PL
@@ -133,7 +133,7 @@ SUB ControlEnemy(T)
      INC EEnergy(T),-7+ES_DEF(T) 'LOOSE ENERGY WHEN THROWED
      'DEAD SOUND AND SCORE
      IF EEnergy(T)>-99 AND EEnergy(T)<=0 THEN
-      EEnergy(T)=-99: PLAY_SAMPLE 10+(EType(T)=POISON OR EType(T)=ROXY)*16,4
+      EEnergy(T)=-99: PLAY_SAMPLE 10+(EType(T)=POISON OR EType(T)=ROXY)*16,3
       IF STE(T)<50 THEN STE(T)=52
       INC SCORE(PL),ESCORE(T): EXIT SUB
      ENDIF
@@ -162,16 +162,20 @@ SUB ControlEnemy(T)
 
   ' IF HURTED BY ANY PLAYER (I) -------------------------------------------------------
 
+  'FIX ANIMATION WHEN THROWED - FALLING AND ON THE FLOOR
+  IF ESJMP(T)>0 AND ETR(T)>0 THEN
+   INC EY(T),(ESIDE(T)=6 OR ESIDE(T)=7)*15
+   IF ESIDE(T)=6 THEN ESIDE(T)=5
+   IF ESIDE(T)=7 THEN ESIDE(T)=4
+   EAN(T)=23: IF EY(T)>-5 THEN EAN(T)=24
+  ENDIF
+
   FOR I=1 TO MAXPL ' * SCAN FOR BOTH PLAYERS *
 
-   'FIX ANIMATION WHEN THROWED - FALLING AND ON THE FLOOR
-   IF ESJMP(T)>0 AND ETR(T)>0 THEN
-    INC EY(T),(ESIDE(T)=6 OR ESIDE(T)=7)*15
-    IF ESIDE(T)=6 THEN ESIDE(T)=5
-    IF ESIDE(T)=7 THEN ESIDE(T)=4
-    EAN(T)=23: IF EY(T)>-5 THEN EAN(T)=24
-   ENDIF
-
+   'EXIT FROM THE LOOP IF ENEMY ARE INTERACTING WITH OTHER PLAYER
+   IF GrapE(3-I)=T THEN CONTINUE FOR
+   IF COLLIDE(3-I)=&HFF0000 THEN CONTINUE FOR
+   
    'CANCEL SCAN IF PLAYER ALREADY GRAPPLED OTHER ENEMY
    IF GrapE(I)<>T AND GrapE(I)>0 AND NOT(PlType(I)=3 AND AN(I)=32) THEN CONTINUE FOR 
 
@@ -194,27 +198,29 @@ SUB ControlEnemy(T)
    C_E=-300*(GrapE(I)=T AND PlType(I)=HAGGAR AND STE(T)>=120 AND Jump(PL)>30)      
    IF (COLLIDE(I)=&HFF0000-C_E OR IS_TR) AND (AN(I)<>ANANT(I) OR C_A OR C_C) AND C_B AND C_D AND AN(I)<>23 THEN
 
-    Hit(I)=T
-    EHIT(T)=I
-    Hitting(I)=8
-    ' HITTED IN THE FACE OR IN THE STOMACH?
-    EAniDelay(T)=0: EAniSpd(T)=12
-    IF Combo(I)<=2 THEN EAN(T)=22 ELSE EAN(T)=21
-    ECOMBO(T)=2
-    KO=0
-
     'AXL / SLASH BLOCKING - REMOVE COLLISION AND EXIT SUB
     IF (Etype(T) = AXL OR Etype(T) = SLASH) THEN
-     IF GrapE(I)<>T AND EAN(T)<=19 AND (Kick(I)>0 OR Punch(I)>0) THEN
-      IF (RND<0.7 AND COLLIDE(I)>0) OR (STE(T)=68 OR STE(T)=69) THEN 
+     IF GrapE(I)<>T AND (STE(T)<=50 OR EAN(T)=19) AND (Kick(I)>0 OR Punch(I)>0) THEN
+      IF (RND<0.6 AND COLLIDE(I)>0) OR (STE(T)=68 OR STE(T)=69) THEN 
        INC EX(T),(ESIDE(T)=5)*4-(ESIDE(T)=4)*4
        ECOMBO(T)=3
        InsertWait(I,T,4)
        InsertHit(XTHit,YTHit,1)
+       EHURT(T)=15: EAN(T)=19
        COLLIDE(I)=0: STE(T)=68: PLAY_SAMPLE 29,3: EXIT SUB
       ENDIF
      ENDIF
     ENDIF
+
+    Hit(I)=T
+    EHIT(T)=I
+    Hitting(I)=8
+    EAniDelay(T)=0: EAniSpd(T)=12
+
+    ' HITTED IN THE FACE OR IN THE STOMACH?
+    IF Combo(I)<=2 THEN EAN(T)=22 ELSE EAN(T)=21
+    ECOMBO(T)=2
+    KO=0
      
     'HIT AND LOOSE ENERGY ONLY IF IS NOT THROW OR GRAPPLE THE ENEMY
     IF Grap(I)<>21 AND Grap(I)<>22 THEN 
@@ -230,8 +236,8 @@ SUB ControlEnemy(T)
      '2 - IF IS A JUMP KICK, PLAY A KNEE SOUND STOPPING ANY ENEMY CHANNEL SOUND
      '3 - IF IT'S HURTED BY OTHER THROWED ENEMY THEN USE THE ONFLOOR SOUND (FASTER)
      IF Combo(I)<4 THEN
-      IF Jump(I)=0 AND IS_TR<>1 THEN PLSFX(I)=27           '1
-      IF Jump(I)>0 THEN PLSFX(I)=0: PLAY_SAMPLE 24,4,,100  '2
+      IF Jump(I)=0 AND IS_TR<>1 THEN PLAY_SAMPLE 27,I,,100 '1
+      IF Jump(I)>0 THEN PLAY_SAMPLE 24,4,,100  '2
       IF IS_TR THEN PLAY_SAMPLE 3,3,30000,100              '3
      ENDIF
      INC SCORE(I),100
@@ -243,10 +249,12 @@ SUB ControlEnemy(T)
      IF PlType(I)=3 THEN INC EX(T),(SIDE(I)=4)*8-(SIDE(I)=5)*8
      ESide(T)=(SIDE(I)=4)*5+(SIDE(I)=5)*4
      INC SCORE(I),100
-     INC Combo(I)
+     INC Combo(I)      
      InsertHit(XTHit,YTHit,1)
      InsertWait(I,T,4)
-     Grap(I)=20: STE(T)=120: INC EEnergy(T),-15+ES_DEF(T): PLSFX(I)=24
+     IF PlType(I)<>HAGGAR THEN EAN(T)=21
+     Grap(I)=20: STE(T)=120: INC EEnergy(T),-15+ES_DEF(T)
+     PLAY_SAMPLE 24,I,22050-(PlType(I)=HAGGAR)*4000,100
      ' IF KILLED BY THE PLAYER OR COMBO WAS FINISHED
      IF Combo(I)>=3 OR EEnergy(T)<=0 THEN
       INC SCORE(I),100
@@ -269,7 +277,6 @@ SUB ControlEnemy(T)
     IF PlType(I)=3 AND AN(I)=32 THEN
      Hit(I)=T
      EAniSpd(T)=999: EANiDelay(T)=0: ESJMP(T)=-10: EAN(T)=23
-     ESPDY(T)=0 
      STE(T)=51: InsertWait(I,T,4)
      RealY(T)=RealY(I)-4
      ESPDX(T)=(SIDE(I)=4)*4-(SIDE(I)=5)*4
@@ -281,7 +288,6 @@ SUB ControlEnemy(T)
     IF KO OR AN(I)=18+(PlType(I)=1) OR C_A OR Kick(I)=1 OR EEnergy(T)<=0 OR IS_TR THEN
      Hit(I)=T
      STE(T)=51: EAniSpd(T)=999: EANiDelay(T)=0: ESJMP(T)=-10: EAN(T)=23
-     ESPDY(T)=0 
      IF Punch(I)>100 AND Punch(I)<=110) THEN Punch(I)=1: Jump(I)=0: GrapE(I)=0: Grap(I)=0
   
      ' SET SIDE OF THE SHAPE AND THROWING
@@ -331,7 +337,7 @@ SUB ControlEnemy(T)
       IF AN(I)=22 THEN 'GRAPPLE
        ESide(T)=(SIDE(I)=4)*4+(SIDE(I)=5)*5
        EX(T)=X(I)+(SIDE(I)=4)*10-(SIDE(I)=5)*10: RealY(T)=RealY(I)-5
-       EAN(T)=23: ESPDY(T)=0: ESJMP(T)=-12: EY(T)=-1
+       EAN(T)=23: ESJMP(T)=-12: EY(T)=-1
        ESPDX(T)=(SIDE(I)=5)*10-(SIDE(I)=4)*10       
        INC SCORE(I),10: INC EEnergy(T),-1
       ENDIF
@@ -346,18 +352,17 @@ SUB ControlEnemy(T)
       IF AN(I)=22 THEN
        EX(T)=X(I)+(SIDE(I)=4)*10-(SIDE(I)=5)*10: RealY(T)=RealY(I)-24
        ESide(T)=(SIDE(I)=4)*4+(SIDE(I)=5)*5
-       EAN(T)=23: ESPDY(T)=0: ESJMP(T)=1: Special(I)=3
+       EAN(T)=23: ESJMP(T)=1: Special(I)=3
       ENDIF 
       IF AN(I)=23 THEN 'MAX SUPLEX
        EX(T)=X(I)+(SIDE(I)=5)*64-(SIDE(I)=4)*64: RealY(T)=RealY(I)-4
        ESide(T)=(SIDE(I)=4)*7+(SIDE(I)=5)*6
-       EAN(T)=21: ESPDY(T)=0: ESJMP(T)=5: Special(I)=3
+       EAN(T)=21: ESJMP(T)=5: Special(I)=3
       ENDIF
       IF AN(I)=43 THEN 'GET UP
-       ESPDX(T)=(SIDE(I)=5)*4-(SIDE(I)=4)*4: ESJMP(T)=-4: ESPDY(T)=-4
+       ESPDX(T)=(SIDE(I)=5)*4-(SIDE(I)=4)*4: ESJMP(T)=-4
        ESide(T)=(SIDE(I)=4)*4+(SIDE(I)=5)*5
-       Special(I)=0
-       ESPDY(T)=0: EAN(T)=23: STE(T)=51
+       Special(I)=0: EAN(T)=23: STE(T)=51
        INC SCORE(I),20
        INC EEnergy(T),-15+ES_DEF(T)
       ENDIF
@@ -390,7 +395,7 @@ SUB ControlEnemy(T)
 
   'THE ENEMY IS DEAD?
   IF EEnergy(T)>-99 AND EEnergy(T)<=0 THEN
-   EEnergy(T)=-99: PLAY_SAMPLE 10+(EType(T)=POISON OR EType(T)=ROXY)*16,4 'DEAD SOUND
+   EEnergy(T)=-99: PLAY_SAMPLE 10+(EType(T)=POISON OR EType(T)=ROXY)*16,3 'DEAD SOUND
    INC SCORE(EHIT(T)),ESCORE(T) 'INC PLAYER SCORE
    IF STE(T)<50 THEN STE(T)=52
   ENDIF
@@ -422,23 +427,23 @@ SUB GrapPlayer(T)
   IF GrapE(I)=T THEN
    EX(T)=X(I)+(SIDE(I)=4)*8-(SIDE(I)=5)*8: RealY(T)=RealY(I)+4-(PlType(I)=HAGGAR)*18
    IF PlType(I)=HAGGAR THEN
-    EY(T)=Y(I): ESJMP(T)=0: ESPDY(T)=0
+    EY(T)=Y(I): ESJMP(T)=0
     INC EX(T),(SIDE(I)=4)*(32-(AN(I)=32)*24)-(SIDE(I)=5)*(32-(AN(I)=32)*24)
     IF AN(I)=32 THEN EAN(T)=21: EY(T)=Y(I)-10
     'PILE DRIVER ADJUST ENEMY POSITION AND SIDE
     SELECT CASE Jump(I)
      CASE 1,2,9 TO 10,21,22,29 TO 30: EY(T)=Y(I)+8
      CASE 38: ESIDE(T)=(SIDE(I)=4)*7+(SIDE(I)=5)*6        
-     CASE 33:
-      STE(T)=60
+     CASE 33: 'SMASHED IN THE FLOOR
+      STE(T)=60': EAN(T)=21
       ESPDX(T)=(SIDE(I)=4)*6-(SIDE(I)=5)*6: RealY(T)=RealY(I)
-      EAniDelay(T)=0:EAniSpd(T)=1: ESJMP(T)=-6: ESPDY(T)=-6
+      EAniDelay(T)=0:EAniSpd(T)=0: ESJMP(T)=-6
       Grap(I)=0: GrapE(I)=0: Kick(I)=0: Punch(I)=1
       Exit Sub
     END SELECT
    ENDIF
    IF STE(T)>=170 THEN
-    STE(T)=52: EAniDelay(T)=0:EAniSpd(T)=3: ESJMP(T)=-3: ESPDY(T)=-3: RealY(T)=RealY(I)
+    STE(T)=52: EAniDelay(T)=0:EAniSpd(T)=3: ESJMP(T)=-3: RealY(T)=RealY(I)
     Grap(I)=0: GrapE(I)=0: Combo(I)=0: Punch(I)=2: AniDelay(I)=0: AniSpd(I)=0
    ENDIF
   ENDIF

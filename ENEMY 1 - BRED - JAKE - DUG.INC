@@ -1,3 +1,5 @@
+' BRED / JAKE / DUG ENEMY CONTROLLER
+
 SUB Enemy_BRED_JAKE_DUG(T,PL)
  LOCAL II,TT
 
@@ -126,7 +128,7 @@ SUB Enemy_BRED_JAKE_DUG(T,PL)
    IF COLLIDE(0)=&HFFFFFF AND PHurted(PL)=0 AND EAN(T)=14 AND Special(PL)=0 THEN
     InsertWait(PL,T,2)
     InsertHit(XH(PL),YH(PL),1) 'HIT
-    PLSFX(PL)=27
+    PLAY_SAMPLE 27,PL
     INC Energy(PL),-ES_POW(T)
     PHurted(PL)=2
     SIDE(PL)=(ESide(T)=4)*5+(ESide(T)=5)*4 'CHANGE PLAYER SIDE
@@ -144,7 +146,7 @@ SUB Enemy_BRED_JAKE_DUG(T,PL)
    IF COLLIDE(0)=&HFFFFFF AND PHurted(PL)=0 AND EAN(T)=18 AND Special(PL)=0 THEN
     InsertWait(PL,T,2)
     InsertHit(XH(PL),YH(PL),1) 'HIT
-    PLSFX(PL)=27
+    PLAY_SAMPLE 24,PL
     INC Energy(PL),-ES_POW(T)
     PHurted(PL)=2
     SIDE(PL)=(ESide(T)=4)*5+(ESide(T)=5)*4 'CHANGE PLAYER SIDE
@@ -169,7 +171,7 @@ SUB Enemy_BRED_JAKE_DUG(T,PL)
    IF COLLIDE(0)=&HFFFFFF AND PHurted(PL)=0 AND Special(PL)=0 THEN
     InsertWait(PL,T,2)
     InsertHit(XH(PL),YH(PL),1) 'HIT
-    PLSFX(PL)=27
+    PLAY_SAMPLE 24,PL
     INC Energy(PL),-ES_POW(T)
     SIDE(PL)=(ESide(T)=4)*5+(ESide(T)=5)*4 'CHANGE PLAYER SIDE
     PHurted(PL)=2
@@ -194,7 +196,7 @@ SUB Enemy_BRED_JAKE_DUG(T,PL)
 
   'RETURN TO THE ORIGINAL STATE IF SOMETHING GOES WRONG ON GAPPLE
   CASE >=171:
-   STE(T)=20: EAniDelay(T)=0: EAniSpd(T)=3: ESJMP(T)=0: ESPDY(T)=0
+   STE(T)=20: EAniDelay(T)=0: EAniSpd(T)=3: ESJMP(T)=0
 
   'FOR ALL OTHER CASES, GET UP!
   CASE ELSE: EAN(T)=1: STE(T)=1
@@ -202,3 +204,72 @@ SUB Enemy_BRED_JAKE_DUG(T,PL)
  END SELECT 'END ACTION SCRIPTS BRED / JAKE -----------------------------------------
 
 END SUB
+
+
+SUB Draw_BRED_JAKE_DUG(num,who)
+
+ SELECT CASE num
+  'ENERGY AVATAR
+  CASE 99 : xa=0:ya=225:sx=51:sy=16:tx=-7:ty=0
+  'WALKING
+  CASE  0 : xa=143:ya=225:sx=41:sy=44:tx=5:ty=0:xb=143:yb=269:sbx=31:sby=46:tbx=15:tby=(who>4)
+  CASE  1 : xa=143:ya=225:sx=41:sy=44:tx=5:ty=0:xb=184:yb=225:sbx=60:sby=46:tbx=16:tby=(who>4)
+  CASE  2 : xa=143:ya=225:sx=41:sy=44:tx=5:ty=0:xb=184:yb=273:sbx=47:sby=45:tbx=31:tby=(who>4)-1
+  CASE  3 : xa=143:ya=225:sx=41:sy=44:tx=5:ty=0:xb=244:yb=225:sbx=29:sby=47:tbx=13:tby=(who>4)
+  CASE  4 : xa=143:ya=225:sx=41:sy=44:tx=5:ty=0:xb=231:yb=272:sbx=56:sby=46:tbx=10:tby=(who>4)
+  CASE  5 : xa=143:ya=225:sx=41:sy=44:tx=5:ty=0:xb=273:yb=225:sbx=46:sby=47:tbx=28:tby=(who>4)
+  'JUMP AND KICKING
+  CASE  6 : xa= 0:ya=247:sx=56:sy=68:tx=  5
+  CASE  7 : xa=56:ya=244:sx=87:sy=70:tx=-15
+  CASE  8 : xa= 0:ya=247:sx=56:sy=68:tx=  5
+  'WALKING WITH ATTENTION
+  CASE  9 : xa=335:ya=242:sx=45:sy=30:tx=-5:ty=0:xb=319:yb=272:sbx=57:sby=46:tbx=15
+  CASE 10 : xa=335:ya=242:sx=45:sy=30:tx=-5:ty=0:xb=380:yb=225:sbx=40:sby=46:tbx=12
+  CASE 11 : xa=335:ya=242:sx=45:sy=30:tx=-5:ty=0:xb=380:yb=271:sbx=29:sby=46:tbx=11
+  CASE 12 : xa=335:ya=242:sx=45:sy=30:tx=-5:ty=0:xb=380:yb=225:sbx=40:sby=46:tbx=12
+  'PUNCHING
+  CASE 13 : xa=420:ya=229:sx=62:sy=89:tx=  6
+  CASE 14 : xa=482:ya=229:sx=95:sy=89:tx=-23
+  CASE 15 : xa=420:ya=229:sx=62:sy=89:tx=  6
+  'KICKING
+  CASE 16 : xa=577:ya=226:sx=56:sy=92:tx= 0
+  CASE 17 : xa=633:ya=226:sx=60:sy=92:tx= 0
+  CASE 18 : xa=693:ya=226:sx=81:sy=92:tx=-9
+  CASE 19 : xa=633:ya=226:sx=60:sy=92:tx= 0
+  CASE 20 : xa=577:ya=226:sx=56:sy=92:tx= 0
+  'HURT
+  CASE 21 : xa=774:ya=244:sx= 52:sy=74:tx=3 'IN THE STOMACH
+  CASE 22 : xa=826:ya=228:sx= 51:sy=90:tx=9 'IN THE FACE
+  'FALLING
+  CASE 23 : xa=877:ya=261:sx= 96:sy=57:tx=5:ty=-20 'FALLING DOWN
+  CASE 24,50,52,54,56,58,60:
+            xa=877:ya=225:sx=121:sy=27:tx=5        'LYING ON THE FLOOR / DEAD
+  'GETTING UP / SHAKING HEAD
+  CASE 25,27,29,31,33:
+               xa= 973:ya=267:sx= 67:sy= 51:tx=  5
+  CASE 26,30 : xb= 973:yb=267:sbx=67:sby=51:tbx= 5
+               xa= 998:ya=226:sx= 15:sy= 23:tx=-48:          ty=20-(who=4)*2-(who=6)*4
+  CASE 28,32 : xb= 973:yb=267:sbx=67:sby=51:tbx= 5
+               xa=1014:ya=226:sx= 16:sy= 23:tx=-48-(who=6)*2:ty=20-(who=4)*2-(who=6)*4
+  'SEATED
+  CASE 34 : xa=1110:ya=241:sx=64:sy=78:tx=5 'ON THE BENCH / SUBWAY
+
+  'LEAVING THROUGH THE DOOR / LEANING IN THE WALL
+  CASE 35 : xa=1040:ya=228:sx=42:sy=44:tx=5:ty= 0:xb=1069:yb=273:sbx=31:sby=45:tbx= 8
+  CASE 36 : xa=1040:ya=228:sx=42:sy=44:tx=5:ty= 1:xb=1040:yb=273:sbx=29:sby=45:tbx=12
+  CASE 37 : xa=1040:ya=228:sx=42:sy=44:tx=5:ty= 0:xb=1069:yb=273:sbx=31:sby=45:tbx= 8
+  CASE 38 : xa=1040:ya=228:sx=42:sy=44:tx=5:ty=-1:xb=1082:yb=227:sbx=28:sby=45:tbx= 3
+  CASE 39 : xa=1040:ya=228:sx=42:sy=44:tx=5:ty= 0:xb=1069:yb=273:sbx=31:sby=45:tbx= 8
+  'BURNING
+  CASE 80 : xa=  0:ya=993:sx=121:sy=72: Who=4
+  CASE 81 : xa=121:ya=993:sx=123:sy=72: Who=4
+  CASE 82 : xa=244:ya=993:sx=121:sy=72: Who=4
+
+ END SELECT 'END BRED / JAKE / DUG
+ 
+ INC ya,(Who-4)*93
+ INC yb,(Who-4)*93
+
+END SUB
+
+

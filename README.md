@@ -9,8 +9,14 @@ PS.: The current enemies on the CMM2 G1 probably will not be implemented because
 Changelog:
 
 2021-07-03
+- Fixed bad position of front end objects in the ending cutscenes
+- Source code repositioned inside the INC files (again)
+- Little optimizations in the enemies
+- Changes in Poison / Roxy movements to keep more similar to the arcade
+- Fixed J / Two P desappearing when get up
 - Finished Holly Wood molotov and fire (but I need to optimize it)
 - Now enemies and players can be burned with fire
+- Implemented difficult level
 
 2021-07-02
 - Implemented an option menu

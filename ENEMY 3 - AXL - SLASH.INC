@@ -1,3 +1,5 @@
+' AXL / SLASH ENEMY CONTROLLER
+
 SUB Enemy_AXL_SLASH(T,PL)
  LOCAL II,TT
 
@@ -104,11 +106,11 @@ SUB Enemy_AXL_SLASH(T,PL)
   CASE 68:
    EAN(T)=19: EAniDelay(T)=0: EAniSPD(T)=50
    STE(T)=69
-   IF Hitting(EHIT(T))<=0 THEN STE(T)=1
+   IF EHURT(T)<=0 THEN STE(T)=1
   CASE 69:
    EAN(T)=19: EAniDelay(T)=0: EAniSPD(T)=50
    STE(T)=68
-   IF Hitting(EHIT(T))<=0 THEN STE(T)=1
+   IF EHURT(T)<=0 THEN STE(T)=1
 
   'PUNCH -----------------------------------------------------------------------------
   CASE 70: EAN(T)=12: EAniDelay(T)=0: EAniSpd(T)=2: INC STE(T)
@@ -117,7 +119,7 @@ SUB Enemy_AXL_SLASH(T,PL)
    IF COLLIDE(0)=&HFFFFFF AND PHurted(PL)=0 AND EAN(T)=14 AND Special(PL)=0 THEN
     InsertWait(PL,T,2)
     InsertHit(XH(PL),YH(PL),1) 'HIT
-    PLSFX(PL)=27
+    PLAY_SAMPLE 27,PL
     INC Energy(PL),-ES_POW(T)
     PHurted(PL)=2
     SIDE(PL)=(ESide(T)=4)*5+(ESide(T)=5)*4 'CHANGE PLAYER SIDE
@@ -135,7 +137,7 @@ SUB Enemy_AXL_SLASH(T,PL)
    IF COLLIDE(0)=&HFFFFFF AND PHurted(PL)=0 AND EAN(T)=18 AND Special(PL)=0 THEN
     InsertWait(PL,T,2)
     InsertHit(XH(PL),YH(PL),1) 'HIT
-    PLSFX(PL)=27
+    PLAY_SAMPLE 27,PL
     INC Energy(PL),-ES_POW(T)
     PHurted(PL)=2
     SIDE(PL)=(ESide(T)=4)*5+(ESide(T)=5)*4 'CHANGE PLAYER SIDE
@@ -158,7 +160,7 @@ SUB Enemy_AXL_SLASH(T,PL)
 
   'RETURN TO THE ORIGINAL STATE IF SOMETHING GOES WRONG ON GAPPLE
   CASE >=171:
-   STE(T)=1: EAniDelay(T)=0: EAniSpd(T)=3: ESJMP(T)=0: ESPDY(T)=0
+   STE(T)=1: EAniDelay(T)=0: EAniSpd(T)=3: ESJMP(T)=0
 
   'FOR ALL OTHER CASES, GET UP!
   CASE ELSE: EAN(T)=1: STE(T)=1
@@ -166,3 +168,57 @@ SUB Enemy_AXL_SLASH(T,PL)
  END SELECT 'END ACTION SCRIPTS AXL / SLASH ------------------------------------------
  
  END SUB
+
+
+' DRAW AXL / SLASH
+
+SUB Draw_AXL_SLASH(num,who)
+
+ SELECT CASE num
+  'ENERGY AVATAR
+  CASE 99 : xa=0:ya=-(who=10):sx=59:sy=16:tx=-14:ty=0
+  'STOPPED
+  CASE  0 : xa=114:ya=7:sx=67:sy=99:tx=0:ty=0 
+  'WALKING 
+  CASE  1 : xa=114:ya=7:sx=67:sy=42:xb=181:yb=  0:sbx=52:sby=56:tbx= 22:if who=10 then INC yb,5
+  CASE  2 : xa=114:ya=7:sx=67:sy=42:xb=181:yb= 56:sbx=36:sby=56:tbx= -2:if who=10 then INC yb,5
+  CASE  3 : xa=114:ya=7:sx=67:sy=42:xb=233:yb=  0:sbx=64:sby=56:tbx= -6:if who=10 then INC yb,5
+  CASE  4 : xa=114:ya=7:sx=67:sy=42:xb=217:yb= 56:sbx=51:sby=56:tbx= 14:if who=10 then INC yb,5
+  CASE  5 : xa=114:ya=7:sx=67:sy=42:xb=297:yb=  0:sbx=33:sby=56:tbx=  0:if who=10 then INC yb,5
+  CASE  6 : xa=114:ya=7:sx=67:sy=42:xb=268:yb= 56:sbx=64:sby=56:tbx=  0:if who=10 then INC yb,5
+  'PUNCH
+  CASE 12 : xa=462:ya=  0:sx=64:sy=106:tx=-10: if who=10 then xa=462:ya=107-107
+  CASE 13 : xa=398:ya=  0:sx=64:sy=116:tx=-10: if who=10 then xa=334:ya=91-107
+  CASE 14 : xa=526:ya= 16:sx=99:sy= 90:tx=-44
+  CASE 15 : xa=625:ya= 20:sx=75:sy= 86:tx=-20
+  'KICKING
+  CASE 16 : xa=700:ya= 12:sx=53:sy=95:tx=  0
+  CASE 17 : xa=753:ya= 16:sx=99:sy=90:tx=-30
+  CASE 18 : xa=700:ya= 12:sx=53:sy=95:tx=  0
+  'BLOCKING
+  CASE 19 : xa=332:ya=  0:sx=54:sy=91:tx=0:ty=0: if who=10 then xa=398: ya=116-107: sy=92
+  'HURT
+  CASE 21 : xa=852:ya= 21:sx=59:sy= 84:tx=0 'IN THE STOMACH
+  CASE 22 : xa=911:ya=  6:sx=64:sy=100:tx=0:yp=20 'IN THE FACE
+  'FALLING
+  CASE 23 : xa=975:ya= 41:sx=112:sy=59:tx=0:ty=0    'FALLING DOWN
+  CASE 24,50,52,54,56,58,60:
+            xa=975:ya=  0:sx=128:sy=26:tx=0:ty=0    'LYING ON THE FLOOR / DEAD
+  'GETTING UP
+  CASE 25 : xa=1087:ya=52:sx= 71:sy= 54:tx=0:ty=0
+  'SEATED
+  CASE 34 : xa=  0:ya= 42:sx= 62:sy= 64:tx=0:ty=0 'ON THE BENCH / FLOOR / SUBWAY
+  'LEANING IN THE WALL
+  CASE 35 : xa= 62:ya=  4:sx= 52:sy=102:tx=0:ty=0
+  'BURNING
+  CASE 80 : xa=  0:ya=993:sx=121:sy=72:who=9
+  CASE 81 : xa=121:ya=993:sx=123:sy=72:who=9
+  CASE 82 : xa=244:ya=993:sx=121:sy=72:who=9
+
+ END SELECT 'END AXL / SLASH
+ INC ya,(who-9)*107
+ INC yb,(who-9)*107
+
+END SUB
+
+
