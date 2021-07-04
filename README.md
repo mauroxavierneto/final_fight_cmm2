@@ -8,6 +8,11 @@ PS.: The current enemies on the CMM2 G1 probably will not be implemented because
 
 Changelog:
 
+2021-07-04
+- Implemented Round 1-3 final cutscene
+- Fixed many collision bugs in 2-player mode
+- Some optimizations in 2-player mode
+
 2021-07-03
 - Fixed bad position of front end objects in the ending cutscenes
 - Source code repositioned inside the INC files (again)
@@ -50,5 +55,3 @@ Changelog:
 - Added Holly Wood (not red) and El Gado 
 - Added Bill Bull and Graham Oriber
 - Added Poison and Roxy
-
-

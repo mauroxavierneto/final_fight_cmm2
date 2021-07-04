@@ -135,8 +135,6 @@ SUB Round_1_Cutscenes(Ending)
      ' ** SECTION 1 ENDING: DOWNSTAIRS TO THE SLUMS GALLERY ** ------------------------------------
      ELSE
 
-      'IF RXX=64 THEN SCRX=1130
-
       ' REMOVE A BLOCK OF ANIMATED DOOR TO FIX THE DOWNSTAIRS SCENE FOREGROUND
       PAGE WRITE 12 
       BOX 213,0,7,105,1,0,0
@@ -152,9 +150,9 @@ SUB Round_1_Cutscenes(Ending)
       ' PLAYERS WALKING TO THE DOWNSTAIRS
       IF OSDX>7000 AND OSDX<9600 THEN
        FOR PL=1 TO MAXPL
-        IF X(PL)<=MM.HRES-120 THEN
+        IF X(PL)<=MM.HRES-100 THEN
          INC X(PL), SPD(PL): MV=1: MVLR(PL)= 1
-         IF X(PL)>MM.HRES-120 THEN X(PL)=MM.HRES-120 ELSE GO=0
+         IF X(PL)>MM.HRES-100 THEN X(PL)=MM.HRES-100 ELSE GO=0
         ENDIF
         IF RealY(PL)<189 THEN INC RealY(PL), SPD(PL): MV=1: MVUD(PL)= 1: GO=0
         IF RealY(PL)>196 THEN INC RealY(PL),-SPD(PL): MV=1: MVUD(PL)=-1: GO=0
@@ -168,9 +166,9 @@ SUB Round_1_Cutscenes(Ending)
       IF OSDX=7000 THEN
        GO=0
        FOR PL=1 TO MAXPL 
-        IF X(PL)<MM.HRES-75 THEN T=4 ELSE T=(AN(PL) MOD 5 <=2)*3
+        IF X(PL)<MM.HRES-55 THEN T=4 ELSE T=(AN(PL) MOD 5 <=2)*3
         INC X(PL), T: MV=1: MVLR(PL)= 1
-        IF X(PL)>MM.HRES-80 THEN INC RealY(PL), T/1.3: MVUD(PL)= 1
+        IF X(PL)>MM.HRES-60 THEN INC RealY(PL), T/1.3: MVUD(PL)= 1
         ' REACH THE LIMIT
         IF X(PL)>MM.HRES+30 THEN INC GO
        NEXT PL
@@ -343,7 +341,67 @@ SUB Round_1_Cutscenes(Ending)
         PAGE WRITE 12: BOX 213,0,7,105,1,0,0: PAGE WRITE 1
 
       END SELECT 'END SELECT OSDX
-   
+
+     ' ** SECTION 3 ENDING: DOWNSTAIRS TO THE SUBWAY ** -------------------------------------------
+     '    END OF ROUND 1
+     ELSE
+
+      ' INSERT SCENE INTO THE FOREGROUND
+      PAGE WRITE 1
+      BLIT 176, 96,MM.HRES-144+60, 96, 16,144,10,4
+      BLIT 192,160,MM.HRES-128+60,160,128, 80,10,4
+
+      GO=1
+      IF OSDX>=9970 THEN 
+       GO=0: MV=0: FOR PL=1 TO MAXPL: AN(PL)=0: NEXT PL
+       IF OSDX=9980 THEN 
+        LoadRoundMap(Round,1) 'LOAD ENDING MAP
+        PLAY STOP: PLAY MP3 "./MUSIC/Level Complete.mp3": OSDP=0
+       ENDIF
+      ELSE
+       INC OSDP,10
+       ShowRoundMap(SW,OSDP-(MM.VRES+50))
+       IF OSDP-(MM.VRES+50)>0 THEN PRINTM(MM.HRES\2-11*8,110,SW,"ROUND1 CLEAR")
+      ENDIF
+
+      ' PLAYERS WALKING TO THE DOWNSTAIRS
+      IF OSDX>5200 AND OSDX<9980 THEN
+       FOR PL=1 TO MAXPL
+        IF X(PL)<=MM.HRES-70 THEN
+         INC X(PL), SPD(PL): MV=1: MVLR(PL)= 1
+         IF X(PL)>MM.HRES-70 THEN X(PL)=MM.HRES-70 ELSE GO=0
+        ENDIF
+        IF RealY(PL)<189 THEN INC RealY(PL), SPD(PL): MV=1: MVUD(PL)= 1: GO=0
+        IF RealY(PL)>196 THEN INC RealY(PL),-SPD(PL): MV=1: MVUD(PL)=-1: GO=0
+        IF RealY(PL)>=189 AND RealY(PL)<=196 THEN RealY(PL)=194: Y(PL)=0
+       NEXT PL
+      ENDIF
+    
+      IF GO THEN OSDX=5200
+ 
+      ' GO DOWNSTAIRS
+      IF OSDX=5200 THEN
+       GO=0
+       FOR PL=1 TO MAXPL 
+        IF X(PL)<MM.HRES-55 THEN T=4 ELSE T=(AN(PL) MOD 5 <=2)*3
+        INC X(PL), T: MV=1: MVLR(PL)= 1
+        IF X(PL)>MM.HRES-70 THEN INC RealY(PL), T/1.3: MVUD(PL)= 1
+        ' REACH THE LIMIT
+        IF X(PL)>MM.HRES+30 THEN INC GO
+       NEXT PL
+      ENDIF
+
+      ' NEXT ROUND
+      IF GO=MAXPL THEN
+       IF MM.INFO(SOUND)<>"MP3" THEN
+        FadeOut: Section=1: Round=2: LoadRound: OSDX=2220: Round_2_Cutscenes(0)
+       ENDIF
+      ENDIF
+
+      FOR PL=1 TO MAXPL
+       SIDE(PL)=4
+      NEXT PL
+
      ENDIF 'ENDIF Ending ----------------------------------------------------------------
 
 

@@ -290,17 +290,15 @@ ELSE
  MODE 7,8: RX=1: RXX=0
 ENDIF
 
+Round=1: Section=1: LoadRound
+
 'ALWAYS NEED TO BE LOADED THE FIRST SECTION TO TEST ANY OTHER SECTION
-IF NOINTRO THEN LoadRound: Section=1
-
-Round=1: Section=1
-
-LoadRound
+IF NOINTRO THEN Section=3: LoadRound
 
 IF NOINTRO THEN
  OSDX=20: MAXPL=1
  PLType(1)=GUY
- PLType(2)=CODY
+ PLType(2)=HAGGAR
 ENDIF
 
 'LOAD GENERAL ASSETS
@@ -379,7 +377,7 @@ DO WHILE GameLogic=1
 
  'GENERIC SWITCHER
  SB=(SB=0)
- IF SB=1 THEN SW=(SW=0)
+ IF SB=1 THEN SW=(SW=0): IF SW=1 THEN SWW=(SWW=0)
 
  'RESET WHICH SIDE THE SCREEN IS SCROLLING
  ScrSide=0
@@ -609,8 +607,11 @@ FOR PL=1 TO MAXPL ' ------------------------------------------------------------
 
   'GRAVITY
   IF (Jump(PL)>1 AND Jump(PL)<99) or (PHurted(PL)>2 and PHurted(PL)<=15) THEN
-   INC X(PL),JumpX(PL): INC JumpY(PL),1
+   INC X(PL),JumpX(PL): INC JumpY(PL)
+  ELSE
+   INC JumpY(PL),2
   ENDIF
+
   INC Y(PL),JumpY(PL)
  
   'GET UP FASTER IF HURTED WHEN PRESSING BUTTONS
@@ -644,8 +645,10 @@ FOR PL=1 TO MAXPL ' ------------------------------------------------------------
    INC Score(PL),1000
    'ENEMY DEAD ON PILE DRIVER?
    IF EEnergy(T)>-99 AND EEnergy(T)<0 THEN
+    EAN(T)=21: STE(T)=52: ESJMP(T)=-10: EY(T)=0: INC RealY(T),20
+    ESPDX(T)=(SIDE(PL)=4)*5-(SIDE(PL)=5)*5
     EEnergy(T)=-99: PLAY_SAMPLE 10+(EType(T)=POISON OR EType(T)=ROXY)*16,4 'DEAD SOUND
-    INC Score(PL),ESCORE(T) 'INC PLAYER SCORE
+    INC SCORE(EHIT(T)),ESCORE(T) 'INC PLAYER SCORE
    ENDIF
   ENDIF
  ENDIF
@@ -664,7 +667,7 @@ FOR PL=1 TO MAXPL ' ------------------------------------------------------------
   'CALL THE SCREEN SCROLL ONLY UNTIL REACH THE END OF THE ROUND
   IF X(PL)>MM.HRES-155 AND ScrX<LIMRD THEN   
    ScrSide=SPD(PL): PLSCR=PL
-   IF X(3-PL)<=30 AND MAXPL=2 THEN
+   IF X(3-PL)<=35 AND MAXPL=2 THEN
     ScrSide=0
    ELSE
     IF ScrollLock=0 THEN INC X(PL),-SPD(PL)
@@ -674,10 +677,10 @@ FOR PL=1 TO MAXPL ' ------------------------------------------------------------
   'CALL THE SCREEN SCROLL TO LEFT WHEN THE OPTION IS TURNED ON
   IF X(PL)<90 AND ScrX>LIMLD AND LEFTLIM=1 THEN
    ScrSide=-SPD(PL): PLSCR=PL
-   IF X(3-PL)>=MM.HRES-165 AND MAXPL=2 THEN
+   IF X(3-PL)>=MM.HRES-35 AND MAXPL=2 THEN
     ScrSide=0
    ELSE
-    IF ScrollLock=0 THEN INC X(PL),SPD(PL)
+    IF ScrollLock=0 THEN INC X(PL),SPD(PL) ELSE ScrollLock=-1
    ENDIF
   ENDIF
 
@@ -689,9 +692,16 @@ FOR PL=1 TO MAXPL ' ------------------------------------------------------------
 
  ENDIF 'END OF OSDX=0 -----------------------------------------------------------------------------
 
- PILE=(AN(PL)=32 AND PlType(PL)=HAGGAR)
- EPILE=GrapE(PL)
+ IF GrapE(PL)>0 THEN
+  IF EEnergy(GrapE(PL))<=0 THEN
+   GrapE(PL)=0: Grap(PL)=0: Combo(PL)=0
+   Punch(PL)=1: AniDelay(PL)=0: AniSpd(PL)=1: Kick(PL)=0
+  ENDIF
+ ENDIF
 
+ EPILE=GrapE(PL)
+ PILE=(AN(PL)=32 AND PlType(PL)=HAGGAR)
+ 
  INC AniDelay(PL)
  IF AniDelay(PL)>=AniSpd(PL) THEN
   AniDelay(PL)=0

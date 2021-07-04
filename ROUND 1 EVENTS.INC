@@ -165,7 +165,7 @@ SUB Round_1_Events(xx)
      IF OSDX=2200 THEN
       'SPAWN OBJECT - TIRES
       SpawnObject(220,185,13,,140) 'BARBECUE
-      SpawnObject(274,185,13,,-3)  'RANDOM WEAPON
+      SpawnObject(274,185,13,,-3+(MAXPL=2)*143)  'RANDOM WEAPON OR BARBECUE WHEN 2 PLAYERS
       'ENEMIES
       SpawnEnemy(470,180, 7,66,4) 'J
       SpawnEnemy(540,180, 9,64,5) 'AXEL

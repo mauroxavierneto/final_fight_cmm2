@@ -63,6 +63,7 @@ SUB StageScrollEvent(xx,PL)
 
  'DON'T ALLOW SCROLL FOR A WHILE
  IF ScrollLock>0 THEN INC ScrollLock,-1: xx=0
+ IF ScrollLock=-1 THEN ScrollLock=0
 
  xx=int(xx)
 
@@ -83,12 +84,11 @@ SUB StageScrollEvent(xx,PL)
  next t
 
  'LIMIT OF THE ROUND 
- IF ScrX < LIMRD THEN INC ScrX,xx
+ INC ScrX,xx
 
  IF ScrX >= LIMRD THEN
   inc xs,LIMRD-ScrX
   ScrX=LIMRD
-  IF CNTE<>0 THEN WaitRound=0
   'LOAD END OF SECTION CUTSCENE ONLY WHEN PLAYERS
   'ARE STOPPED AND THERE IS NO ENEMY ON THE SCREEN
   IF CNTE=0 AND OSDX<5000 THEN
@@ -101,6 +101,7 @@ SUB StageScrollEvent(xx,PL)
     IF GO THEN OSDX=9990
    ENDIF
   ENDIF
+  IF CNTE<>0 THEN WaitRound=0
  ENDIF
 
  'CREATE HORIZONTAL LIMIT FOR THE ROUND
