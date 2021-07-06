@@ -22,7 +22,7 @@ ENDIF
 OPTION CONSOLE SCREEN
 
 TIMER=0
-DEBUG=0
+DEBUG=1
 VSYNC=0
 NOINTRO=0
 
@@ -171,8 +171,8 @@ DIM SPD(3),SIDE(3),AN(3),SIDEANT(3),ANANT(3)
 DIM AniSpd(3),AniDelay(3),Wait(3),PLWait(3),SCORE(3)
 ' PLAYER HURTED? / COMBO WHEN PLAYER HURTED / WHO HURTED THE PLAYER?
 DIM Phurted(3),HCombo(3),WhoE(3)
-' IT'S MOVING TO LEFT OR RIGHT? / UP OR DOWN?
-DIM MVLR(3), MVUD(3)
+' IT'S MOVING TO LEFT OR RIGHT? / UP OR DOWN? / PILE DRIVING?
+DIM MVLR(3), MVUD(3), PILE(3)
 ' PUNCH / KICK / COMBO / GRAPPLE / ITEM ON THE FLOOR ABOVE THE PLAYER / PLAYER BURNING?
 DIM FreePunch(3),Punch(3),Kick(3),Combo(3),Grap(3),Item(3),Burned(3)
 ' JUMP / JUMP SPEED X,Y / SPECIAL ATTACK FLAG / TEMP CONTROL TYPE (TO STOP PLAYERS)
@@ -293,7 +293,7 @@ ENDIF
 Round=1: Section=1: LoadRound
 
 'ALWAYS NEED TO BE LOADED THE FIRST SECTION TO TEST ANY OTHER SECTION
-IF NOINTRO THEN Section=3: LoadRound
+IF NOINTRO THEN Section=1: LoadRound
 
 IF NOINTRO THEN
  OSDX=20: MAXPL=1
@@ -643,9 +643,13 @@ FOR PL=1 TO MAXPL ' ------------------------------------------------------------
    T=GrapE(PL): SHAKE=10
    INC EEnergy(T),-EEnMAX(T)\5-30+ES_DEF(T): Jump(PL)=36: AniDelay(PL)=999
    INC Score(PL),1000
+   STE(T)=60
+   ESPDX(T)=(SIDE(PL)=4)*6-(SIDE(PL)=5)*6: RealY(T)=RealY(PL)
+   EAniDelay(T)=0:EAniSpd(T)=0: ESJMP(T)=-6
+   Grap(PL)=0: GrapE(PL)=0: Kick(PL)=0: Punch(PL)=1
    'ENEMY DEAD ON PILE DRIVER?
    IF EEnergy(T)>-99 AND EEnergy(T)<0 THEN
-    EAN(T)=21: STE(T)=52: ESJMP(T)=-10: EY(T)=0: INC RealY(T),20
+    EAN(T)=21: STE(T)=52: ESJMP(T)=-10: EY(T)=0: INC RealY(T),4
     ESPDX(T)=(SIDE(PL)=4)*5-(SIDE(PL)=5)*5
     EEnergy(T)=-99: PLAY_SAMPLE 10+(EType(T)=POISON OR EType(T)=ROXY)*16,4 'DEAD SOUND
     INC SCORE(EHIT(T)),ESCORE(T) 'INC PLAYER SCORE
@@ -666,23 +670,23 @@ FOR PL=1 TO MAXPL ' ------------------------------------------------------------
 
   'CALL THE SCREEN SCROLL ONLY UNTIL REACH THE END OF THE ROUND
   IF X(PL)>MM.HRES-155 AND ScrX<LIMRD THEN   
-   ScrSide=SPD(PL): PLSCR=PL
+   ScrSide=ABS(SPD(PL)): PLSCR=PL
    IF X(3-PL)<=35 AND MAXPL=2 THEN
     ScrSide=0
    ELSE
-    IF ScrollLock=0 THEN INC X(PL),-SPD(PL)
+    IF ScrollLock=0 THEN INC X(PL),-ABS(SPD(PL))
    ENDIF
   ENDIF
 
   'CALL THE SCREEN SCROLL TO LEFT WHEN THE OPTION IS TURNED ON
-  IF X(PL)<90 AND ScrX>LIMLD AND LEFTLIM=1 THEN
-   ScrSide=-SPD(PL): PLSCR=PL
-   IF X(3-PL)>=MM.HRES-35 AND MAXPL=2 THEN
-    ScrSide=0
-   ELSE
-    IF ScrollLock=0 THEN INC X(PL),SPD(PL) ELSE ScrollLock=-1
-   ENDIF
-  ENDIF
+  'IF X(PL)<90 AND ScrX>LIMLD AND LEFTLIM=1 THEN
+  ' ScrSide=-ABS(SPD(PL)): PLSCR=PL
+  ' IF X(3-PL)>=MM.HRES-35 AND MAXPL=2 THEN
+  '  ScrSide=0
+  ' ELSE
+  '  IF ScrollLock=0 THEN INC X(PL),ABS(SPD(PL)) ELSE ScrollLock=-1
+  ' ENDIF
+  'ENDIF
 
   'STAGE / ROUND LIMIT
   IF X(PL)>R_SCR THEN X(PL)=R_SCR: ScrSide=0
@@ -699,8 +703,7 @@ FOR PL=1 TO MAXPL ' ------------------------------------------------------------
   ENDIF
  ENDIF
 
- EPILE=GrapE(PL)
- PILE=(AN(PL)=32 AND PlType(PL)=HAGGAR)
+ PILE(PL)=(AN(PL)=32 AND PlType(PL)=HAGGAR)*15
  
  INC AniDelay(PL)
  IF AniDelay(PL)>=AniSpd(PL) THEN
@@ -727,7 +730,7 @@ FOR PL=1 TO MAXPL ' ------------------------------------------------------------
  ENDIF ' END OF THE PLAYER WAIT ANIMATION FOR HITS --------------------------------------
 
  ' INSERT PLAYER COLLISION
- PutPlayer(X(PL),RealY(PL)+Y(PL)+PILE*15,AN(PL),SIDE(PL),PlType(PL),PL,0)
+ PutPlayer(X(PL),RealY(PL)+Y(PL)+PILE(PL),AN(PL),SIDE(PL),PlType(PL),PL,0)
 
  ' RESET COLLISION WITH ITEMS ABOVE THE PLAYER
  ITEM(PL)=0
@@ -772,12 +775,12 @@ NEXT PL '-----------------------------------------------------------------------
   SELECT CASE IND
    CASE <4: 'PLAYERS
     IF Energy(IND)>=0 THEN
-     PutPlayer(X(IND)+(AN(PL)=39)*SW*2,RealY(IND)+Y(IND)+PILE*15,AN(IND),SIDE(IND),PlType(IND),IND,1)
+     PutPlayer(X(IND)+(AN(PL)=39)*SW*2,RealY(IND)+Y(IND)+PILE(IND),AN(IND),SIDE(IND),PlType(IND),IND,1)
     ENDIF
    CASE 4 TO 9: 'DRAW ACTIVE ENEMIES    
     IF STE(IND)>0 THEN
      C_A=EX(IND)+((EAN(IND)=21 OR EAN(IND)=22) AND STE(IND)<120)*SW*2
-     C_B=RealY(IND)+EY(IND)+(EPILE=IND AND PILE)*15
+     C_B=RealY(IND)+EY(IND)+( (GrapE(1)=IND AND PILE(1)) OR (GrapE(2)=IND AND PILE(2)) )*15
      C_C=EAN(IND)+((EBURNED(IND)>0) AND (EAN(IND)=23))*(56+EBURNED(IND))
      PutEnemy(C_A,C_B,C_C,ESide(IND),EType(IND),IND,1)
     ENDIF

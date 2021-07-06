@@ -67,6 +67,8 @@ SUB ControlEnemy(T)
 
   'GENERIC RULES FOR ALL THE ENEMIES ----------------------------------------------------
 
+  NOCOL=0
+
   INC EX(T),ESPDX(T)
 
   'HORIZONTAL LIMIT
@@ -77,6 +79,8 @@ SUB ControlEnemy(T)
     IF EType(T)=HOLLY_WOOD_RED THEN ESIDE(T)=(ESIDE(T)=4)*5+(ESIDE(T)=5)*4
    ENDIF
   ELSE
+   'DAMND
+   IF STE(T)=84 THEN NOCOL=1 'REMOVE COLLISION WHEN SEATED ON THE WALL
    IF EMV(T)=1 AND EX(T)>R_SCR AND GrapE(PL)<>T THEN EX(T)=R_SCR
   ENDIF
 
@@ -108,7 +112,7 @@ SUB ControlEnemy(T)
 
   'READ COLLISION - COLLIDED WITH OTHER THROWED ENEMY? IS_TR = IS THROWED?
   IS_TR=0
-  IF ETR(T)=0 THEN
+  IF ETR(T)=0 AND NOCOL=0 THEN
   'WHICH SIDE THE ENEMY MUST FALL?
    IF COLLIDE(0)=&HFF00FF THEN TESIDE=-1: IS_TR=1:InsertWait(0,T,2)
    IF COLLIDE(0)=&HFF00BF THEN TESIDE= 1: IS_TR=1:InsertWait(0,T,2)
@@ -125,20 +129,20 @@ SUB ControlEnemy(T)
     ESJMP(T)=-ABS(ESJMP(T))\2.5: EY(T)=0: ESPDX(T)=ESPDX(T)/2
     EAN(T)=24: EAniDelay(T)=0: EAniSpd(T)=20: STE(T)=52
    'ENEMY WAS THROWED OR WAS FALLING?
-   'IF ETR(T)>0 OR ESJMP(T)<0 THEN
-   'ONLY TO GET THE COORDINATES TO THE SMOKE
-    PutEnemy(EX(T),RealY(T)+EY(T),EAN(T),ESide(T),EType(T),T,-2)
-    ETR(T)=0: PLAY_SAMPLE 3,4 'HIT THE FLOOR
-    InsertHit(XTHit-10-RND*10,YTHit,2) 'SMOKE
-    InsertHit(XTHit+10+RND*10,YTHit,2)
-    INC EEnergy(T),-7+ES_DEF(T) 'LOOSE ENERGY WHEN THROWED
-    'DEAD SOUND AND SCORE
-    IF EEnergy(T)>-99 AND EEnergy(T)<=0 THEN
-     EEnergy(T)=-99: PLAY_SAMPLE 10+(EType(T)=POISON OR EType(T)=ROXY)*16,3
-     IF STE(T)<50 THEN STE(T)=52
-     INC SCORE(PL),ESCORE(T): EXIT SUB
+    IF ETR(T)>0 OR ESJMP(T)<0 THEN
+    'ONLY TO GET THE COORDINATES TO THE SMOKE
+     PutEnemy(EX(T),RealY(T)+EY(T),EAN(T),ESide(T),EType(T),T,-2)
+     ETR(T)=0: PLAY_SAMPLE 3,4 'HIT THE FLOOR
+     InsertHit(XTHit-10-RND*10,YTHit,2) 'SMOKE
+     InsertHit(XTHit+10+RND*10,YTHit,2)
+     INC EEnergy(T),-7+ES_DEF(T) 'LOOSE ENERGY WHEN THROWED
+     'DEAD SOUND AND SCORE
+     IF EEnergy(T)>-99 AND EEnergy(T)<=0 THEN
+      EEnergy(T)=-99: PLAY_SAMPLE 10+(EType(T)=POISON OR EType(T)=ROXY)*16,3
+      IF STE(T)<50 THEN STE(T)=52
+      INC SCORE(PL),ESCORE(T): EXIT SUB
+     ENDIF
     ENDIF
-   'ENDIF
 
    ELSEIF EY(T)<0 THEN 'IF IS FALLING BUT DOESN'T TOUCH THE FLOOR YET, THEN USE GRAVITY FORCE
 
@@ -197,7 +201,7 @@ SUB ControlEnemy(T)
    C_C=(STE(T)>=120 AND GrapE(I)=T AND (Grap(I)=21 OR Grap(I)=22))
    C_D=(ECOMBO(T)<1)
    C_E=-300*(GrapE(I)=T AND PlType(I)=HAGGAR AND STE(T)>=120 AND Jump(PL)>30)      
-   IF (COLLIDE(I)=&HFF0000-C_E OR IS_TR) AND (AN(I)<>ANANT(I) OR C_A OR C_C) AND C_B AND C_D AND AN(I)<>23 THEN
+   IF (COLLIDE(I)=&HFF0000-C_E OR IS_TR) AND (AN(I)<>ANANT(I) OR C_A OR C_C) AND C_B AND C_D AND AN(I)<>23 AND NOCOL=0 THEN
 
     'AXL / SLASH BLOCKING - REMOVE COLLISION AND EXIT SUB
     IF (Etype(T) = AXL OR Etype(T) = SLASH) THEN
@@ -267,17 +271,18 @@ SUB ControlEnemy(T)
     ' THROW THE ENEMY WHEN PUNCHING AND KEEPING PRESSED UP OR DOWN 
     IF MVUD(I)<>0 AND AN(I)<>22 AND SPECIAL(I)=0 AND (Combo(I)>=3-(PlType(I)=3) OR (Grap(I)=20 AND PlType(I)=3)) THEN
      INC SCORE(I),50
-     EX(T)=X(I)+(SIDE(I)=4)*8-(SIDE(I)=5)*8: RealY(T)=RealY(I)-4
-     Grap(I)=22: GrapE(I)=T: AN(I)=22: Hitting(I)=0: Combo(I)=0: KO=2: ETR(T)=I: Punch(I)=131
+     EX(T)=X(I)+(SIDE(I)=4)*8-(SIDE(I)=5)*8: RealY(T)=RealY(I)-4: InsertWait(I,T,6)
+     Grap(I)=22: GrapE(I)=T: AN(I)=22: Hitting(I)=0: Combo(I)=0
+     ETR(T)=I: KO=2: Punch(I)=131
     ENDIF
 
     ' SET WHAT PLAYER IS THROWING THE ENEMY AND CALL THROW/SUPLEX ANIMATION
     ' IF (Grap(I)=22 AND GrapE(I)=T) AND SPECIAL(I)=0 THEN Combo(I)=0: KO=2: ETR(T)=I: Punch(I)=131
 
     ' HIT ENEMIES WHEN PILE DRIVING OTHER ENEMY
-    IF PlType(I)=3 AND AN(I)=32 THEN
+    IF PlType(I)=HAGGAR AND AN(I)=32 THEN
      Hit(I)=T
-     EAniSpd(T)=999: EANiDelay(T)=0: ESJMP(T)=-10: EAN(T)=23
+     EAniSpd(T)=25: EANiDelay(T)=0: ESJMP(T)=-10: EAN(T)=23
      STE(T)=51: InsertWait(I,T,4)
      RealY(T)=RealY(I)-4
      ESPDX(T)=(SIDE(I)=4)*4-(SIDE(I)=5)*4
@@ -292,12 +297,12 @@ SUB ControlEnemy(T)
      IF Punch(I)>100 AND Punch(I)<=110) THEN Punch(I)=1: Jump(I)=0: GrapE(I)=0: Grap(I)=0
   
      ' SET SIDE OF THE SHAPE AND THROWING
-     IF KO=2 OR (MVUD(I)<>0 AND Combo(I)>=3) THEN       
+     IF KO=2 OR (MVUD(I)<>0 AND Combo(I)>=3) THEN
       IF PlType(I)<HAGGAR THEN
        SIDE(I)=5-(SIDE(I)=5)
        MVLR(I)=1-(SIDE(I)=5)*2
       ENDIF
-      STE(T)=60: InsertWait(I,T,3)
+      STE(T)=60: IF ETR(T)=0 THEN InsertWait(I,T,3)
       ESJMP(T)=-11: RealY(T)=RealY(I)-4
       ESIDE(T)=(Side(I)=4)*5+(Side(I)=5)*4
       IF Combo(I)<3 THEN ESIDE(T)=5-(MVLR(I)=1): Side(I)=4+(MVLR(I)=1)
@@ -411,6 +416,7 @@ END SUB
 ' GRAPPLED BY A PLAYER --------------------------------------------------------------
 ' (STE 120 TO 170)
 SUB GrapPlayer(T)
+ LOCAL GO
 
  'RESIST IF GRAPPLED FOR A WHILE WITHOUT BEING ATTACK
  EAN(T)=22
@@ -419,8 +425,11 @@ SUB GrapPlayer(T)
 
   'EXIT FROM THE LOOP IF ENEMY ARE INTERACTING WITH OTHER PLAYER
   IF GrapE(3-I)=T THEN CONTINUE FOR
-
-  IF PlType(I)=HAGGAR AND SB THEN INC STE(T),-1 'HAGGAR KEEP GRAPPLE FOR MORE TIME
+ 
+  IF PlType(I)=HAGGAR AND SB THEN
+   INC STE(T),-1 'HAGGAR KEEP GRAPPLE FOR MORE TIME
+   IF STE(T)<120 THEN STE(T)=120
+  ENDIF
   
   'RELEASE IF PLAYER USE SPECIAL OR JUMP (CODY OR GUY)
   IF Special(I)=1 OR (PlType(I) < HAGGAR AND Jump(I)>0) THEN
@@ -431,9 +440,9 @@ SUB GrapPlayer(T)
   IF PHurted(I)>0 THEN GrapE(I)=0: Grap(I)=0: STE(T)=170
   
   IF GrapE(I)=T THEN
-   EX(T)=X(I)+(SIDE(I)=4)*8-(SIDE(I)=5)*8: RealY(T)=RealY(I)+4-(PlType(I)=HAGGAR)*18
+   EX(T)=X(I)+(SIDE(I)=4)*8-(SIDE(I)=5)*8: RealY(T)=RealY(I)+4-(PlType(I)=HAGGAR)*8
    IF PlType(I)=HAGGAR THEN
-    EY(T)=Y(I): ESJMP(T)=0
+    EY(T)=Y(I)-10: ESJMP(T)=0
     INC EX(T),(SIDE(I)=4)*(32-(AN(I)=32)*24)-(SIDE(I)=5)*(32-(AN(I)=32)*24)
     IF AN(I)=32 THEN EAN(T)=21: EY(T)=Y(I)-10
     'PILE DRIVER ADJUST ENEMY POSITION AND SIDE
@@ -448,11 +457,16 @@ SUB GrapPlayer(T)
       Exit Sub
     END SELECT
    ENDIF
-   IF STE(T)>=170 THEN
-    STE(T)=52: EAniDelay(T)=0:EAniSpd(T)=3: ESJMP(T)=-3: RealY(T)=RealY(I)
-    Grap(I)=0: GrapE(I)=0: Combo(I)=0: Punch(I)=2: AniDelay(I)=0: AniSpd(I)=0
-   ENDIF
+  ELSE 'NOT GRAPPLED BY THE PLAYER
+   INC GO 
   ENDIF
+
+  'FREE THE ENEMY IF IT'S ENOUGH TIME OR IF NONE PLAYER GRAPPLED HIM
+  IF STE(T)>=170 OR GO=2 THEN
+   STE(T)=52: EAniDelay(T)=0:EAniSpd(T)=3: ESJMP(T)=-3: RealY(T)=RealY(I)
+   Grap(I)=0: GrapE(I)=0: Combo(I)=0: Punch(I)=2: AniDelay(I)=0: AniSpd(I)=0
+  ENDIF
+
  NEXT I
 
 END SUB

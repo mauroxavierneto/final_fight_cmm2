@@ -8,10 +8,13 @@ PS.: The current enemies on the CMM2 G1 probably will not be implemented because
 
 Changelog:
 
-2021-07-04
-- Implemented Round 1-3 final cutscene
-- Fixed many collision bugs in 2-player mode
-- Some optimizations in 2-player mode
+2021-07-05
+- Remade all sound effects directly from an emulator of the Arcade
+- Readjusted music volume
+- Fixed bug that caused the freezing the enemy on the floor
+- Fixed many bugs in the pile drive (Haggar)
+- Fixed no bgm option
+- Removed left scroll in Round 1-3 until fix the bug
 
 2021-07-03
 - Fixed bad position of front end objects in the ending cutscenes
@@ -55,3 +58,5 @@ Changelog:
 - Added Holly Wood (not red) and El Gado 
 - Added Bill Bull and Graham Oriber
 - Added Poison and Roxy
+
+

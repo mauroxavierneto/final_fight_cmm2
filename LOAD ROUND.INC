@@ -81,7 +81,7 @@ SUB LoadRound
 
     CASE 3: ' ROUND 1-3: SLUMS MAD GEAR LAIR --------------------------------------------
      SMYA=180: SMYB=238 'VERTICAL LIMIT
-     LIMRD=820          'STAGE SIZE
+     LIMRD=800          'STAGE SIZE
      LSCRX=135          'HORIZONTAL LIMIT
      RSCRX=MM.HRES-100
      PARTMAX=2          'SECTION PARTITION LIMIT
