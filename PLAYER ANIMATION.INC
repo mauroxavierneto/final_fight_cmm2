@@ -100,9 +100,23 @@ SUB PlayerAnimation(PL)
      CASE 130: 'THROW ENEMY GRAPPLED - SOUND FIX
       AN(PL)=22: AniSpd(PL)=0: AniDelay(PL)=0: Grap(PL)=AN(PL)
       PLAY_SAMPLE 4,PL,,2000+Punch(PL)
+
+      'T=GrapE(PL)
+      'ESide(T)=(SIDE(PL)=4)*5+(SIDE(PL)=5)*4
+      'EX(T)=X(PL)+(SIDE(PL)=5)*10-(SIDE(PL)=4)*10: RealY(T)=RealY(PL)-5
+      'EAN(T)=23: EY(T)=-1: ESJMP(T)=-12
+      'ESPDX(T)=(SIDE(PL)=4)*10-(SIDE(PL)=5)*10       
+
      CASE 129: 'THROW ENEMY GRAPPLED
       AN(PL)=22: AniSpd(PL)=3: AniDelay(PL)=0: Grap(PL)=AN(PL)
      CASE 128: 'THROW ENEMY GRAPPLED - 2 
+
+      'T=GrapE(PL)
+      'ESIDE(T)=(Side(PL)=4)*6+(Side(PL)=5)*7 'ROTATE 180`
+      'RealY(T)=RealY(PL)
+      'EAN(T)=21: STE(T)=51
+      'EAniDelay(T)=0: EAniSpd(T)=15
+
       AN(PL)=23: AniSpd(PL)=2: AniDelay(PL)=0: Grap(PL)=AN(PL)
      CASE 125: 'STOP THROW SEQUENCE
       AN(PL)=26: AniSpd(PL)=1: AniDelay(PL)=0: Grap(PL)=0: Punch(PL)=0: Jump(PL)=1: GrapE(PL)=0

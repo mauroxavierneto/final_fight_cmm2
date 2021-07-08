@@ -7,7 +7,7 @@
 ' SHOW =  1 TO SHOW SHAPE ONLY, DON'T WRITE OR READ COLLISION
 ' SHOW >  1 TO WRITE COLLISION BLOCK TO AN SELECT PAGE
 SUB PutPlayer(xs,ys,num,s,Who,pl,SHOW)
- local I,T,xa,ya,xb,yb,sbx,sby,sx,sy,p,pb,tx,ty,tbx,tby,xt,yt,xxt,yyt,kx,ky,kt,SD,BX
+ local I,T',xa,ya,xb,yb,sbx,sby,sx,sy,p,pb,tx,ty,tbx,tby,xt,yt,xxt,yyt,kx,ky,kt,SD,BX
  'I,T - TEMPORARY VARIABLES
  '
  'FROM THE IMAGE TO BE COPIED / FROM A SECOND IMAGE TO MAKE ONE SHAPE: 
@@ -23,7 +23,8 @@ SUB PutPlayer(xs,ys,num,s,Who,pl,SHOW)
  'SD     - CHANGE SIDE OF THE COLLISION BLOCK
  'BX     - COLOUR OF THE COLLISION BLOCK
 
- BX=&HFF0000: xa=-200: xb=-200: KX=-200: kt=40
+ BX=&HFF0000: xa=-200: xb=-200: kx=-200: ky=0: kt=40
+ xb=0:yb=0:sbx=0:sby=0:sx=0:sy=0:p=0:pb=0:tx=0:ty=0:tbx=0:tby=0:xt=0:yt=0:xxt=0:yyt=0:SD=0
 
  SELECT CASE Who
   CASE 1: 'GUY --------------------------------------------------------------------------
@@ -32,31 +33,8 @@ SUB PutPlayer(xs,ys,num,s,Who,pl,SHOW)
     CASE 99 : xa=200:ya=166:sx=49:sy=16:p=25 
     'GUY STOPPED
     CASE 0  : xa=  0:ya=  0:sx=62:sy=86:p=28
-    'GUY WALKING - INSERT BOX TO GRAPPLE ENEMIES
-    CASE 1  : xa= 62:ya=  0:sx=55:sy=87:p=28:tx= 4:ty=0:BX=&HFFFF00:
-              kx=10-(MVUD(PL)<>0)*10:ky=5:kt=PS_GRP(PL)*20
-    CASE 2  : xa=117:ya=  0:sx=55:sy=87:p=28:tx= 8:ty=0:BX=&HFFFF00:
-              kx=10-(MVUD(PL)<>0)*10:ky=5:kt=PS_GRP(PL)*20
-    CASE 3  : xa=172:ya=  0:sx=46:sy=87:p=28:tx=16:ty=0:BX=&HFFFF00:
-              kx=10-(MVUD(PL)<>0)*10:ky=5:kt=PS_GRP(PL)*20
-    CASE 4  : xa=218:ya=  0:sx=29:sy=87:p=28:tx=14:ty=0:BX=&HFFFF00:
-              kx=10-(MVUD(PL)<>0)*10:ky=5:kt=PS_GRP(PL)*20
-    CASE 5  : xa=247:ya=  0:sx=29:sy=87:p=28:tx= 8:ty=0:BX=&HFFFF00:
-              kx=10-(MVUD(PL)<>0)*10:ky=5:kt=PS_GRP(PL)*20 
-    CASE 6  : xa=276:ya=  0:sx=41:sy=87:p=28:tx=12:ty=0:BX=&HFFFF00:
-              kx=10-(MVUD(PL)<>0)*10:ky=5:kt=PS_GRP(PL)*20
-    CASE 7  : xa=  0:ya= 88:sx=55:sy=87:p=28:tx= 6:ty=0:BX=&HFFFF00:
-              kx=10-(MVUD(PL)<>0)*10:ky=5:kt=PS_GRP(PL)*20
-    CASE 8  : xa= 55:ya= 88:sx=55:sy=87:p=28:tx=10:ty=0:BX=&HFFFF00:
-              kx=10-(MVUD(PL)<>0)*10:ky=5:kt=PS_GRP(PL)*20
-    CASE 9  : xa=110:ya= 88:sx=43:sy=87:p=28:tx=14:ty=0:BX=&HFFFF00:
-              kx=10-(MVUD(PL)<>0)*10:ky=5:kt=PS_GRP(PL)*20
-    CASE 10 : xa=153:ya= 88:sx=28:sy=87:p=28:tx=10:ty=0:BX=&HFFFF00:
-              kx=10-(MVUD(PL)<>0)*10:ky=5:kt=PS_GRP(PL)*20
-    CASE 11 : xa=181:ya= 88:sx=28:sy=87:p=28:tx=10:ty=0:BX=&HFFFF00:
-              kx=10-(MVUD(PL)<>0)*10:ky=5:kt=PS_GRP(PL)*20
-    CASE 12 : xa=209:ya= 88:sx=40:sy=87:p=28:tx=12:ty=0:BX=&HFFFF00:
-              kx=10-(MVUD(PL)<>0)*10:ky=5:kt=PS_GRP(PL)*20
+    'GUY WALKING
+    CASE 1 TO 12: ShowGuyWalking(num,PL)
     'GUY PUNCHING 
     CASE 13 : xa=  0:ya=0:sx= 64:sy=90:p=27:tx=-12:        
     CASE 14 : xa= 64:ya=0:sx= 81:sy=90:p=27:tx=-44:     kx=15:ky= 5: kt=50
@@ -70,40 +48,17 @@ SUB PutPlayer(xs,ys,num,s,Who,pl,SHOW)
     'SEQUENCE IS 32,33,34,19,36
     CASE 19 : xa=263:ya=145:sx=57:sy=95:p=26:tx=0:ty=-2:kx=35:ky=10:kt=60 'THIS IS FOR COMBO
     'GUY GRAPPLE / KNEELING / THROWING 
-    CASE 20 : xa=  0:ya=154:sx=71:sy=86:p=25:tx=10
-    CASE 21 : xa= 71:ya=157:sx=47:sy=82:p=25:tx= 2:BX=&HFF0000:kx=10:ky=0: kt=50
-    CASE 22 : xa=118:ya=173:sx=67:sy=67:p=25:tx= 4:BX=&HFF0000:kx=10:ky=0: kt=50
-    CASE 23 : xa=185:ya=193:sx=82:sy=47:p=25:tx= 0
+    CASE 20 TO 23: ShowGuyGKT(num,PL)   
     'GUY JUMPING AHEAD / VERTICAL
-    CASE 24 : xa=201:ya=50:sx=75:sy= 56:p=25:     ty=-30
-    CASE 25 : xa=276:ya= 0:sx=44:sy= 67:p=25:     ty=-30
-    CASE 26 : xa=  0:ya= 0:sx=57:sy= 78:p=25:tx=0:ty= 0
-    CASE 27 : xa= 57:ya= 0:sx=46:sy= 93:p=25:tx=2:ty=-9
+    CASE 24 TO 27: ShowGuyJumping(num,PL)
     'GUY VERTICAL AIR KICK / AIR KNEE
-    CASE 28 : xa=103:ya=  0:sx= 59:sy=86:p=25:tx=  4:ty=-18 
-    CASE 29 : xa=162:ya=  0:sx= 63:sy=84:p=25:tx=  2:ty=-24:kx=10:ky=50
-    CASE 30 : xa= 86:ya= 86:sx= 50:sy=69:p=25:tx=  2:ty=-24
-    CASE 31 : xa=278:ya=152:sx= 42:sy=88:p=25:       ty= -9:kx= 7:ky=35 'AIR KNEE
-    CASE 37 : xa=136:ya=106:sx=103:sy=52:p=25:tx=-40:ty=-40:kx=45:ky=40 'FULL AIR KICK
-    CASE 44 : xa=  0:ya= 93:sx= 86:sy=58:p=25:tx=  0:ty=-30             'AIR LEAP
-    CASE 45 : xa=276:ya= 68:sx= 44:sy=70:p=25                           'WALL JUMP
+    CASE 27 TO 31,37,44,45: ShowGuyVKick(num,PL)
     'GUY SPECIAL (AND COMBO)
-    CASE 32 : xa=  0:ya=0:sx=61:sy=77:p=26:tx= 32-10:ty=-0
-    CASE 33 : xa= 61:ya=0:sx=52:sy=78:p=26:tx=  6-10:ty=-0
-    CASE 34 : xa=113:ya=0:sx=49:sy=87:p=26:tx=  6-10:ty=-4
-    CASE 35 : xa=162:ya=0:sx=80:sy=93:p=26:tx=-25-10:ty= 0: kx=30:ky=30:kt=50  'ROTATED FULL KICK
-    CASE 36 : xa=242:ya=0:sx=48:sy=88:p=26:tx=  0-10:ty=-2
+    CASE 32 TO 36: ShowGuySpecial(num,PL)
     'GUY HURT / ON THE FLOOR / STANDING UP
-    CASE 38 : xa= 56:ya= 78:sx= 43:sy=80:p=26:tx=-4        'IN THE STOMACH
-    CASE 39 : xa=  0:ya= 77:sx= 56:sy=88:p=26:tx= 6        'IN THE FACE
-    CASE 40 : xa=152:ya=173:sx= 99:sy=57:p=26:tx= 0:ty=-12 'FALLING DOWN
-    CASE 41 : xa= 99:ya= 93:sx=122:sy=27:p=26:tx= 0        'LYING ON THE FLOOR
-    CASE 42 : xa= 99:ya=120:sx= 81:sy=40:p=26:tx= 0        'GET UP
-    CASE 43 : xa=  0:ya=181:sx= 48:sy=59:p=26:tx=-2        'ALMOST GET UP (GET OBJECT)
+    CASE 38 TO 43: ShowGuyHurtStand(num,PL)
     'GUY BURNING
-    CASE 80 : xa=  0:ya=993:sx=121:sy=72:p=-1
-    CASE 81 : xa=121:ya=993:sx=123:sy=72:p=-1
-    CASE 82 : xa=244:ya=993:sx=121:sy=72:p=-1
+    CASE 80 TO 82: ShowGuyBurning(num,PL)
 
    END SELECT 
 
@@ -114,72 +69,23 @@ SUB PutPlayer(xs,ys,num,s,Who,pl,SHOW)
     'CODY STOPPED
     CASE 0  : xa=  0:ya=  0:sx=54:sy=93:p=27
     'CODY WALKING - INSERT BOX TO GRAPPLE ENEMIES
-    CASE 1  : xa= 39:ya=104:sx=51:sy=95:p=28:tx=12:ty= 1:BX=&HFFFF00:
-              kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*20
-    CASE 2  : xa= 90:ya=104:sx=62:sy=95:p=28:tx= 7:ty= 1:BX=&HFFFF00:
-              kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*20
-    CASE 3  : xa=152:ya=104:sx=62:sy=95:p=28:tx= 7:ty= 1:BX=&HFFFF00:
-              kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*20
-    CASE 4  : xa=214:ya=103:sx=51:sy=94:p=28:tx=16:ty= 0:BX=&HFFFF00:
-              kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*20
-    CASE 5  : xa=265:ya=102:sx=32:sy=95:p=28:tx= 9:ty=-1:BX=&HFFFF00:
-              kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*20
-    CASE 6  : xa= 0 :ya=  2:sx=35:sy=94:p=28:tx= 6:ty= 0:BX=&HFFFF00:
-              kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*20
-    CASE 7  : xa= 35:ya=  3:sx=48:sy=93:p=28:tx= 9      :BX=&HFFFF00:
-              kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*20
-    CASE 8  : xa= 83:ya=  3:sx=62:sy=93:p=28:tx= 7:ty= 0:BX=&HFFFF00:
-              kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*20
-    CASE 9  : xa=145:ya=  2:sx=63:sy=94:p=28:tx= 8:ty= 0:BX=&HFFFF00:
-              kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*20
-    CASE 10 : xa=208:ya=  2:sx=51:sy=94:p=28:tx=12      :BX=&HFFFF00:
-              kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*20
-    CASE 11 : xa=259:ya=  1:sx=32:sy=95:p=28:tx= 9:ty=-1:BX=&HFFFF00:
-              kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*20
-    CASE 12 : xa=  0:ya=103:sx=38:sy=94:p=28:tx= 3:ty= 0:BX=&HFFFF00:
-              kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*20
+    CASE 1 TO 12: ShowCodyWalking(num,PL)
     'CODY PUNCHING 
-    CASE 13 : xa= 54:ya=  2:sx= 64:sy=90:p=27:tx=- 8        
-    CASE 14 : xa=118:ya=  2:sx= 84:sy=90:p=27:tx=-28:kx=19:ky= 5:kt=50
-    CASE 15 : xa=202:ya=  9:sx= 83:sy=79:p=27:tx=-34 
-    CASE 16 : xa=  0:ya=116:sx=112:sy=77:p=27:tx=-48:kx=19:ky=10:kt=50
+    CASE 13 TO 16: ShowCodyPunching(num,PL)
     'CODY UPPERCUT
-    CASE 17 : xa=112:ya=123:sx=76:sy= 69:p=27:tx=-18
-    CASE 18 : xa=188:ya=103:sx=77:sy= 91:p=27:tx=-18:kx=25:ky=10:kt=60:Combo(PL)=3
-    CASE 19 : xa=266:ya= 89:sx=55:sy=111:p=27:tx=- 4:                  Combo(PL)=0
+    CASE 17 TO 19: ShowCodyUppercut(num,PL)
     'CODY GRAPPLE / KNEELING / THROWING 
-    CASE 20 : xa=  0:ya= 2:sx=77:sy=86:p=25:tx=10
-    CASE 21 : xa= 77:ya= 8:sx=49:sy=77:p=25:tx= 2:BX=&HFF0000:kx=15:ky=0: kt=50
-    CASE 22 : xa=126:ya= 4:sx=63:sy=76:p=25:tx= 4:BX=&HFF0000:kx=15:ky=0: kt=50
-    CASE 23 : xa=189:ya=16:sx=59:sy=64:p=25:tx= 0
+    CASE 20 TO 23: ShowCodyGKT(num,PL)
     'CODY JUMPING AHEAD / VERTICAL
-    CASE 24 : xa=259:ya= 0:sx=61:sy= 65:p=25:     ty=-30
-    CASE 25 : xa=255:ya=65:sx=65:sy= 61:p=25:     ty=-30
-    CASE 26 : xa=  0:ya=98:sx=53:sy= 84:p=25:tx=0:ty=  0
-    CASE 27 : xa= 53:ya=92:sx=42:sy=108:p=25:tx=2:ty= -6
+    CASE 24 TO 27: ShowCodyJumping(num,PL)
     'CODY VERTICAL AIR KICK / AIR KNEE
-    CASE 28 : xa= 96:ya=113:sx=61:sy=87:p=25:tx=2:ty=-18:kx=10:ky=50
-    CASE 29 : xa=157:ya=113:sx=54:sy=87:p=25:tx=4:ty=-24
-    CASE 30 : xa=211:ya=123:sx=52:sy=76:p=25:tx=2:ty=-24
-    CASE 31 : xa=263:ya=129:sx=57:sy=63:p=25:     ty=-30:kx= 7:ky=35
+    CASE 28 TO 31: ShowCodyVKick(num,PL)
     'CODY SPECIAL / AIR KICK
-    CASE 32 : xa=  0:ya=  0:sx= 75:sy=81:p=26:tx=  5:ty= -8
-    CASE 33 : xa= 75:ya=  0:sx= 60:sy=85:p=26:tx=  8:ty= -6:kx= 20:ky=40
-    CASE 34 : xa=135:ya=  0:sx=120:sy=59:p=26:tx=-40:ty=-30:kx= 45:ky=40 'FULL AIR KICK
-    CASE 35 : xa=118:ya=105:sx= 45:sy=70:p=26:tx=  0:ty=-24:kx=  0:ky=40 
-    CASE 36 : xa=226:ya=132:sx= 94:sy=68:p=26:tx= 30:ty=-20:kx=-30:ky=40
-    CASE 37 : xa=  0:ya= 82:sx= 61:sy=61:p=26:tx=  0:ty=-30:kx=-20:ky=40
+    CASE 32 TO 37: ShowCodySpecial(num,PL)
     'CODY HURT / ON THE FLOOR / STANDING UP
-    CASE 38 : xa=170:ya=101:sx= 55:sy=84:p=26:tx=-4        'IN THE STOMACH
-    CASE 39 : xa=260:ya=  0:sx= 60:sy=96:p=26:tx= 6        'IN THE FACE
-    CASE 40 : xa=  0:ya=147:sx= 95:sy=53:p=26:tx= 0:ty=-12 'FALLING DOWN
-    CASE 41 : xa=136:ya= 59:sx=119:sy=37:p=26:tx= 0        'LYING ON THE FLOOR
-    CASE 42 : xa=227:ya= 96:sx= 93:sy=35:p=26:tx= 0        'GET UP
-    CASE 43 : xa= 63:ya= 86:sx= 51:sy=58:p=26:tx=-2        'ALMOST GET UP (GET OBJECT)
+    CASE 38 TO 43: ShowCodyHurtStand(num,PL)
     'CODY BURNING
-    CASE 80 : xa=  0:ya=993:sx=121:sy=72:p=-1
-    CASE 81 : xa=121:ya=993:sx=123:sy=72:p=-1
-    CASE 82 : xa=244:ya=993:sx=121:sy=72:p=-1
+    CASE 80 TO 82: ShowCodyBurning(num,PL)
    END SELECT 
 
   CASE 3: 'HAGGAR -----------------------------------------------------------------------
@@ -191,50 +97,9 @@ SUB PutPlayer(xs,ys,num,s,Who,pl,SHOW)
     CASE  0 : xb= 81:yb=  0:sbx=51:sby=60
               xa=  0:ya=  0:sx= 81:sy= 49:p=28:tx=-17:ty=16
     'HAGGAR WALKING - INSERT BOX TO GRAPPLE ENEMIES
-    CASE  1 : xb=132:yb=  0:sbx=36:sby=68:tbx=2
-              xa=  0:ya=  0:sx= 81:sy= 49:p=28:tx=-28:ty=16
-              BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*15
-    CASE  2 : xb=168:yb=  0:sbx=50:sby=67:tbx=-4
-              xa=  0:ya=  0:sx= 81:sy= 49:p=28:tx=-22:ty=16
-              BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*15
-    CASE  3 : xb=218:yb=  1:sbx=54:sby=66:tbx=-4
-              xa=  0:ya=  0:sx= 81:sy= 49:p=28:tx=-23:ty=16
-              BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*15
-    CASE  4 : xb=  0:yb= 49:sbx=58:sby=65:tbx=-6
-              xa=  0:ya=  0:sx= 81:sy= 49:p=28:tx=-21:ty=16
-              BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*15
-    CASE  5 : xb= 58:yb= 60:sbx=58:sby=65:tbx=-4
-              xa=  0:ya=  0:sx= 81:sy= 49:p=28:tx=-22:ty=16
-              BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*15
-    CASE  6 : xb=116:yb= 67:sbx=47:sby=64:tbx=14
-              xa=  0:ya=  0:sx= 81:sy= 49:p=28:tx=-40:ty=16
-              BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*15
-    CASE  7 : xb=163:yb= 67:sbx=37:sby=66:tbx=4
-              xa=  0:ya=  0:sx= 81:sy= 49:p=28:tx=-30:ty=16
-              BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*15
-    CASE  8 : xb=200:yb= 67:sbx=37:sby=65:tbx=-4
-              xa=  0:ya=  0:sx= 81:sy= 49:p=28:tx=-22:ty=16
-              BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*15
-    CASE  9 : xb=237:yb= 67:sbx=45:sby=66:tbx=0
-              xa=  0:ya=  0:sx= 81:sy= 49:p=28:tx=-26:ty=16
-              BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*15
-    CASE 10 : xb=  0:yb=114:sbx=56:sby=66:tbx=-2
-              xa=  0:ya=  0:sx= 81:sy= 49:p=28:tx=-24:ty=16
-              BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*15
-    CASE 11 : xb= 56:yb=125:sbx=51:sby=66:tbx=4
-              xa=  0:ya=  0:sx= 81:sy= 49:p=28:tx=-31:ty=16
-              BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*15
-    CASE 12 : xb=107:yb=131:sbx=40:sby=66:tbx=6
-              xa=  0:ya=  0:sx= 81:sy= 49:p=28:tx=-33:ty=16
-              BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*15
+    CASE 1 TO 12: ShowHaggarWalking(num,PL)
     'HAGGAR PUNCHING 
-    CASE 13 : xa=  0:ya=  0:sx= 57:sy=86:p=27:tx=  6
-    CASE 14 : xa= 57:ya=  0:sx= 71:sy=86:p=27:tx=- 8
-    CASE 15 : xa=128:ya=  0:sx=113:sy=84:p=27:tx=-52:kx=25:ky= 5:kt=60
-    CASE 16 : xa=241:ya=  0:sx= 54:sy=99:p=27:tx=- 4
-    CASE 17 : xa=  0:ya= 86:sx= 71:sy=89:p=27:tx=-18
-    CASE 18 : xa= 71:ya= 86:sx=111:sy=81:p=27:tx=-48:kx=25:ky=10:kt=60:Combo(PL)=2
-    CASE 19 : xa=182:ya= 99:sx= 71:sy=87:p=27:tx=-30:                  Combo(PL)=0
+    CASE 13 TO 19: ShowHaggarPunching(num,PL)
     'HAGGAR GRAPPLE
     CASE 20 : xb= 81:yb=  0:sbx=51:sby=60:pb=28
               xa=  1:ya=153:sx= 72:sy= 45:p =25:tx=-44:ty= 9
@@ -245,63 +110,21 @@ SUB PutPlayer(xs,ys,num,s,Who,pl,SHOW)
     CASE 22 : xa=102:ya=141:sx= 69:sy= 99:p =25:tx= 2
     CASE 23 : xa=224:ya=192:sx= 96:sy= 49:p =25:tx= 0': ETR(GrapE(PL))=1
     'HAGGAR JUMPING AHEAD / VERTICAL
-    CASE 24 : xa=  0:ya=  0:sx=63:sy= 85:p=25
-    CASE 25 : xa= 63:ya=  0:sx=52:sy=100:p=25
-    CASE 26 : xa=116:ya=  0:sx=55:sy= 78:p=25:     ty=-16
-    CASE 27 : xa=171:ya=  0:sx=85:sy= 68:p=25:tx=2:ty= -6
+    CASE 24 TO 27: ShowHaggarJumping(num,PL)
     'HAGGAR VERTICAL AIR KICK / SMASH
     CASE 28 : xa=154:ya= 68:sx=123:sy=61:p=25:tx=-50:ty=-30:kx=38:ky=15:kt=50
     CASE 29 : xa=  0:ya=100:sx=128:sy=52:p=25:tx=-20:ty=-24:kx=0:ky=-20:kt=80
     'HAGGAR PILE DRIVER
     'SEQUENCE IS 30,31,26,32,26,24
-    CASE 30 : xb=147:yb=133:sbx=56:sby=49:pb=28
-              xa=  1:ya=153:sx= 72:sy= 45:p =25:tx=-44:ty=9
-    CASE 31 : xb= 65:yb= 33:sbx=30:sby=67
-              xa=  1:ya=153:sx= 72:sy= 45:p =25:tx=-46:ty=10
-    CASE 32 : xa=232:ya=139:sx= 88:sy= 53:p =25:tx=-44:ty=-40:kx=0:ky=0:kt=70
+    CASE 30 TO 32: ShowHaggarPileDriver(num,PL)
     'HAGGAR SPECIAL 
-    CASE 33 : xa=  0:ya=  0:sx= 67:sy=121:p=26:tx=  5:kx=  0:ky=10:kt=60
-    CASE 34 : xa= 67:ya=  0:sx= 56:sy= 95:p=26:tx=- 5:kx=-10:ky=10:kt=60
-    CASE 35 : xa=123:ya=  0:sx=102:sy= 93:p=26:tx=-50:kx= 20:ky=10:kt=60
-    CASE 36 : xa=  0:ya=121:sx= 46:sy= 93:p=26:tx=  0:kx=-10:ky=10:kt=60
-    CASE 37 : xa=108:ya= 95:sx=120:sy= 93:p=26:tx=  0:kx=-30:ky=10:kt=60
+    CASE 33 TO 37: ShowHaggarSpecial(num,PL)
     'HAGGAR HURT / ON THE FLOOR / STANDING UP
-    CASE 38 : xa=259:ya=  0:sx= 61:sy=77:p=26:tx=-4        'IN THE STOMACH
-    CASE 39 : xb= 81:yb=  0:sbx=51:sby=60:pb=28            'IN THE FACE
-              xa= 46:ya=168:sx= 74:sy= 46:p =26:tx=-26:ty=10
-    CASE 40 : xa=228:ya=148:sx= 92:sy=92:p=26:tx= 0        'FALLING DOWN
-    CASE 41 : xa= 12:ya=214:sx=133:sy=26:p=26:tx= 0        'LYING ON THE FLOOR
-    CASE 42 : xa=145:ya=193:sx= 83:sy=47:p=26:tx= 0        'GET UP
-    CASE 43 : xa=257:ya= 78:sx= 63:sy=69:p=26:tx=-2        'ALMOST GET UP (GET OBJECT)
+    CASE 38 TO 43: ShowHaggarHurtStand(num,PL)
     'HAGGAR WALKING WITH GRAPPLED ENEMY
-    CASE 51 : xb=132:yb=  0:sbx=36:sby=68:tbx=2:pb=28
-              xa=  1:ya=153:sx= 72:sy= 45:p =25:tx=-28-27:ty= 9
-    CASE 52 : xb=168:yb=  0:sbx=50:sby=67:tbx=-4:pb=28 
-              xa=  1:ya=153:sx= 72:sy= 45:p =25:tx=-22-27:ty= 9
-    CASE 53 : xb=218:yb=  1:sbx=54:sby=66:tbx=-4:pb=28
-              xa=  1:ya=153:sx= 72:sy= 45:p =25:tx=-23-27:ty= 9
-    CASE 54 : xb=  0:yb= 49:sbx=58:sby=65:tbx=-6:pb=28
-              xa=  1:ya=153:sx= 72:sy= 45:p =25:tx=-21-27:ty= 9
-    CASE 55 : xb= 58:yb= 60:sbx=58:sby=65:tbx=-4:pb=28
-              xa=  1:ya=153:sx= 72:sy= 45:p =25:tx=-22-27:ty= 9
-    CASE 56 : xb=116:yb= 67:sbx=47:sby=64:tbx=14:pb=28
-              xa=  1:ya=153:sx= 72:sy= 45:p =25:tx=-40-27:ty= 9
-    CASE 57 : xb=163:yb= 67:sbx=37:sby=66:tbx=4:pb=28
-              xa=  1:ya=153:sx= 72:sy= 45:p =25:tx=-30-27:ty= 9
-    CASE 58 : xb=200:yb= 67:sbx=37:sby=65:tbx=-4:pb=28
-              xa=  1:ya=153:sx= 72:sy= 45:p =25:tx=-22-27:ty= 9
-    CASE 59 : xb=237:yb= 67:sbx=45:sby=66:tbx=0:pb=28
-              xa=  1:ya=153:sx= 72:sy= 45:p =25:tx=-26-27:ty= 9
-    CASE 60 : xb=  0:yb=114:sbx=56:sby=66:tbx=-2:pb=28
-              xa=  1:ya=153:sx= 72:sy= 45:p =25:tx=-24-27:ty= 9
-    CASE 61 : xb= 56:yb=125:sbx=51:sby=66:tbx=4:pb=28
-              xa=  1:ya=153:sx= 72:sy= 45:p =25:tx=-31-27:ty= 9
-    CASE 62 : xb=107:yb=131:sbx=40:sby=66:tbx=6:pb=28
-              xa=  1:ya=153:sx= 72:sy= 45:p =25:tx=-33-27:ty= 9
+    CASE 51 TO 62: ShowHaggarWGrappled(num,PL)
     'HAGGAR BURNING
-    CASE 80 : xa=  0:ya=993:sx=121:sy=72:p=-1
-    CASE 81 : xa=121:ya=993:sx=123:sy=72:p=-1
-    CASE 82 : xa=244:ya=993:sx=121:sy=72:p=-1
+    CASE 80 TO 82: ShowHaggarBurning(num,PL)
    END SELECT 
 
  END SELECT 'END SELECT Who
@@ -366,4 +189,353 @@ SUB PutPlayer(xs,ys,num,s,Who,pl,SHOW)
  END SELECT
 
 END SUB
+
+
+'GUY WALKING - INSERT BOX TO GRAPPLE ENEMIES
+SUB ShowGuyWalking(num,PL)
+ SELECT CASE Num 
+  CASE 1  : xa= 62:ya=  0:sx=55:sy=87:p=28:tx= 4:ty=0:BX=&HFFFF00:
+            kx=10-(MVUD(PL)<>0)*10:ky=5:kt=PS_GRP(PL)*20
+  CASE 2  : xa=117:ya=  0:sx=55:sy=87:p=28:tx= 8:ty=0:BX=&HFFFF00:
+            kx=10-(MVUD(PL)<>0)*10:ky=5:kt=PS_GRP(PL)*20
+  CASE 3  : xa=172:ya=  0:sx=46:sy=87:p=28:tx=16:ty=0:BX=&HFFFF00:
+            kx=10-(MVUD(PL)<>0)*10:ky=5:kt=PS_GRP(PL)*20
+  CASE 4  : xa=218:ya=  0:sx=29:sy=87:p=28:tx=14:ty=0:BX=&HFFFF00:
+            kx=10-(MVUD(PL)<>0)*10:ky=5:kt=PS_GRP(PL)*20
+  CASE 5  : xa=247:ya=  0:sx=29:sy=87:p=28:tx= 8:ty=0:BX=&HFFFF00:
+            kx=10-(MVUD(PL)<>0)*10:ky=5:kt=PS_GRP(PL)*20 
+  CASE 6  : xa=276:ya=  0:sx=41:sy=87:p=28:tx=12:ty=0:BX=&HFFFF00:
+            kx=10-(MVUD(PL)<>0)*10:ky=5:kt=PS_GRP(PL)*20
+  CASE 7  : xa=  0:ya= 88:sx=55:sy=87:p=28:tx= 6:ty=0:BX=&HFFFF00:
+            kx=10-(MVUD(PL)<>0)*10:ky=5:kt=PS_GRP(PL)*20
+  CASE 8  : xa= 55:ya= 88:sx=55:sy=87:p=28:tx=10:ty=0:BX=&HFFFF00:
+            kx=10-(MVUD(PL)<>0)*10:ky=5:kt=PS_GRP(PL)*20
+  CASE 9  : xa=110:ya= 88:sx=43:sy=87:p=28:tx=14:ty=0:BX=&HFFFF00:
+            kx=10-(MVUD(PL)<>0)*10:ky=5:kt=PS_GRP(PL)*20
+  CASE 10 : xa=153:ya= 88:sx=28:sy=87:p=28:tx=10:ty=0:BX=&HFFFF00:
+            kx=10-(MVUD(PL)<>0)*10:ky=5:kt=PS_GRP(PL)*20
+  CASE 11 : xa=181:ya= 88:sx=28:sy=87:p=28:tx=10:ty=0:BX=&HFFFF00:
+            kx=10-(MVUD(PL)<>0)*10:ky=5:kt=PS_GRP(PL)*20
+  CASE 12 : xa=209:ya= 88:sx=40:sy=87:p=28:tx=12:ty=0:BX=&HFFFF00:
+            kx=10-(MVUD(PL)<>0)*10:ky=5:kt=PS_GRP(PL)*20
+ END SELECT
+END SUB
+
+'GUY GRAPPLE / KNEELING / THROWING 
+SUB ShowGuyGKT(num,PL)
+ SELECT CASE Num
+  CASE 20 : xa=  0:ya=154:sx=71:sy=86:p=25:tx=10
+  CASE 21 : xa= 71:ya=157:sx=47:sy=82:p=25:tx= 2:BX=&HFF0000:kx=10:ky=0: kt=50
+  CASE 22 : xa=118:ya=173:sx=67:sy=67:p=25:tx= 4:BX=&HFF0000:kx=10:ky=0: kt=50
+  CASE 23 : xa=185:ya=193:sx=82:sy=47:p=25:tx= 0
+ END SELECT
+END SUB
+
+'GUY JUMPING AHEAD / VERTICAL
+SUB ShowGuyJumping(num,PL)
+ SELECT CASE Num
+  CASE 24 : xa=201:ya=50:sx=75:sy= 56:p=25:     ty=-30
+  CASE 25 : xa=276:ya= 0:sx=44:sy= 67:p=25:     ty=-30
+  CASE 26 : xa=  0:ya= 0:sx=57:sy= 78:p=25:tx=0:ty= 0
+  CASE 27 : xa= 57:ya= 0:sx=46:sy= 93:p=25:tx=2:ty=-9
+ END SELECT
+END SUB
+
+'GUY VERTICAL AIR KICK / AIR KNEE
+SUB ShowGuyVKick(num,PL)
+ SELECT CASE Num
+  CASE 28 : xa=103:ya=  0:sx= 59:sy=86:p=25:tx=  4:ty=-18 
+  CASE 29 : xa=162:ya=  0:sx= 63:sy=84:p=25:tx=  2:ty=-24:kx=10:ky=50
+  CASE 30 : xa= 86:ya= 86:sx= 50:sy=69:p=25:tx=  2:ty=-24
+  CASE 31 : xa=278:ya=152:sx= 42:sy=88:p=25:       ty= -9:kx= 7:ky=35 'AIR KNEE
+  CASE 37 : xa=136:ya=106:sx=103:sy=52:p=25:tx=-40:ty=-40:kx=45:ky=40 'FULL AIR KICK
+  CASE 44 : xa=  0:ya= 93:sx= 86:sy=58:p=25:tx=  0:ty=-30             'AIR LEAP
+  CASE 45 : xa=276:ya= 68:sx= 44:sy=70:p=25                           'WALL JUMP
+ END SELECT
+END SUB
+
+'GUY SPECIAL (AND COMBO)
+SUB ShowGuySpecial(num,PL)
+ SELECT CASE Num
+  CASE 32 : xa=  0:ya=0:sx=61:sy=77:p=26:tx= 32-10:ty=-0
+  CASE 33 : xa= 61:ya=0:sx=52:sy=78:p=26:tx=  6-10:ty=-0
+  CASE 34 : xa=113:ya=0:sx=49:sy=87:p=26:tx=  6-10:ty=-4
+  CASE 35 : xa=162:ya=0:sx=80:sy=93:p=26:tx=-25-10:ty= 0: kx=30:ky=30:kt=50  'ROTATED FULL KICK
+  CASE 36 : xa=242:ya=0:sx=48:sy=88:p=26:tx=  0-10:ty=-2
+ END SELECT
+END SUB
+
+'GUY HURT / ON THE FLOOR / STANDING UP
+SUB ShowGuyHurtStand(num,PL)
+ SELECT CASE Num
+  CASE 38 : xa= 56:ya= 78:sx= 43:sy=80:p=26:tx=-4        'IN THE STOMACH
+  CASE 39 : xa=  0:ya= 77:sx= 56:sy=88:p=26:tx= 6        'IN THE FACE
+  CASE 40 : xa=152:ya=173:sx= 99:sy=57:p=26:tx= 0:ty=-12 'FALLING DOWN
+  CASE 41 : xa= 99:ya= 93:sx=122:sy=27:p=26:tx= 0        'LYING ON THE FLOOR
+  CASE 42 : xa= 99:ya=120:sx= 81:sy=40:p=26:tx= 0        'GET UP
+  CASE 43 : xa=  0:ya=181:sx= 48:sy=59:p=26:tx=-2        'ALMOST GET UP (GET OBJECT)
+ END SELECT
+END SUB
+
+'GUY BURNING
+SUB ShowGuyBurning(num,PL)
+ SELECT CASE num
+  CASE 80 : xa=  0:ya=993:sx=121:sy=72:p=-1
+  CASE 81 : xa=121:ya=993:sx=123:sy=72:p=-1
+  CASE 82 : xa=244:ya=993:sx=121:sy=72:p=-1
+ END SELECT
+END SUB
+
+'CODY WALKING - INSERT BOX TO GRAPPLE ENEMIES
+SUB ShowCodyWalking(num,PL)
+ SELECT CASE num
+  CASE 1  : xa= 39:ya=104:sx=51:sy=95:p=28:tx=12:ty= 1:BX=&HFFFF00:
+            kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*20
+  CASE 2  : xa= 90:ya=104:sx=62:sy=95:p=28:tx= 7:ty= 1:BX=&HFFFF00:
+            kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*20
+  CASE 3  : xa=152:ya=104:sx=62:sy=95:p=28:tx= 7:ty= 1:BX=&HFFFF00:
+            kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*20
+  CASE 4  : xa=214:ya=103:sx=51:sy=94:p=28:tx=16:ty= 0:BX=&HFFFF00:
+            kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*20
+  CASE 5  : xa=265:ya=102:sx=32:sy=95:p=28:tx= 9:ty=-1:BX=&HFFFF00:
+            kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*20
+  CASE 6  : xa= 0 :ya=  2:sx=35:sy=94:p=28:tx= 6:ty= 0:BX=&HFFFF00:
+            kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*20
+  CASE 7  : xa= 35:ya=  3:sx=48:sy=93:p=28:tx= 9      :BX=&HFFFF00:
+            kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*20
+  CASE 8  : xa= 83:ya=  3:sx=62:sy=93:p=28:tx= 7:ty= 0:BX=&HFFFF00:
+            kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*20
+  CASE 9  : xa=145:ya=  2:sx=63:sy=94:p=28:tx= 8:ty= 0:BX=&HFFFF00:
+            kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*20
+  CASE 10 : xa=208:ya=  2:sx=51:sy=94:p=28:tx=12      :BX=&HFFFF00:
+            kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*20
+  CASE 11 : xa=259:ya=  1:sx=32:sy=95:p=28:tx= 9:ty=-1:BX=&HFFFF00:
+            kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*20
+  CASE 12 : xa=  0:ya=103:sx=38:sy=94:p=28:tx= 3:ty= 0:BX=&HFFFF00:
+            kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*20
+ END SELECT
+END SUB
+
+'CODY PUNCHING 
+SUB ShowCodyPunching(num,PL)
+ SELECT CASE num
+  CASE 13 : xa= 54:ya=  2:sx= 64:sy=90:p=27:tx=- 8        
+  CASE 14 : xa=118:ya=  2:sx= 84:sy=90:p=27:tx=-28:kx=19:ky= 5:kt=50
+  CASE 15 : xa=202:ya=  9:sx= 83:sy=79:p=27:tx=-34 
+  CASE 16 : xa=  0:ya=116:sx=112:sy=77:p=27:tx=-48:kx=19:ky=10:kt=50
+ END SELECT
+END SUB
+
+'CODY UPPERCUT
+SUB ShowCodyUppercut(num,PL)
+ SELECT CASE num
+  CASE 17 : xa=112:ya=123:sx=76:sy= 69:p=27:tx=-18
+  CASE 18 : xa=188:ya=103:sx=77:sy= 91:p=27:tx=-18:kx=25:ky=10:kt=60:Combo(PL)=3
+  CASE 19 : xa=266:ya= 89:sx=55:sy=111:p=27:tx=- 4:                  Combo(PL)=0
+ END SELECT
+END SUB
+
+'CODY GRAPPLE / KNEELING / THROWING 
+SUB ShowCodyGKT(num,PL)
+ SELECT CASE num
+  CASE 20 : xa=  0:ya= 2:sx=77:sy=86:p=25:tx=10
+  CASE 21 : xa= 77:ya= 8:sx=49:sy=77:p=25:tx= 2:BX=&HFF0000:kx=15:ky=0: kt=50
+  CASE 22 : xa=126:ya= 4:sx=63:sy=76:p=25:tx= 4:BX=&HFF0000:kx=15:ky=0: kt=50
+  CASE 23 : xa=189:ya=16:sx=59:sy=64:p=25:tx= 0
+ END SELECT
+END SUB
+
+'CODY JUMPING AHEAD / VERTICAL
+SUB ShowCodyJumping(num,PL)
+ SELECT CASE num
+  CASE 24 : xa=259:ya= 0:sx=61:sy= 65:p=25:     ty=-30
+  CASE 25 : xa=255:ya=65:sx=65:sy= 61:p=25:     ty=-30
+  CASE 26 : xa=  0:ya=98:sx=53:sy= 84:p=25:tx=0:ty=  0
+  CASE 27 : xa= 53:ya=92:sx=42:sy=108:p=25:tx=2:ty= -6
+ END SELECT
+END SUB
+
+'CODY VERTICAL AIR KICK / AIR KNEE
+SUB ShowCodyVKick(num,PL)
+ SELECT CASE num
+  CASE 28 : xa= 96:ya=113:sx=61:sy=87:p=25:tx=2:ty=-18:kx=10:ky=50
+  CASE 29 : xa=157:ya=113:sx=54:sy=87:p=25:tx=4:ty=-24
+  CASE 30 : xa=211:ya=123:sx=52:sy=76:p=25:tx=2:ty=-24
+  CASE 31 : xa=263:ya=129:sx=57:sy=63:p=25:     ty=-30:kx= 7:ky=35
+ END SELECT
+END SUB
+
+'CODY SPECIAL / AIR KICK
+SUB ShowCodySpecial(num,PL)
+ SELECT CASE num
+  CASE 32 : xa=  0:ya=  0:sx= 75:sy=81:p=26:tx=  5:ty= -8
+  CASE 33 : xa= 75:ya=  0:sx= 60:sy=85:p=26:tx=  8:ty= -6:kx= 20:ky=40
+  CASE 34 : xa=135:ya=  0:sx=120:sy=59:p=26:tx=-40:ty=-30:kx= 45:ky=40 'FULL AIR KICK
+  CASE 35 : xa=118:ya=105:sx= 45:sy=70:p=26:tx=  0:ty=-24:kx=  0:ky=40 
+  CASE 36 : xa=226:ya=132:sx= 94:sy=68:p=26:tx= 30:ty=-20:kx=-30:ky=40
+  CASE 37 : xa=  0:ya= 82:sx= 61:sy=61:p=26:tx=  0:ty=-30:kx=-20:ky=40
+ END SELECT
+END SUB
+
+'CODY HURT / ON THE FLOOR / STANDING UP
+SUB ShowCodyHurtStand(num,PL)
+ SELECT CASE num
+  CASE 38 : xa=170:ya=101:sx= 55:sy=84:p=26:tx=-4        'IN THE STOMACH
+  CASE 39 : xa=260:ya=  0:sx= 60:sy=96:p=26:tx= 6        'IN THE FACE
+  CASE 40 : xa=  0:ya=147:sx= 95:sy=53:p=26:tx= 0:ty=-12 'FALLING DOWN
+  CASE 41 : xa=136:ya= 59:sx=119:sy=37:p=26:tx= 0        'LYING ON THE FLOOR
+  CASE 42 : xa=227:ya= 96:sx= 93:sy=35:p=26:tx= 0        'GET UP
+  CASE 43 : xa= 63:ya= 86:sx= 51:sy=58:p=26:tx=-2        'ALMOST GET UP (GET OBJECT)
+ END SELECT
+END SUB
+
+'CODY BURNING
+SUB ShowCodyBurning(num,PL)
+ SELECT CASE num
+  CASE 80 : xa=  0:ya=993:sx=121:sy=72:p=-1
+  CASE 81 : xa=121:ya=993:sx=123:sy=72:p=-1
+  CASE 82 : xa=244:ya=993:sx=121:sy=72:p=-1
+ END SELECT
+END SUB
+
+'HAGGAR WALKING - INSERT BOX TO GRAPPLE ENEMIES
+SUB ShowHaggarWalking(num,PL)
+ SELECT CASE num
+  CASE  1 : xb=132:yb=  0:sbx=36:sby=68:tbx=2
+            xa=  0:ya=  0:sx= 81:sy= 49:p=28:tx=-28:ty=16
+            BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*15
+  CASE  2 : xb=168:yb=  0:sbx=50:sby=67:tbx=-4
+            xa=  0:ya=  0:sx= 81:sy= 49:p=28:tx=-22:ty=16
+            BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*15
+  CASE  3 : xb=218:yb=  1:sbx=54:sby=66:tbx=-4
+            xa=  0:ya=  0:sx= 81:sy= 49:p=28:tx=-23:ty=16
+            BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*15
+  CASE  4 : xb=  0:yb= 49:sbx=58:sby=65:tbx=-6
+            xa=  0:ya=  0:sx= 81:sy= 49:p=28:tx=-21:ty=16
+            BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*15
+  CASE  5 : xb= 58:yb= 60:sbx=58:sby=65:tbx=-4
+            xa=  0:ya=  0:sx= 81:sy= 49:p=28:tx=-22:ty=16
+            BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*15
+  CASE  6 : xb=116:yb= 67:sbx=47:sby=64:tbx=14
+            xa=  0:ya=  0:sx= 81:sy= 49:p=28:tx=-40:ty=16
+            BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*15
+  CASE  7 : xb=163:yb= 67:sbx=37:sby=66:tbx=4
+            xa=  0:ya=  0:sx= 81:sy= 49:p=28:tx=-30:ty=16
+            BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*15
+  CASE  8 : xb=200:yb= 67:sbx=37:sby=65:tbx=-4
+            xa=  0:ya=  0:sx= 81:sy= 49:p=28:tx=-22:ty=16
+            BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*15
+  CASE  9 : xb=237:yb= 67:sbx=45:sby=66:tbx=0
+            xa=  0:ya=  0:sx= 81:sy= 49:p=28:tx=-26:ty=16
+            BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*15
+  CASE 10 : xb=  0:yb=114:sbx=56:sby=66:tbx=-2
+            xa=  0:ya=  0:sx= 81:sy= 49:p=28:tx=-24:ty=16
+            BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*15
+  CASE 11 : xb= 56:yb=125:sbx=51:sby=66:tbx=4
+            xa=  0:ya=  0:sx= 81:sy= 49:p=28:tx=-31:ty=16
+            BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*15
+  CASE 12 : xb=107:yb=131:sbx=40:sby=66:tbx=6
+            xa=  0:ya=  0:sx= 81:sy= 49:p=28:tx=-33:ty=16
+            BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*15
+ END SELECT
+END SUB
+
+'HAGGAR PUNCHING 
+SUB ShowHaggarPunching(num,PL)
+ SELECT CASE num
+  CASE 13 : xa=  0:ya=  0:sx= 57:sy=86:p=27:tx=  6
+  CASE 14 : xa= 57:ya=  0:sx= 71:sy=86:p=27:tx=- 8
+  CASE 15 : xa=128:ya=  0:sx=113:sy=84:p=27:tx=-52:kx=25:ky= 5:kt=60
+  CASE 16 : xa=241:ya=  0:sx= 54:sy=99:p=27:tx=- 4
+  CASE 17 : xa=  0:ya= 86:sx= 71:sy=89:p=27:tx=-18
+  CASE 18 : xa= 71:ya= 86:sx=111:sy=81:p=27:tx=-48:kx=25:ky=10:kt=60:Combo(PL)=2
+  CASE 19 : xa=182:ya= 99:sx= 71:sy=87:p=27:tx=-30:                  Combo(PL)=0
+ END SELECT
+END SUB
+
+'HAGGAR JUMPING AHEAD / VERTICAL
+SUB ShowHaggarJumping(num,PL)
+ SELECT CASE num
+  CASE 24 : xa=  0:ya=  0:sx=63:sy= 85:p=25
+  CASE 25 : xa= 63:ya=  0:sx=52:sy=100:p=25
+  CASE 26 : xa=116:ya=  0:sx=55:sy= 78:p=25:     ty=-16
+  CASE 27 : xa=171:ya=  0:sx=85:sy= 68:p=25:tx=2:ty= -6
+ END SELECT
+END SUB
+
+'HAGGAR PILE DRIVER
+'SEQUENCE IS 30,31,26,32,26,24
+SUB ShowHaggarPileDriver(num,PL)
+ SELECT CASE num
+  CASE 30 : xb=147:yb=133:sbx=56:sby=49:pb=28
+            xa=  1:ya=153:sx= 72:sy= 45:p =25:tx=-44:ty=9
+  CASE 31 : xb= 65:yb= 33:sbx=30:sby=67
+            xa=  1:ya=153:sx= 72:sy= 45:p =25:tx=-46:ty=10
+  CASE 32 : xa=232:ya=139:sx= 88:sy= 53:p =25:tx=-44:ty=-40:kx=0:ky=0:kt=70
+ END SELECT
+END SUB
+
+'HAGGAR SPECIAL 
+SUB ShowHaggarSpecial(num,PL)
+ SELECT CASE num
+  CASE 33 : xa=  0:ya=  0:sx= 67:sy=121:p=26:tx=  5:kx=  0:ky=10:kt=60
+  CASE 34 : xa= 67:ya=  0:sx= 56:sy= 95:p=26:tx=- 5:kx=-10:ky=10:kt=60
+  CASE 35 : xa=123:ya=  0:sx=102:sy= 93:p=26:tx=-50:kx= 20:ky=10:kt=60
+  CASE 36 : xa=  0:ya=121:sx= 46:sy= 93:p=26:tx=  0:kx=-10:ky=10:kt=60
+  CASE 37 : xa=108:ya= 95:sx=120:sy= 93:p=26:tx=  0:kx=-30:ky=10:kt=60
+ END SELECT
+END SUB
+
+'HAGGAR HURT / ON THE FLOOR / STANDING UP
+SUB ShowHaggarHurtStand(num,PL)
+ SELECT CASE num
+  CASE 38 : xa=259:ya=  0:sx= 61:sy=77:p=26:tx=-4        'IN THE STOMACH
+  CASE 39 : xb= 81:yb=  0:sbx=51:sby=60:pb=28            'IN THE FACE
+            xa= 46:ya=168:sx= 74:sy= 46:p =26:tx=-26:ty=10
+  CASE 40 : xa=228:ya=148:sx= 92:sy=92:p=26:tx= 0        'FALLING DOWN
+  CASE 41 : xa= 12:ya=214:sx=133:sy=26:p=26:tx= 0        'LYING ON THE FLOOR
+  CASE 42 : xa=145:ya=193:sx= 83:sy=47:p=26:tx= 0        'GET UP
+  CASE 43 : xa=257:ya= 78:sx= 63:sy=69:p=26:tx=-2        'ALMOST GET UP (GET OBJECT)
+ END SELECT
+END SUB
+
+'HAGGAR WALKING WITH GRAPPLED ENEMY
+SUB ShowHaggarWGrappled(num,PL)
+ SELECT CASE num
+  CASE 51 : xb=132:yb=  0:sbx=36:sby=68:tbx=2:pb=28
+            xa=  1:ya=153:sx= 72:sy= 45:p =25:tx=-28-27:ty= 9
+  CASE 52 : xb=168:yb=  0:sbx=50:sby=67:tbx=-4:pb=28 
+            xa=  1:ya=153:sx= 72:sy= 45:p =25:tx=-22-27:ty= 9
+  CASE 53 : xb=218:yb=  1:sbx=54:sby=66:tbx=-4:pb=28
+            xa=  1:ya=153:sx= 72:sy= 45:p =25:tx=-23-27:ty= 9
+  CASE 54 : xb=  0:yb= 49:sbx=58:sby=65:tbx=-6:pb=28
+            xa=  1:ya=153:sx= 72:sy= 45:p =25:tx=-21-27:ty= 9
+  CASE 55 : xb= 58:yb= 60:sbx=58:sby=65:tbx=-4:pb=28
+            xa=  1:ya=153:sx= 72:sy= 45:p =25:tx=-22-27:ty= 9
+  CASE 56 : xb=116:yb= 67:sbx=47:sby=64:tbx=14:pb=28
+            xa=  1:ya=153:sx= 72:sy= 45:p =25:tx=-40-27:ty= 9
+  CASE 57 : xb=163:yb= 67:sbx=37:sby=66:tbx=4:pb=28
+            xa=  1:ya=153:sx= 72:sy= 45:p =25:tx=-30-27:ty= 9
+  CASE 58 : xb=200:yb= 67:sbx=37:sby=65:tbx=-4:pb=28
+            xa=  1:ya=153:sx= 72:sy= 45:p =25:tx=-22-27:ty= 9
+  CASE 59 : xb=237:yb= 67:sbx=45:sby=66:tbx=0:pb=28
+            xa=  1:ya=153:sx= 72:sy= 45:p =25:tx=-26-27:ty= 9
+  CASE 60 : xb=  0:yb=114:sbx=56:sby=66:tbx=-2:pb=28
+            xa=  1:ya=153:sx= 72:sy= 45:p =25:tx=-24-27:ty= 9
+  CASE 61 : xb= 56:yb=125:sbx=51:sby=66:tbx=4:pb=28
+            xa=  1:ya=153:sx= 72:sy= 45:p =25:tx=-31-27:ty= 9
+  CASE 62 : xb=107:yb=131:sbx=40:sby=66:tbx=6:pb=28
+            xa=  1:ya=153:sx= 72:sy= 45:p =25:tx=-33-27:ty= 9
+ END SELECT
+END SUB
+
+'HAGGAR BURNING
+SUB ShowHaggarBurning(num,PL)
+ SELECT CASE num
+  CASE 80 : xa=  0:ya=993:sx=121:sy=72:p=-1
+  CASE 81 : xa=121:ya=993:sx=123:sy=72:p=-1
+  CASE 82 : xa=244:ya=993:sx=121:sy=72:p=-1
+ END SELECT
+END SUB
+
 

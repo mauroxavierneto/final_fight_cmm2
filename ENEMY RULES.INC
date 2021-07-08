@@ -172,7 +172,8 @@ SUB ControlEnemy(T)
    INC EY(T),(ESIDE(T)=6 OR ESIDE(T)=7)*15
    IF ESIDE(T)=6 THEN ESIDE(T)=5
    IF ESIDE(T)=7 THEN ESIDE(T)=4
-   EAN(T)=23: IF EY(T)>-5 THEN EAN(T)=24
+   EAN(T)=23
+   IF EY(T)>-5 THEN EAN(T)=24
   ENDIF
 
   FOR I=1 TO MAXPL ' * SCAN FOR BOTH PLAYERS *
@@ -274,6 +275,8 @@ SUB ControlEnemy(T)
      EX(T)=X(I)+(SIDE(I)=4)*8-(SIDE(I)=5)*8: RealY(T)=RealY(I)-4: InsertWait(I,T,6)
      Grap(I)=22: GrapE(I)=T: AN(I)=22: Hitting(I)=0: Combo(I)=0
      ETR(T)=I: KO=2: Punch(I)=131
+     ECOMBO(T)=5: EHURT(T)=15
+     EXIT SUB
     ENDIF
 
     ' SET WHAT PLAYER IS THROWING THE ENEMY AND CALL THROW/SUPLEX ANIMATION
@@ -293,7 +296,8 @@ SUB ControlEnemy(T)
     ' COMBO OR SPECIAL OR KICKED OR NO ENERGY OR COLLIDED WITH OTHER THROWED ENEMY
     IF KO OR AN(I)=18+(PlType(I)=1) OR C_A OR Kick(I)=1 OR EEnergy(T)<=0 OR IS_TR THEN
      Hit(I)=T
-     STE(T)=51: EAniSpd(T)=999: EANiDelay(T)=0: ESJMP(T)=-10: EAN(T)=23
+     STE(T)=51: EAniSpd(T)=15: EANiDelay(T)=0
+     ESJMP(T)=-10: EAN(T)=23
      IF Punch(I)>100 AND Punch(I)<=110) THEN Punch(I)=1: Jump(I)=0: GrapE(I)=0: Grap(I)=0
   
      ' SET SIDE OF THE SHAPE AND THROWING
@@ -305,7 +309,7 @@ SUB ControlEnemy(T)
       STE(T)=60: IF ETR(T)=0 THEN InsertWait(I,T,3)
       ESJMP(T)=-11: RealY(T)=RealY(I)-4
       ESIDE(T)=(Side(I)=4)*5+(Side(I)=5)*4
-      IF Combo(I)<3 THEN ESIDE(T)=5-(MVLR(I)=1): Side(I)=4+(MVLR(I)=1)
+      IF Combo(I)<3 THEN ESIDE(T)=5-(MVLR(I)=-1): Side(I)=4+(MVLR(I)=1)
       'ENEMY THROWED SIDE
       ESPDX(T)=(ESIDE(T)=4)*10-(ESIDE(T)=5)*10      
      ELSE       
@@ -343,9 +347,10 @@ SUB ControlEnemy(T)
       IF AN(I)=22 THEN 'GRAPPLE
        ESide(T)=(SIDE(I)=4)*4+(SIDE(I)=5)*5
        EX(T)=X(I)+(SIDE(I)=4)*10-(SIDE(I)=5)*10: RealY(T)=RealY(I)-5
-       EAN(T)=23: ESJMP(T)=-12: EY(T)=-1
+       ESJMP(T)=-12: EY(T)=-1
        ESPDX(T)=(SIDE(I)=5)*10-(SIDE(I)=4)*10       
        INC SCORE(I),10: INC EEnergy(T),-1
+       IF EEnergy(T)>0 THEN EAN(T)=23 ELSE AN(I)=23
       ENDIF
       IF AN(I)=23 THEN 'THROW
        ESIDE(T)=(Side(I)=4)*6+(Side(I)=5)*7 'ROTATE 180`

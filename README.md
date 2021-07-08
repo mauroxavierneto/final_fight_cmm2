@@ -8,6 +8,12 @@ PS.: The current enemies on the CMM2 G1 probably will not be implemented because
 
 Changelog:
 
+2021-07-07
+- Fixed J / Two P invisible shapes
+- Fixed wrong position of the shape when enemy die while are throwed by a player
+- Huge optimization on the particles (pieces of glass, wood, etc)
+- Optimized Objects and Player shapes
+
 2021-07-05
 - Remade all sound effects directly from an emulator of the Arcade
 - Readjusted music volume

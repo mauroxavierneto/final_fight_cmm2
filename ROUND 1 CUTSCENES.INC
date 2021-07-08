@@ -386,7 +386,7 @@ SUB Round_1_Cutscenes(Ending)
        FOR PL=1 TO MAXPL 
         IF X(PL)<MM.HRES-55 THEN T=4 ELSE T=(AN(PL) MOD 5 <=2)*3
         INC X(PL), T: MV=1: MVLR(PL)= 1
-        IF X(PL)>MM.HRES-70 THEN INC RealY(PL), T/1.3: MVUD(PL)= 1
+        IF X(PL)>MM.HRES-65 THEN INC RealY(PL), T/1.3: MVUD(PL)= 1
         ' REACH THE LIMIT
         IF X(PL)>MM.HRES+30 THEN INC GO
        NEXT PL

@@ -18,7 +18,7 @@ SUB Enemy_J_TWO_P(T,PL)
 
   IF STE(T)<1 THEN
    EBACK(T)=1: EBACKX(T)=1
-   STE(T)=1: EAN(T)=9 'KEEP STOPPED UNTIL BACK TO WALK RANDOMLY
+   STE(T)=1: EAN(T)=0 'KEEP STOPPED UNTIL BACK TO WALK RANDOMLY
    IF RND<0.3 THEN
     'ALWAYS WALKING WITH ATTENTION
     STE(T)=20
@@ -51,8 +51,8 @@ SUB Enemy_J_TWO_P(T,PL)
   'WALKING WITH ATTENTION -----------------------------------------------------------
   CASE 1 TO 40: 
    EAniSpd(T)=3-(EBACK(T)=-1)*2
-   ESPD(T)=((ES_SPD(T)+EAN(T)-10)/2)*EBACK(T)*((EBACK(T)=-1)*2+(EBACK(T)>=0))
-   IF EAN(T)<9 OR EAN(T)>12 THEN EAN(T)=9
+   ESPD(T)=((ES_SPD(T)+EAN(T)-1)/2)*EBACK(T)*((EBACK(T)=-1)*2+(EBACK(T)>=0))
+   IF EAN(T)<0 OR EAN(T)>3 THEN EAN(T)=0
 
   'GETTING UP ------------------------------------------------------------------------
   CASE 51: 'NOTHING
@@ -69,7 +69,7 @@ SUB Enemy_J_TWO_P(T,PL)
    IF EEnergy(T)<=0 THEN STE(T)=100: EAN(T)=50: EAniDelay(T)=0: EAniSpd(T)=1       
   CASE 55:
    EAN(T)=24: INC STE(T): EAniDelay(T)=0: EAniSpd(T)=10
-  CASE 56: EAN(T)=9: STE(T)=1
+  CASE 56: EAN(T)=0: STE(T)=1
 
   'THROWED UPDOWN --------------------------------------------------------------------
   CASE 60:
@@ -85,11 +85,11 @@ SUB Enemy_J_TWO_P(T,PL)
   CASE 64:
    EAN(T)=35: EAniDelay(T)=0: EAniSPD(T)=10
    STE(T)=65: EMV(T)=0
-   IF EX(T)<245+RXX THEN EAN(T)=9: STE(T)=1: EMV(T)=1
+   IF EX(T)<245+RXX THEN EAN(T)=0: STE(T)=1: EMV(T)=1
   CASE 65:
    EAN(T)=35: EAniDelay(T)=0: EAniSPD(T)=10
    STE(T)=64: EMV(T)=0
-   IF EX(T)<245+RXX THEN EAN(T)=9: STE(T)=1: EMV(T)=1
+   IF EX(T)<245+RXX THEN EAN(T)=0: STE(T)=1: EMV(T)=1
 
   'SEATED ----------------------------------------------------------------------------
   CASE 66:
@@ -148,11 +148,11 @@ SUB Draw_J_TWO_P(num,who)
   'ENERGY AVATAR
   CASE 99 : xa=0:ya=504:sx=59:sy=16:tx=-14
   'STOPPED
-  CASE  9 : xa=163:ya=508:sx=64:sy=91
-  'WALKING (ALWAYS WITH ATTENTION)
-  CASE 10 : xa=163:ya=508:sx=64:sy=49:tx=0:ty=0:xb=227:yb=504:sbx=38:sby=42:tbx=6:tby=0
-  CASE 11 : xa=163:ya=508:sx=64:sy=49:tx=0:ty=0:xb=227:yb=546:sbx=30:sby=43:tbx=6:tby=0
-  CASE 12 : xa=163:ya=508:sx=64:sy=49:tx=0:ty=0:xb=227:yb=504:sbx=38:sby=42:tbx=6:tby=0
+  CASE  0 : xa=163:ya=508:sx=64:sy=91
+  'WALKING
+  CASE  1 : xa=163:ya=508:sx=64:sy=49:tx=0:ty=0:xb=227:yb=504:sbx=38:sby=42:tbx=6:tby=0
+  CASE  2 : xa=163:ya=508:sx=64:sy=49:tx=0:ty=0:xb=227:yb=546:sbx=30:sby=43:tbx=6:tby=0
+  CASE  3 : xa=163:ya=508:sx=64:sy=49:tx=0:ty=0:xb=227:yb=504:sbx=38:sby=42:tbx=6:tby=0
   'PUNCHING
   CASE 13 : xa=265:ya=507:sx=61:sy=91:tx=  6
   CASE 14 : xa=326:ya=512:sx=98:sy=85:tx=-23

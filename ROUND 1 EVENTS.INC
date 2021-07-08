@@ -45,7 +45,7 @@ SUB Round_1_Events(xx)
       'TESTS
       IF NOINTRO THEN
        'SpawnEnemy(340,200,HOLLY_WOOD_RED,1)
-       SpawnEnemy(180,210,J,66)
+       'SpawnEnemy(180,210,J,66)
       ENDIF
       'SpawnObject(250,195,19,,-1)
      ENDIF
