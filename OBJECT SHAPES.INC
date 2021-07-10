@@ -53,7 +53,7 @@ SUB PutObject(xs,ys,num,s,SHOW)
   CASE 250 TO 257: ShowMolotov(num,s)
   CASE 270 TO 272: ShowBlood(num,s)
   CASE -280,280 TO 289: ShowKatana(num,s)
-  CASE -290,290 TO 299: ShowKnife(num,s)
+  CASE -290,290 TO 299,310: ShowKnife(num,s)
   CASE -300,300 TO 309: ShowPipe(num,s)
  END SELECT
 
@@ -398,6 +398,7 @@ SUB ShowKnife(num,s)
   CASE 297 : xa=246:ya= 65:sx=16:sy= 9:p=38:     if s=4 then s=7 else if s=5 then s=6 '- 7
   CASE 298 : xa=247:ya= 74:sx=15:sy=12:p=38:     if s=4 then s=7 else if s=5 then s=6 '\ 8
   CASE 299 : xa=146:ya=149:sx=23:sy= 8:p=38 '- 'THROW
+  CASE 310 : xa=201:ya=162:sx= 8:sy=23:p=38      '| 1 - FULL
  END SELECT
 END SUB
 
@@ -414,6 +415,6 @@ SUB ShowPipe(num,s)
   CASE 306 : xa=209:ya=136:sx=62:sy=33:p=38:ty=16:if s=4 then s=7 else if s=5 then s=6 '/ 6
   CASE 307 : xa=240:ya=102:sx=80:sy= 8:p=38:      if s=4 then s=7 else if s=5 then s=6 '- 7
   CASE 308 : xa=271:ya=116:sx=49:sy=51:p=38:ty=25:if s=4 then s=7 else if s=5 then s=6 '\ 8
-  CASE 309 : xa=259:ya=102:sx=61:sy= 8:p=38:tx=-4 '- 3
+  CASE 309 : xa=259:ya=102:sx=61:sy= 8:p=38:tx=-4:if s=4 then s=7 else if s=5 then s=6 '- 7
  END SELECT
 END SUB

@@ -253,7 +253,7 @@ SUB ControlEnemy(T)
      ELSE
       SELECT CASE WEAPON(I)
        CASE KATANA: PLAY_SAMPLE 16,3,18000,100
-       CASE PIPE  : PLAY_SAMPLE 24,3,15000,100
+       CASE PIPE  : PLAY_SAMPLE 24,3,19000,100
       END SELECT
      ENDIF
      INC SCORE(I),100
@@ -364,7 +364,7 @@ SUB ControlEnemy(T)
       ENDIF
 
      CASE HAGGAR:
-      IF AN(I)=21 AND SPECIAL(I)=0 AND ECOMBO(T)=1 THEN 'HEAD BANG WHEN GRAPPLED
+      IF AN(I)=21 AND SPECIAL(I)=0 AND Hitting(I)=0 THEN 'HEAD BANG WHEN GRAPPLED
        Hit(I)=T: EHIT(T)=I: Hitting(I)=8: ECOMBO(T)=3
        EAniDelay(T)=0: EAniSpd(T)=12
        EX(T)=X(I)+(SIDE(I)=4)*16-(SIDE(I)=5)*16: RealY(T)=RealY(I)+6-(PlType(I)=3)*12

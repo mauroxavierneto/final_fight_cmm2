@@ -27,8 +27,6 @@ SUB PutPlayer(xs,ys,num,s,Who,pl,SHOW)
  xb=0:yb=0:sbx=0:sby=0:sx=0:sy=0:p=0:pb=0:tx=0:ty=0:tbx=0:tby=0:xt=0:yt=0:xxt=0:yyt=0:SD=0
  xo=0:yo=0: zo=0
 
- 'NUM=71
-
  SELECT CASE Who
   CASE 1: 'GUY --------------------------------------------------------------------------
    SELECT CASE num
@@ -62,11 +60,10 @@ SUB PutPlayer(xs,ys,num,s,Who,pl,SHOW)
     CASE 38 TO 43: ShowGuyHurtStand(num,PL)
     'GUY USING WEAPON
     CASE 70 : xa=165:ya=92:sx=56:sy=79:p=27:tx= -8:ty=0: xo=-22:yo=-72:zo=7
-    CASE 71 :
-     xa=221:ya=93:sx=87:sy=78:p=27:tx=-46:ty=0: xo=81:yo=-38:zo=3
+    CASE 71 : xa=221:ya=93:sx=87:sy=78:p=27:tx=-46:ty=0: xo=81:yo=-38:zo=3:
      SELECT CASE WEAPON(PL)
       CASE KATANA: kx=57: ky=-10: kt=80
-      CASE   PIPE: kx=61: ky=-10: kt=80
+      CASE   PIPE: kx=61: ky=-10: kt=80: inc yo
      END SELECT
     'GUY BURNING
     CASE 80 TO 82: ShowGuyBurning(num,PL)
@@ -78,7 +75,8 @@ SUB PutPlayer(xs,ys,num,s,Who,pl,SHOW)
     'CODY ENERGY AVATAR
     CASE 99 : xa=179:ya= 86:sx=49:sy=16:p=25
     'CODY STOPPED
-    CASE 0  : xa=  0:ya=  0:sx=54:sy=93:p=27: xo=-21: yo=-85: zo=8
+    CASE 0  : xa=  0:ya=  0:sx=54:sy=93:p=27: xo=-21: yo=-85: zo=8:
+              IF WEAPON(PL)=PIPE THEN inc xo,3: inc yo,2
     'CODY WALKING - INSERT BOX TO GRAPPLE ENEMIES
     CASE 1 TO 12: ShowCodyWalking(num,PL)
     'CODY PUNCHING 
@@ -96,12 +94,14 @@ SUB PutPlayer(xs,ys,num,s,Who,pl,SHOW)
     'CODY HURT / ON THE FLOOR / STANDING UP
     CASE 38 TO 43: ShowCodyHurtStand(num,PL)
     'CODY USING WEAPON
-    CASE 70 : xa=202:ya=  7:sx= 83:sy=81:p=27:tx=-34: xo=41:yo=-63:zo=2
-    CASE 71 :
-     xa=  0:ya=116:sx=112:sy=77:p=27:tx=-48: xo=106:yo=-46:zo=9
+    CASE 70 : xa=  0:ya=207:sx=  35:sy= 33:tx= -20: ty  =0: p=27:
+              xb=202:yb= 40:sbx= 83:sby=48:tbx=-34: xo=22-(s=5)*82:yo=-26:zo=7
+    CASE 71 : xa= 35:ya=194:sx=  82:sy= 46:tx= -76: ty =17: p=27:
+              xb=  0:yb=145:sbx= 68:sby=48:tbx=-24: xo=127-(s=5)*68:yo=18:zo=3
      SELECT CASE WEAPON(PL)
-      CASE KATANA: kx=65: ky=-10: kt=80
-      CASE   PIPE: kx=66: ky=-10: kt=80
+      CASE KATANA: kx=53: ky=-10: kt=80
+      CASE  KNIFE: kx=20: ky=-10: kt=80
+      CASE   PIPE: kx=58: ky=-10: kt=80: inc xo,-1: inc yo,-1
      END SELECT
     'CODY BURNING
     CASE 80 TO 82: ShowCodyBurning(num,PL)
@@ -114,9 +114,12 @@ SUB PutPlayer(xs,ys,num,s,Who,pl,SHOW)
 
     'HAGGAR STOPPED
     CASE  0 : xb= 81:yb=  0:sbx=51:sby=60
-              xa=  0:ya=  0:sx= 81:sy= 49:p=28:tx=-17:ty=16
+              xa=  0:ya=  0:sx= 81:sy= 49:p=28:tx=-17:ty=16: xo=4-(s=5)*50:yo=-17:zo=1
+     IF WEAPON(PL)>KATANA THEN INC xo,2-(s=5): INC yo: IF WEAPON(PL)=KNIFE THEN zo=20: inc yo,21
     'HAGGAR WALKING - INSERT BOX TO GRAPPLE ENEMIES
-    CASE 1 TO 12: ShowHaggarWalking(num,PL)
+    CASE 1 TO 12:
+     ShowHaggarWalking(num,PL,s)
+     IF WEAPON(PL)>KATANA THEN INC xo,1-(s=5): INC yo: IF WEAPON(PL)=KNIFE THEN zo=20: inc yo,21
     'HAGGAR PUNCHING 
     CASE 13 TO 19: ShowHaggarPunching(num,PL)
     'HAGGAR GRAPPLE
@@ -131,8 +134,8 @@ SUB PutPlayer(xs,ys,num,s,Who,pl,SHOW)
     'HAGGAR JUMPING AHEAD / VERTICAL
     CASE 24 TO 27: ShowHaggarJumping(num,PL)
     'HAGGAR VERTICAL AIR KICK / SMASH
-    CASE 28 : xa=154:ya= 68:sx=123:sy=61:p=25:tx=-50:ty=-30:kx=38:ky=15:kt=50
-    CASE 29 : xa=  0:ya=100:sx=128:sy=52:p=25:tx=-20:ty=-24:kx=0:ky=-20:kt=80
+    CASE 28 : xa=154:ya= 68:sx=123:sy=61:p=25:tx=-50:ty=-30:kx=38:ky=15:kt=50:xo=-12:yo=-41:zo=2
+    CASE 29 : xa=  0:ya=100:sx=128:sy=52:p=25:tx=-20:ty=-24:kx=0:ky=-20:kt=80:xo= 57:yo=-67:zo=4
     'HAGGAR PILE DRIVER
     'SEQUENCE IS 30,31,26,32,26,24
     CASE 30 TO 32: ShowHaggarPileDriver(num,PL)
@@ -142,6 +145,14 @@ SUB PutPlayer(xs,ys,num,s,Who,pl,SHOW)
     CASE 38 TO 43: ShowHaggarHurtStand(num,PL)
     'HAGGAR WALKING WITH GRAPPLED ENEMY
     CASE 51 TO 62: ShowHaggarWGrappled(num,PL)
+    'HAGGAR USING WEAPON
+    CASE 70 : xa=  0:ya= 86:sx= 71:sy=89:p=27:tx=-18: xo= 1:yo=-83:zo=7:
+              IF WEAPON(PL)=PIPE THEN zo=9: inc xo,-21+(s=5)*5: inc yo
+    CASE 71 : xa= 71:ya= 86:sx=111:sy=81:p=27:tx=-48: xo=98:yo=-47:zo=3:
+     SELECT CASE WEAPON(PL)
+      CASE KATANA: kx=70: ky=-10: kt=80
+      CASE   PIPE: kx=74: ky=-10: kt=80: inc xo,-1: inc yo,-1
+     END SELECT
     'HAGGAR BURNING
     CASE 80 TO 82: ShowHaggarBurning(num,PL)
    END SELECT 
@@ -156,6 +167,7 @@ SUB PutPlayer(xs,ys,num,s,Who,pl,SHOW)
     CASE 3: inc xo,4
     CASE 7: inc xo,-5
     CASE 8: inc xo,2: inc yo,-9
+    CASE 9: inc yo
    END SELECT
   ENDIF
   IF WEAPON(PL)=KNIFE THEN
@@ -163,6 +175,7 @@ SUB PutPlayer(xs,ys,num,s,Who,pl,SHOW)
     CASE 1: inc yo,13
     CASE 2: inc xo,-9: inc yo,5
     CASE 3: inc xo,-7
+    CASE 4: inc xo,-5: inc yo,5
     CASE 7: inc xo,5: inc yo
     CASE 8: inc xo,7: inc yo,5
    END SELECT
@@ -466,46 +479,47 @@ SUB ShowCodyBurning(num,PL)
 END SUB
 
 'HAGGAR WALKING - INSERT BOX TO GRAPPLE ENEMIES
-SUB ShowHaggarWalking(num,PL)
+SUB ShowHaggarWalking(num,PL,S)
  SELECT CASE num
-  CASE  1 : xb=132:yb=  0:sbx=36:sby=68:tbx=2
+  CASE  1 : xb=132:yb=  0:sbx=36:sby=68:tbx= 2: xo= 4-(s=5)*35:yo=-17:zo=1
             xa=  0:ya=  0:sx= 81:sy= 49:p=28:tx=-28:ty=16
             BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*15
-  CASE  2 : xb=168:yb=  0:sbx=50:sby=67:tbx=-4
+  CASE  2 : xb=168:yb=  0:sbx=50:sby=67:tbx=-4: xo= 8-(s=5)*49:yo=-17:zo=1
             xa=  0:ya=  0:sx= 81:sy= 49:p=28:tx=-22:ty=16
             BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*15
-  CASE  3 : xb=218:yb=  1:sbx=54:sby=66:tbx=-4
+  CASE  3 : xb=218:yb=  1:sbx=54:sby=66:tbx=-4: xo=10-(s=5)*53:yo=-17:zo=1
             xa=  0:ya=  0:sx= 81:sy= 49:p=28:tx=-23:ty=16
             BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*15
-  CASE  4 : xb=  0:yb= 49:sbx=58:sby=65:tbx=-6
+  CASE  4 : xb=  0:yb= 49:sbx=58:sby=65:tbx=-6: xo=11-(s=5)*57:yo=-17:zo=1
             xa=  0:ya=  0:sx= 81:sy= 49:p=28:tx=-21:ty=16
             BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*15
-  CASE  5 : xb= 58:yb= 60:sbx=58:sby=65:tbx=-4
+  CASE  5 : xb= 58:yb= 60:sbx=58:sby=65:tbx=-4: xo=12-(s=5)*57:yo=-17:zo=1
             xa=  0:ya=  0:sx= 81:sy= 49:p=28:tx=-22:ty=16
             BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*15
-  CASE  6 : xb=116:yb= 67:sbx=47:sby=64:tbx=14
+  CASE  6 : xb=116:yb= 67:sbx=47:sby=64:tbx=14: xo=15-(s=5)*46:yo=-17:zo=1
             xa=  0:ya=  0:sx= 81:sy= 49:p=28:tx=-40:ty=16
             BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*15
-  CASE  7 : xb=163:yb= 67:sbx=37:sby=66:tbx=4
+  CASE  7 : xb=163:yb= 67:sbx=37:sby=66:tbx= 4: xo= 5-(s=5)*36:yo=-17:zo=1
             xa=  0:ya=  0:sx= 81:sy= 49:p=28:tx=-30:ty=16
             BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*15
-  CASE  8 : xb=200:yb= 67:sbx=37:sby=65:tbx=-4
+  CASE  8 : xb=200:yb= 67:sbx=37:sby=65:tbx=-4: xo= 1-(s=5)*36:yo=-17:zo=1
             xa=  0:ya=  0:sx= 81:sy= 49:p=28:tx=-22:ty=16
             BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*15
-  CASE  9 : xb=237:yb= 67:sbx=45:sby=66:tbx=0
+  CASE  9 : xb=237:yb= 67:sbx=45:sby=66:tbx= 0: xo= 7-(s=5)*44:yo=-17:zo=1
             xa=  0:ya=  0:sx= 81:sy= 49:p=28:tx=-26:ty=16
             BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*15
-  CASE 10 : xb=  0:yb=114:sbx=56:sby=66:tbx=-2
+  CASE 10 : xb=  0:yb=114:sbx=56:sby=66:tbx=-2: xo=12-(s=5)*55:yo=-17:zo=1
             xa=  0:ya=  0:sx= 81:sy= 49:p=28:tx=-24:ty=16
             BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*15
-  CASE 11 : xb= 56:yb=125:sbx=51:sby=66:tbx=4
+  CASE 11 : xb= 56:yb=125:sbx=51:sby=66:tbx= 4: xo=12-(s=5)*50:yo=-17:zo=1
             xa=  0:ya=  0:sx= 81:sy= 49:p=28:tx=-31:ty=16
             BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*15
-  CASE 12 : xb=107:yb=131:sbx=40:sby=66:tbx=6
+  CASE 12 : xb=107:yb=131:sbx=40:sby=66:tbx= 6: xo= 8-(s=5)*39:yo=-17:zo=1
             xa=  0:ya=  0:sx= 81:sy= 49:p=28:tx=-33:ty=16
             BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*15
  END SELECT
 END SUB
+
 
 'HAGGAR PUNCHING 
 SUB ShowHaggarPunching(num,PL)
@@ -520,15 +534,17 @@ SUB ShowHaggarPunching(num,PL)
  END SELECT
 END SUB
 
+
 'HAGGAR JUMPING AHEAD / VERTICAL
 SUB ShowHaggarJumping(num,PL)
  SELECT CASE num
-  CASE 24 : xa=  0:ya=  0:sx=63:sy= 85:p=25
-  CASE 25 : xa= 63:ya=  0:sx=52:sy=100:p=25
-  CASE 26 : xa=116:ya=  0:sx=55:sy= 78:p=25:     ty=-16
-  CASE 27 : xa=171:ya=  0:sx=85:sy= 68:p=25:tx=2:ty= -6
+  CASE 24 : xa=  0:ya=  0:sx=63:sy= 85:p=25:             xo=-23:yo=-57:zo=1
+  CASE 25 : xa= 63:ya=  0:sx=52:sy=100:p=25:             xo= 24:yo=-83:zo=2
+  CASE 26 : xa=116:ya=  0:sx=55:sy= 78:p=25:     ty=-16: xo=- 8:yo=-68:zo=1
+  CASE 27 : xa=171:ya=  0:sx=85:sy= 68:p=25:tx=2:ty= -6: xo=-15:yo=-32:zo=2
  END SELECT
 END SUB
+
 
 'HAGGAR PILE DRIVER
 'SEQUENCE IS 30,31,26,32,26,24

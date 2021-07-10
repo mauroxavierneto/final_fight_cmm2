@@ -125,8 +125,8 @@ SUB Round_1_Events(xx)
    
    IF EVENT(0)=0 THEN
     SpawnObject(140,200,17,,-3)
-    SpawnObject(280,195,8,,-1)
-    SpawnObject(350,195,8,,-1)
+    SpawnObject(280,195,8,,-4)
+    SpawnObject(350,195,8,,-4)
     'SEATED ENEMIES
     SpawnEnemy(295,210,9,66,4)
     SpawnEnemy(255,230,5,68,4)
@@ -167,7 +167,7 @@ SUB Round_1_Events(xx)
      IF OSDX=2200 THEN
       'SPAWN OBJECT - TIRES
       SpawnObject(220,185,13,,140) 'BARBECUE
-      SpawnObject(274,185,13,,-3+(MAXPL=2)*143)  'RANDOM WEAPON OR BARBECUE WHEN 2 PLAYERS
+      SpawnObject(274,185,13,,-3)  'RANDOM WEAPON
       'ENEMIES
       SpawnEnemy(470,180, 7,66,4) 'J
       SpawnEnemy(540,180, 9,64,5) 'AXEL

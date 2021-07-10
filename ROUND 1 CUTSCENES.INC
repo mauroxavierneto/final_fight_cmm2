@@ -149,7 +149,7 @@ SUB Round_1_Cutscenes(Ending)
        GO=0: MV=0
        FOR PL=1 TO MAXPL
         AN(PL)=0
-        IF OSDX=9610 THEN DropWeapon(PL)
+        IF OSDX=9950 THEN DropWeapon(PL)
        NEXT PL
       ENDIF
 
@@ -259,7 +259,7 @@ SUB Round_1_Cutscenes(Ending)
        GO=0: MV=0
        FOR PL=1 TO MAXPL
         AN(PL)=0
-        IF OSDX=9610 THEN DropWeapon(PL)
+        IF OSDX=9950 THEN DropWeapon(PL)
        NEXT PL
       ENDIF
 

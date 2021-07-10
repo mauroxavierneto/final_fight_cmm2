@@ -8,6 +8,11 @@ PS.: The current enemies on the CMM2 G1 probably will not be implemented because
 
 Changelog:
 
+2021-07-10
+- Implemented weapons control for Haggar and Cody
+- Fixed drop weapons
+- Fixed some animations on players and weapons
+
 2021-07-09
 - Implemented player weapons: katana, knife and pipe
 - Implemented weapon control for Guy

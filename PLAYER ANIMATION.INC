@@ -360,11 +360,20 @@ SUB PlayerAnimation(PL)
         AN(PL)=71
         SELECT CASE Weapon(PL)
          CASE KATANA: AniSpd(PL)=4
-         CASE KNIFE :
-          AniSpd(PL)=4
-          SpawnObject(X(PL)+(SIDE(PL)=4)*70-(SIDE(PL)=5)*70,RealY(PL),SIDE(PL)+KNIFE)
-          WEAPON(PL)=0
          CASE PIPE  : AniSpd(PL)=8
+         CASE KNIFE :
+          AniSpd(PL)=4: GO=1
+          'THROW KNIFE IF THERE ARE NO ENEMIES NEAR THE PLAYER
+          FOR T=4 TO 9
+           IF STE(T)>0 THEN
+            IF EX(T)>X(PL)-(SIDE(PL)=5)*160 AND EX(T)<X(PL)+(SIDE(PL)=4)*160 THEN
+             IF RealY(T)>RealY(PL)-8 AND RealY(T)<RealY(PL)+8 THEN GO=0
+            ENDIF
+           ENDIF
+          NEXT T
+          IF GO THEN
+           SpawnObject(X(PL)+(SIDE(PL)=4)*70-(SIDE(PL)=5)*70,RealY(PL),SIDE(PL)+KNIFE): WEAPON(PL)=0
+          ENDIF
         END SELECT
        ENDIF
       CASE   1:
@@ -511,11 +520,31 @@ SUB PlayerAnimation(PL)
 
       CASE   5: 'PUNCHING
        AN(PL)=13: AniSpd(PL)=1: AniDelay(PL)=0
+       IF WEAPON(PL)>0 THEN
+        AN(PL)=70
+        SELECT CASE Weapon(PL)
+         CASE KATANA: AniSpd(PL)=7: PLAY_SAMPLE 16,PL
+         CASE KNIFE : AniSpd(PL)=7: PLAY_SAMPLE 16,PL,30000
+         CASE PIPE  : AniSpd(PL)=6: PLAY_SAMPLE 16,PL,19000
+        END SELECT
+       ENDIF
       CASE   4:
        AN(PL)=14: AniSpd(PL)=2: AniDelay(PL)=0
+       IF WEAPON(PL)>0 THEN       
+        AN(PL)=71
+        SELECT CASE Weapon(PL)
+         CASE KATANA: AniSpd(PL)=6
+         CASE KNIFE :
+          AniSpd(PL)=6
+          SpawnObject(X(PL)+(SIDE(PL)=4)*75-(SIDE(PL)=5)*75,RealY(PL),SIDE(PL)+KNIFE)
+          WEAPON(PL)=0: Punch(PL)=1
+         CASE PIPE  : AniSpd(PL)=5
+        END SELECT
+       ENDIF
       CASE   3:
        AN(PL)=15: AniSpd(PL)=3: AniDelay(PL)=0
        If Hitting(PL)>0 THEN INC Combo(PL)
+       IF WEAPON(PL)>0 THEN AN(PL)=0: Combo(PL)=0: Punch(PL)=1
       CASE   2:
        AN(PL)=14: AniSpd(PL)=2: AniDelay(PL)=0
        If Combo(PL)=1 then Punch(PL)=11
@@ -525,7 +554,6 @@ SUB PlayerAnimation(PL)
        AN(PL)= 0: AniSpd(PL)=1: AniDelay(PL)=0
      END SELECT
     ENDIF 'END OF CODY PUNCH / GRAPPLE / THROW SEQUENCES -------------------------------------
-
 
     'HAGGAR JUMPING / FIRE KICK JUMP ---------------------------------------------------------
     If Jump(PL)>0 and Phurted(PL)=0 then

@@ -300,9 +300,9 @@ IF NOINTRO THEN Section=1: LoadRound
 
 IF NOINTRO THEN
  OSDX=20: MAXPL=1
- PLType(1)=CODY
- PLType(2)=HAGGAR
- WEAPON(1)=PIPE
+ PLType(2)=CODY
+ PLType(1)=HAGGAR
+ WEAPON(1)=KNIFE
 ENDIF
 
 'LOAD GENERAL ASSETS
@@ -528,7 +528,7 @@ FOR PL=1 TO MAXPL ' ------------------------------------------------------------
   IF KSHIFT THEN
 
    ' GET ITEM
-   IF Item(PL)>0 AND AN(PL)<=12 AND Kick(PL)=0 AND Punch(PL)=0 AND Jump(PL)=0 AND FreePunch(PL)=1 AND Grap(PL)=0 THEN
+   IF Item(PL)>0 AND AN(PL)<=12 AND Kick(PL)=0 AND Punch(PL)=0 AND Jump(PL)=0 AND FreePunch(PL)=1 AND Grap(PL)=0 AND OSDX=0 THEN
     STE(Item(PL))=99: EHIT(Item(PL))=PL: Punch(PL)=201: FreePunch(PL)=0
    ENDIF
 
