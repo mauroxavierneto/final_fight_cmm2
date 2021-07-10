@@ -145,7 +145,13 @@ SUB Round_1_Cutscenes(Ending)
        
       GO=1
       ' A LITTLE PAUSE (LIKE THE ARCADE)
-      IF OSDX>=9600 THEN GO=0: MV=0: FOR PL=1 TO MAXPL: AN(PL)=0: NEXT PL
+      IF OSDX>=9600 THEN
+       GO=0: MV=0
+       FOR PL=1 TO MAXPL
+        AN(PL)=0
+        IF OSDX=9610 THEN DropWeapon(PL)
+       NEXT PL
+      ENDIF
 
       ' PLAYERS WALKING TO THE DOWNSTAIRS
       IF OSDX>7000 AND OSDX<9600 THEN
@@ -249,7 +255,13 @@ SUB Round_1_Cutscenes(Ending)
       BLIT 256,0,MM.HRES-64,0,64,240,7,4
        
       ' A LITTLE PAUSE (LIKE THE ARCADE)
-      IF OSDX>=9600 THEN GO=0: MV=0: FOR PL=1 TO MAXPL: AN(PL)=0: NEXT PL
+      IF OSDX>=9600 THEN
+       GO=0: MV=0
+       FOR PL=1 TO MAXPL
+        AN(PL)=0
+        IF OSDX=9610 THEN DropWeapon(PL)
+       NEXT PL
+      ENDIF
 
       ' PLAYERS WALKING TO THE UPSTAIRS
       IF OSDX>7020 AND OSDX<9600 THEN
@@ -353,7 +365,7 @@ SUB Round_1_Cutscenes(Ending)
 
       GO=1
       IF OSDX>=9970 THEN 
-       GO=0: MV=0: FOR PL=1 TO MAXPL: AN(PL)=0: NEXT PL
+       GO=0: MV=0: FOR PL=1 TO MAXPL: AN(PL)=0: DropWeapon(PL): NEXT PL
        IF OSDX=9980 THEN 
         LoadRoundMap(Round,1) 'LOAD ENDING MAP
         PAGE WRITE 37: CLS: LOAD PNG ".\IMAGES\OBJECTS\FONTS_2.PNG",,,1 'LOAD RED/WHITE FONTS

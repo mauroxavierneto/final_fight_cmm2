@@ -140,6 +140,9 @@ IF VMODE=400 THEN VSYNC=0: DEPTH=8
 ' PLAYERS
 CONST         GUY = 1,         CODY = 2,          HAGGAR = 3
 
+' WEAPONS
+CONST    KATANA = 150,      KNIFE = 160,          PIPE = 170
+
 ' ENEMIES 
 CONST       BRED =  4,        JAKE =  5,            DUG =  6
 CONST          J =  7,       TWO_P =  8
@@ -171,8 +174,8 @@ DIM SPD(3),SIDE(3),AN(3),SIDEANT(3),ANANT(3)
 DIM AniSpd(3),AniDelay(3),Wait(3),PLWait(3),SCORE(3)
 ' PLAYER HURTED? / COMBO WHEN PLAYER HURTED / WHO HURTED THE PLAYER?
 DIM Phurted(3),HCombo(3),WhoE(3)
-' IT'S MOVING TO LEFT OR RIGHT? / UP OR DOWN? / PILE DRIVING?
-DIM MVLR(3), MVUD(3), PILE(3)
+' IT'S MOVING TO LEFT OR RIGHT? / UP OR DOWN? / PILE DRIVING? / CARRING A WEAPON?
+DIM MVLR(3), MVUD(3), PILE(3), WEAPON(3)
 ' PUNCH / KICK / COMBO / GRAPPLE / ITEM ON THE FLOOR ABOVE THE PLAYER / PLAYER BURNING?
 DIM FreePunch(3),Punch(3),Kick(3),Combo(3),Grap(3),Item(3),Burned(3)
 ' JUMP / JUMP SPEED X,Y / SPECIAL ATTACK FLAG / TEMP CONTROL TYPE (TO STOP PLAYERS)
@@ -217,8 +220,8 @@ DIM SMXA,SMXB,SMYA,SMYB
 HMAX=9
 ' COORDINATES
 DIM XHit(HMAX),YHit(HMAX)
-' ACTION SHAPE / END SHAPE / ANIMATION SPEED
-DIM AHit(HMAX),EnHit(HMAX),SPHit(HMAX)
+' ACTION SHAPE / END SHAPE / ANIMATION SPEED / SIDE HIT
+DIM AHit(HMAX),EnHit(HMAX),SPHit(HMAX),SDHit(HMAX)
 
 ' STAGE EVENTS ------------------------------------------------------
 DIM Event(20)
@@ -297,15 +300,16 @@ IF NOINTRO THEN Section=1: LoadRound
 
 IF NOINTRO THEN
  OSDX=20: MAXPL=1
- PLType(1)=GUY
+ PLType(1)=CODY
  PLType(2)=HAGGAR
+ WEAPON(1)=PIPE
 ENDIF
 
 'LOAD GENERAL ASSETS
 LoadAssets
 
 PAGE WRITE 0
-PrintS(MM.HRES\2-43,105,0,"LOADING```")
+PrintS(MM.HRES\2-43,MM.VRES\2-8,0,"LOADING```")
 
 FRAMEBUFFER CREATE 1600,1200
 FRAMEBUFFER WRITE
@@ -444,7 +448,7 @@ FOR PL=1 TO MAXPL ' ------------------------------------------------------------
 
  'IF THE PLAYER ISN'T GRAPPLING AN ENEMY, PUNCHING, JUMPING, KICKING OR IS HURTED THEN HE CAN MOVE
  'HAGGAR CAN GRAPPLE AND MOVE AT THE SAME TIME
- if (Punch(PL)<=2 or Grap(PL)>0) and Jump(PL)=0 and Kick(PL)=0 and PHurted(PL)=0 then
+ if (Punch(PL)<=2-(WEAPON(PL)>0) or Grap(PL)>0) and Jump(PL)=0 and Kick(PL)=0 and PHurted(PL)=0 then
   MVLR(PL)=0
   MVUD(PL)=0
 
@@ -529,7 +533,7 @@ FOR PL=1 TO MAXPL ' ------------------------------------------------------------
    ENDIF
 
    ' NORMAL PUNCH OR COMBO
-   IF (Punch(PL)<3+(PlType(PL)=HAGGAR)*3 OR Combo(PL)>=3) AND FreePunch(PL)=1 AND Grap(PL)=0 THEN
+   IF (Punch(PL)<(3-(WEAPON(PL)>0))+(PlType(PL)=HAGGAR)*3 OR Combo(PL)>=3) AND FreePunch(PL)=1 AND Grap(PL)=0 THEN
     T=Punch(PL)
     Punch(PL)=4+(PlType(PL)=3)*2: AniDelay(PL)=0: AniSpd(PL)=1
     SELECT CASE PLType(PL)
@@ -554,7 +558,7 @@ FOR PL=1 TO MAXPL ' ------------------------------------------------------------
 
     END SELECT
     'PLAY ONLY IF THE SOUND CHANNEL IS OPEN (LIKE THE ARCADE)
-    IF Punch(PL)=4+(PlType(PL)=3)*2 THEN PLAY_SAMPLE 28,PL,,-1 
+    IF Punch(PL)=4+(PlType(PL)=3)*2 AND WEAPON(PL)=0 THEN PLAY_SAMPLE 28,PL,,-1 
    ENDIF
 
    ' CODY/GUY THROW ENEMY OR HAGGAR SUPLEX
@@ -946,16 +950,13 @@ NEXT PL '-----------------------------------------------------------------------
  StageScrollEvent(ScrSide,PLSCR)
 
  'INC TESTA
- 'IF TESTA>10 THEN
- ' TESTA=0
- ' INC TEST': IF TEST=2 THEN TEST=13
- ' IF TEST<37 OR TEST>38 THEN TEST=37
- 'ENDIF
- 'TEST=39
- 'PutEnemy(200,230,TEST,4,80,,1)
+ 'IF TESTA<281 OR TESTA>288 THEN TESTA=281
+ 'TESTA=39
+ 'PutEnemy(200,230,TESTA,4,80,,1)
+ 'PutObject(150,180,TESTA,4,1)
 
- 'PAUSE(60)
-
+ 'PAUSE 100
+ 
 LOOP
 
 ' BYE BYE!

@@ -4,6 +4,8 @@
 
 SUB ControlEnemy(T)
  LOCAL I,II,TT,PL
+
+ 'PAGE WRITE 1: ? STE(T); " - "; EAniSpd(T); " - "; EAniDelay(T)
  
  IF EWAIT(T)>0 THEN INC EWAIT(T),-1
 
@@ -227,11 +229,13 @@ SUB ControlEnemy(T)
     IF Combo(I)<=2 THEN EAN(T)=22 ELSE EAN(T)=21
     ECOMBO(T)=2
     KO=0
+    ' IS HITTED BY A WEAPON?
+    IF AN(I)=71 THEN KO=1: IF WEAPON(I)=KATANA THEN InsertHit(XTHit,YTHit,SIDE(I)) 'BLOOD
      
     'HIT AND LOOSE ENERGY ONLY IF IS NOT THROW OR GRAPPLE THE ENEMY
     IF Grap(I)<>21 AND Grap(I)<>22 THEN 
      InsertHit(XTHit,YTHit,1)
-     InsertWait(I,T,4)
+     InsertWait(I,T,4) 
      ECOMBO(T)=5
      EHURT(T)=15
      INC EEnergy(T),-10+ES_DEF(T)
@@ -241,32 +245,18 @@ SUB ControlEnemy(T)
      '1 - ENEMY PUNCHED SOUND OVERWRITING PREVIOUS PLAYER SOUND (LIKE THE ARCADE)
      '2 - IF IS A JUMP KICK, PLAY A KNEE SOUND STOPPING ANY ENEMY CHANNEL SOUND
      '3 - IF IT'S HURTED BY OTHER THROWED ENEMY THEN USE THE ONFLOOR SOUND (FASTER)
-     IF Combo(I)<4 THEN
+     '4 - HITTED BY AN WEAPON?
+     IF Combo(I)<4 AND AN(I)<>71 THEN
       IF Jump(I)=0 AND IS_TR<>1 THEN PLAY_SAMPLE 27,I,,100 '1
-      IF Jump(I)>0 THEN PLAY_SAMPLE 24,4,,100  '2
+      IF Jump(I)>0 THEN PLAY_SAMPLE 24,4,,100              '2
       IF IS_TR THEN PLAY_SAMPLE 3,3,30000,100              '3
+     ELSE
+      SELECT CASE WEAPON(I)
+       CASE KATANA: PLAY_SAMPLE 16,3,18000,100
+       CASE PIPE  : PLAY_SAMPLE 24,3,15000,100
+      END SELECT
      ENDIF
      INC SCORE(I),100
-    ENDIF
-
-    ' IF PLAYER IS HURTING ENEMY WHEN GRAPPLED
-    IF (Grap(I)=21 AND GrapE(I)=T) AND SPECIAL(I)=0 THEN
-     EX(T)=X(I)+(SIDE(I)=4)*8-(SIDE(I)=5)*8: RealY(T)=RealY(I)+6-(PlType(I)=3)*12
-     IF PlType(I)=3 THEN INC EX(T),(SIDE(I)=4)*8-(SIDE(I)=5)*8
-     ESide(T)=(SIDE(I)=4)*5+(SIDE(I)=5)*4
-     INC SCORE(I),100
-     INC Combo(I)      
-     InsertHit(XTHit,YTHit,1)
-     InsertWait(I,T,4)
-     IF PlType(I)<>HAGGAR THEN EAN(T)=21
-     Grap(I)=20: STE(T)=120: INC EEnergy(T),-15+ES_DEF(T)
-     PLAY_SAMPLE 24,I,22050-(PlType(I)=HAGGAR)*4000,100
-     ' IF KILLED BY THE PLAYER OR COMBO WAS FINISHED
-     IF Combo(I)>=3 OR EEnergy(T)<=0 THEN
-      INC SCORE(I),100
-      Grap(I)=0: GrapE(I)=0: KO=1: Combo(I)=0
-      Punch(I)=1: AniDelay(I)=0: AniSpd(I)=1: Kick(I)=0
-     ENDIF
     ENDIF
 
     ' THROW THE ENEMY WHEN PUNCHING AND KEEPING PRESSED UP OR DOWN 
@@ -339,11 +329,25 @@ SUB ControlEnemy(T)
      ESide(T)=(SIDE(I)=4)*5+(SIDE(I)=5)*4
     ENDIF
    ELSEIF GrapE(I)=T THEN 'IS THE ENEMY GRAPPLED?
-    'FORCE ENEMY POSITION WHEN THROW OR SUPLEX
+    KO=0 'SET AS NOT KNOCK OUT
 
+    'FORCE ENEMY POSITION WHEN THROW, SUPLEX OR HURTED WHEN GRAPPLING
     SELECT CASE PlType(I)
   
      CASE GUY, CODY:
+      IF AN(I)=21 AND SPECIAL(I)=0 AND ECOMBO(T)=1 THEN 'HURTING WHEN GRAPPLED
+       Hit(I)=T: EHIT(T)=I: Hitting(I)=8: ECOMBO(T)=3
+       EAniDelay(T)=0: EAniSpd(T)=12
+       EX(T)=X(I)+(SIDE(I)=4)*8-(SIDE(I)=5)*8: RealY(T)=RealY(I)+6-(PlType(I)=3)*12
+       EAN(T)=21
+       ESide(T)=(SIDE(I)=4)*5+(SIDE(I)=5)*4
+       INC SCORE(I),100: INC Combo(I)      
+       InsertHit(XTHit,YTHit,1)
+       InsertWait(I,T,4)
+       Grap(I)=20: STE(T)=120: INC EEnergy(T),-15+ES_DEF(T)
+       PLAY_SAMPLE 24,I,22050,100
+       IF Combo(I)>=3 OR EEnergy(T)<=0 THEN KO=1
+      ENDIF
       IF AN(I)=22 THEN 'GRAPPLE
        ESide(T)=(SIDE(I)=4)*4+(SIDE(I)=5)*5
        EX(T)=X(I)+(SIDE(I)=4)*10-(SIDE(I)=5)*10: RealY(T)=RealY(I)-5
@@ -360,6 +364,19 @@ SUB ControlEnemy(T)
       ENDIF
 
      CASE HAGGAR:
+      IF AN(I)=21 AND SPECIAL(I)=0 AND ECOMBO(T)=1 THEN 'HEAD BANG WHEN GRAPPLED
+       Hit(I)=T: EHIT(T)=I: Hitting(I)=8: ECOMBO(T)=3
+       EAniDelay(T)=0: EAniSpd(T)=12
+       EX(T)=X(I)+(SIDE(I)=4)*16-(SIDE(I)=5)*16: RealY(T)=RealY(I)+6-(PlType(I)=3)*12
+       ESide(T)=(SIDE(I)=4)*5+(SIDE(I)=5)*4
+       INC SCORE(I),100
+       INC Combo(I)      
+       InsertHit(XTHit,YTHit,1)
+       InsertWait(I,T,4)
+       Grap(I)=20: STE(T)=120: INC EEnergy(T),-15+ES_DEF(T)
+       PLAY_SAMPLE 24,I,18000,100
+       IF Combo(I)>=3 OR EEnergy(T)<=0 THEN KO=1
+      ENDIF
       IF AN(I)=22 THEN
        EX(T)=X(I)+(SIDE(I)=4)*10-(SIDE(I)=5)*10: RealY(T)=RealY(I)-24
        ESide(T)=(SIDE(I)=4)*4+(SIDE(I)=5)*5
@@ -379,6 +396,14 @@ SUB ControlEnemy(T)
       ENDIF
     END SELECT 
 
+    IF KO THEN 'KNOCK OUT (OR KILLED) WHEN GRAPPLED
+     STE(T)=51: EAniSpd(T)=15
+     ESJMP(T)=-10: EAN(T)=23
+     ESPDX(T)=(ESIDE(T)=5)*7-(ESIDE(T)=4)*7
+     INC SCORE(I),100
+     Grap(I)=0: GrapE(I)=0: KO=1: Combo(I)=0
+     Punch(I)=1: AniDelay(I)=0: AniSpd(I)=1: Kick(I)=0
+    ENDIF
    ENDIF 'END OF GRAPPLE VERIFICATION
 
   NEXT I ' * END OF PLAYER SCAN *

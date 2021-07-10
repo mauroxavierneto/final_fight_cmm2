@@ -43,8 +43,11 @@ SUB GameMenu
 
  IF YOP=232 THEN 'OPTION MENU
   FadeOut
-  I=0: TT=0
+  I=0
   YOP=0
+
+  'CONFIGURE RESOLUTION OPTION
+  TT=(VMODE=384)+(VMODE=400)*2
  
   DO ' -- OPTION MENU -------------------------------------------------
 

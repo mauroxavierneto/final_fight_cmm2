@@ -8,6 +8,12 @@ PS.: The current enemies on the CMM2 G1 probably will not be implemented because
 
 Changelog:
 
+2021-07-09
+- Implemented player weapons: katana, knife and pipe
+- Implemented weapon control for Guy
+- Changed the collision type of an grappled enemy is hurted by any player
+- Changed how many particles is used to the broken objects
+
 2021-07-07
 - Fixed J / Two P invisible shapes
 - Fixed wrong position of the shape when enemy die while are throwed by a player

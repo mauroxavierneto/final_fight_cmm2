@@ -25,6 +25,9 @@ SUB PutPlayer(xs,ys,num,s,Who,pl,SHOW)
 
  BX=&HFF0000: xa=-200: xb=-200: kx=-200: ky=0: kt=40
  xb=0:yb=0:sbx=0:sby=0:sx=0:sy=0:p=0:pb=0:tx=0:ty=0:tbx=0:tby=0:xt=0:yt=0:xxt=0:yyt=0:SD=0
+ xo=0:yo=0: zo=0
+
+ 'NUM=71
 
  SELECT CASE Who
   CASE 1: 'GUY --------------------------------------------------------------------------
@@ -32,7 +35,7 @@ SUB PutPlayer(xs,ys,num,s,Who,pl,SHOW)
     'GUY ENERGY AVATAR
     CASE 99 : xa=200:ya=166:sx=49:sy=16:p=25 
     'GUY STOPPED
-    CASE 0  : xa=  0:ya=  0:sx=62:sy=86:p=28
+    CASE 0  : xa=  0:ya=  0:sx=62:sy=86:p=28: xo=-20: yo=-78: zo=8
     'GUY WALKING
     CASE 1 TO 12: ShowGuyWalking(num,PL)
     'GUY PUNCHING 
@@ -43,20 +46,28 @@ SUB PutPlayer(xs,ys,num,s,Who,pl,SHOW)
     CASE 16 : xa=211:ya=0:sx=100:sy=90:p=27:tx=-62:ty=-2:kx=19:ky=15:kt=40
     'GUY ELBOW
     CASE 17 : xa=  0:ya=90:sx=77:sy=81:p=27:tx=-18:ty=2
-    CASE 18 : xa= 77:ya=90:sx=88:sy=81:p=27:tx=-18:ty=2:kx=25:ky=10:kt=50':Combo(PL)=3
+    CASE 18 : xa= 77:ya=90:sx=88:sy=81:p=27:tx=-18:ty=2:kx=25:ky=10:kt=50
     'GUY COMBO (AND SPECIAL) 
     'SEQUENCE IS 32,33,34,19,36
     CASE 19 : xa=263:ya=145:sx=57:sy=95:p=26:tx=0:ty=-2:kx=35:ky=10:kt=60 'THIS IS FOR COMBO
     'GUY GRAPPLE / KNEELING / THROWING 
     CASE 20 TO 23: ShowGuyGKT(num,PL)   
     'GUY JUMPING AHEAD / VERTICAL
-    CASE 24 TO 27: ShowGuyJumping(num,PL)
+    CASE 24 TO 27: ShowGuyJumping(num,PL,s)
     'GUY VERTICAL AIR KICK / AIR KNEE
     CASE 27 TO 31,37,44,45: ShowGuyVKick(num,PL)
     'GUY SPECIAL (AND COMBO)
     CASE 32 TO 36: ShowGuySpecial(num,PL)
     'GUY HURT / ON THE FLOOR / STANDING UP
     CASE 38 TO 43: ShowGuyHurtStand(num,PL)
+    'GUY USING WEAPON
+    CASE 70 : xa=165:ya=92:sx=56:sy=79:p=27:tx= -8:ty=0: xo=-22:yo=-72:zo=7
+    CASE 71 :
+     xa=221:ya=93:sx=87:sy=78:p=27:tx=-46:ty=0: xo=81:yo=-38:zo=3
+     SELECT CASE WEAPON(PL)
+      CASE KATANA: kx=57: ky=-10: kt=80
+      CASE   PIPE: kx=61: ky=-10: kt=80
+     END SELECT
     'GUY BURNING
     CASE 80 TO 82: ShowGuyBurning(num,PL)
 
@@ -67,7 +78,7 @@ SUB PutPlayer(xs,ys,num,s,Who,pl,SHOW)
     'CODY ENERGY AVATAR
     CASE 99 : xa=179:ya= 86:sx=49:sy=16:p=25
     'CODY STOPPED
-    CASE 0  : xa=  0:ya=  0:sx=54:sy=93:p=27
+    CASE 0  : xa=  0:ya=  0:sx=54:sy=93:p=27: xo=-21: yo=-85: zo=8
     'CODY WALKING - INSERT BOX TO GRAPPLE ENEMIES
     CASE 1 TO 12: ShowCodyWalking(num,PL)
     'CODY PUNCHING 
@@ -84,6 +95,14 @@ SUB PutPlayer(xs,ys,num,s,Who,pl,SHOW)
     CASE 32 TO 37: ShowCodySpecial(num,PL)
     'CODY HURT / ON THE FLOOR / STANDING UP
     CASE 38 TO 43: ShowCodyHurtStand(num,PL)
+    'CODY USING WEAPON
+    CASE 70 : xa=202:ya=  7:sx= 83:sy=81:p=27:tx=-34: xo=41:yo=-63:zo=2
+    CASE 71 :
+     xa=  0:ya=116:sx=112:sy=77:p=27:tx=-48: xo=106:yo=-46:zo=9
+     SELECT CASE WEAPON(PL)
+      CASE KATANA: kx=65: ky=-10: kt=80
+      CASE   PIPE: kx=66: ky=-10: kt=80
+     END SELECT
     'CODY BURNING
     CASE 80 TO 82: ShowCodyBurning(num,PL)
    END SELECT 
@@ -129,9 +148,30 @@ SUB PutPlayer(xs,ys,num,s,Who,pl,SHOW)
 
  END SELECT 'END SELECT Who
 
+ IF WEAPON(PL)>0 THEN
+  IF WEAPON(PL)=PIPE THEN
+   SELECT CASE zo
+    CASE 1: inc yo,-8
+    CASE 2: inc xo,3: inc yo,-2
+    CASE 3: inc xo,4
+    CASE 7: inc xo,-5
+    CASE 8: inc xo,2: inc yo,-9
+   END SELECT
+  ENDIF
+  IF WEAPON(PL)=KNIFE THEN
+   SELECT CASE zo
+    CASE 1: inc yo,13
+    CASE 2: inc xo,-9: inc yo,5
+    CASE 3: inc xo,-7
+    CASE 7: inc xo,5: inc yo
+    CASE 8: inc xo,7: inc yo,5
+   END SELECT
+  ENDIF
+ ENDIF
+
  'ADJUST SIDE
  if s=4 OR s=6 THEN SD=1
- if s=5 OR s=7 THEN TX=-TX: TBX=-TBX: SD=-1
+ if s=5 OR s=7 THEN TX=-TX: TBX=-TBX: xo=-xo: SD=-1
 
  ' FIX VIDEO PAGE WITH THE PLAYER NUMBER
  IF PL>0 THEN INC P,(PL-1)*4: IF PB>0 THEN INC PB,(PL-1)*4
@@ -186,6 +226,8 @@ SUB PutPlayer(xs,ys,num,s,Who,pl,SHOW)
    ENDIF
    IF p<0 THEN BLIT xa,ya,xxt,yyt,sx,sy,framebuffer,s ELSE BLIT xa,ya,xxt,yyt,sx,sy,p,s
 
+   IF zo>0 AND WEAPON(PL)>0 THEN t=s: PutObject(xt+xo,yt+yo,WEAPON(PL)+130+zo,t,1)
+
  END SELECT
 
 END SUB
@@ -193,31 +235,43 @@ END SUB
 
 'GUY WALKING - INSERT BOX TO GRAPPLE ENEMIES
 SUB ShowGuyWalking(num,PL)
- SELECT CASE Num 
+ SELECT CASE Num
   CASE 1  : xa= 62:ya=  0:sx=55:sy=87:p=28:tx= 4:ty=0:BX=&HFFFF00:
             kx=10-(MVUD(PL)<>0)*10:ky=5:kt=PS_GRP(PL)*20
+            xo=26:yo=-50:zo=2
   CASE 2  : xa=117:ya=  0:sx=55:sy=87:p=28:tx= 8:ty=0:BX=&HFFFF00:
             kx=10-(MVUD(PL)<>0)*10:ky=5:kt=PS_GRP(PL)*20
+            xo=24:yo=-49:zo=2
   CASE 3  : xa=172:ya=  0:sx=46:sy=87:p=28:tx=16:ty=0:BX=&HFFFF00:
             kx=10-(MVUD(PL)<>0)*10:ky=5:kt=PS_GRP(PL)*20
+            xo=21:yo=-48:zo=2
   CASE 4  : xa=218:ya=  0:sx=29:sy=87:p=28:tx=14:ty=0:BX=&HFFFF00:
             kx=10-(MVUD(PL)<>0)*10:ky=5:kt=PS_GRP(PL)*20
+            xo=19:yo=-38:zo=3
   CASE 5  : xa=247:ya=  0:sx=29:sy=87:p=28:tx= 8:ty=0:BX=&HFFFF00:
             kx=10-(MVUD(PL)<>0)*10:ky=5:kt=PS_GRP(PL)*20 
+            xo=16:yo=-39:zo=3
   CASE 6  : xa=276:ya=  0:sx=41:sy=87:p=28:tx=12:ty=0:BX=&HFFFF00:
             kx=10-(MVUD(PL)<>0)*10:ky=5:kt=PS_GRP(PL)*20
+            xo=12:yo=-39:zo=3
   CASE 7  : xa=  0:ya= 88:sx=55:sy=87:p=28:tx= 6:ty=0:BX=&HFFFF00:
             kx=10-(MVUD(PL)<>0)*10:ky=5:kt=PS_GRP(PL)*20
+            xo=6:yo=-38:zo=3
   CASE 8  : xa= 55:ya= 88:sx=55:sy=87:p=28:tx=10:ty=0:BX=&HFFFF00:
             kx=10-(MVUD(PL)<>0)*10:ky=5:kt=PS_GRP(PL)*20
+            xo=12:yo=-39:zo=3
   CASE 9  : xa=110:ya= 88:sx=43:sy=87:p=28:tx=14:ty=0:BX=&HFFFF00:
             kx=10-(MVUD(PL)<>0)*10:ky=5:kt=PS_GRP(PL)*20
+            xo=17:yo=-39:zo=3
   CASE 10 : xa=153:ya= 88:sx=28:sy=87:p=28:tx=10:ty=0:BX=&HFFFF00:
             kx=10-(MVUD(PL)<>0)*10:ky=5:kt=PS_GRP(PL)*20
+            xo=20:yo=-38:zo=3
   CASE 11 : xa=181:ya= 88:sx=28:sy=87:p=28:tx=10:ty=0:BX=&HFFFF00:
             kx=10-(MVUD(PL)<>0)*10:ky=5:kt=PS_GRP(PL)*20
+            xo=19:yo=-49:zo=2
   CASE 12 : xa=209:ya= 88:sx=40:sy=87:p=28:tx=12:ty=0:BX=&HFFFF00:
             kx=10-(MVUD(PL)<>0)*10:ky=5:kt=PS_GRP(PL)*20
+            xo=24:yo=-51:zo=2
  END SELECT
 END SUB
 
@@ -232,25 +286,25 @@ SUB ShowGuyGKT(num,PL)
 END SUB
 
 'GUY JUMPING AHEAD / VERTICAL
-SUB ShowGuyJumping(num,PL)
+SUB ShowGuyJumping(num,PL,s)
  SELECT CASE Num
-  CASE 24 : xa=201:ya=50:sx=75:sy= 56:p=25:     ty=-30
-  CASE 25 : xa=276:ya= 0:sx=44:sy= 67:p=25:     ty=-30
-  CASE 26 : xa=  0:ya= 0:sx=57:sy= 78:p=25:tx=0:ty= 0
-  CASE 27 : xa= 57:ya= 0:sx=46:sy= 93:p=25:tx=2:ty=-9
+  CASE 24 : xa=201:ya=50:sx=75:sy= 56:p=25:     ty=-30: xo= 27:yo=-65:zo=2: if s>5 then inc yo,15
+  CASE 25 : xa=276:ya= 0:sx=44:sy= 67:p=25:     ty=-30: xo= 13:yo=-79:zo=1: if s>5 then inc yo,40
+  CASE 26 : xa=  0:ya= 0:sx=57:sy= 78:p=25:tx=0:ty= 0:  xo=-19:yo=-74:zo=8
+  CASE 27 : xa= 57:ya= 0:sx=46:sy= 93:p=25:tx=2:ty=-9:  xo=- 9:yo=-97:zo=8
  END SELECT
 END SUB
 
 'GUY VERTICAL AIR KICK / AIR KNEE
 SUB ShowGuyVKick(num,PL)
  SELECT CASE Num
-  CASE 28 : xa=103:ya=  0:sx= 59:sy=86:p=25:tx=  4:ty=-18 
-  CASE 29 : xa=162:ya=  0:sx= 63:sy=84:p=25:tx=  2:ty=-24:kx=10:ky=50
-  CASE 30 : xa= 86:ya= 86:sx= 50:sy=69:p=25:tx=  2:ty=-24
-  CASE 31 : xa=278:ya=152:sx= 42:sy=88:p=25:       ty= -9:kx= 7:ky=35 'AIR KNEE
-  CASE 37 : xa=136:ya=106:sx=103:sy=52:p=25:tx=-40:ty=-40:kx=45:ky=40 'FULL AIR KICK
-  CASE 44 : xa=  0:ya= 93:sx= 86:sy=58:p=25:tx=  0:ty=-30             'AIR LEAP
-  CASE 45 : xa=276:ya= 68:sx= 44:sy=70:p=25                           'WALL JUMP
+  CASE 28 : xa=103:ya=  0:sx= 59:sy=86:p=25:tx=  4:ty=-18: xo=- 2:yo=-84:zo=1
+  CASE 29 : xa=162:ya=  0:sx= 63:sy=84:p=25:tx=  2:ty=-24: kx=10:ky=50: xo=-23:yo=-81:zo=8
+  CASE 30 : xa= 86:ya= 86:sx= 50:sy=69:p=25:tx=  2:ty=-24: xo=-11:yo=-80:zo=1
+  CASE 31 : xa=278:ya=152:sx= 42:sy=88:p=25:       ty= -9: kx= 7:ky=35        'AIR KNEE
+  CASE 37 : xa=136:ya=106:sx=103:sy=52:p=25:tx=-40:ty=-40: kx=45:ky=40:xo=-33:yo=-63:zo=7 'FULL AIR KICK
+  CASE 44 : xa=  0:ya= 93:sx= 86:sy=58:p=25:tx=  0:ty=-30: xo=-29:yo=-80:zo=7 'AIR LEAP
+  CASE 45 : xa=276:ya= 68:sx= 44:sy=70:p=25:xo=- 7:yo=-57: zo=1               'WALL JUMP
  END SELECT
 END SUB
 
@@ -291,37 +345,50 @@ SUB ShowCodyWalking(num,PL)
  SELECT CASE num
   CASE 1  : xa= 39:ya=104:sx=51:sy=95:p=28:tx=12:ty= 1:BX=&HFFFF00:
             kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*20
+            xo=24: yo=-57: zo=2
   CASE 2  : xa= 90:ya=104:sx=62:sy=95:p=28:tx= 7:ty= 1:BX=&HFFFF00:
             kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*20
+            xo=29: yo=-58: zo=2
   CASE 3  : xa=152:ya=104:sx=62:sy=95:p=28:tx= 7:ty= 1:BX=&HFFFF00:
             kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*20
+            xo=27: yo=-55: zo=2
   CASE 4  : xa=214:ya=103:sx=51:sy=94:p=28:tx=16:ty= 0:BX=&HFFFF00:
             kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*20
+            xo=28: yo=-41: zo=3
   CASE 5  : xa=265:ya=102:sx=32:sy=95:p=28:tx= 9:ty=-1:BX=&HFFFF00:
             kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*20
+            xo=21: yo=-43: zo=3
   CASE 6  : xa= 0 :ya=  2:sx=35:sy=94:p=28:tx= 6:ty= 0:BX=&HFFFF00:
             kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*20
+            xo=15: yo=-44: zo=3
   CASE 7  : xa= 35:ya=  3:sx=48:sy=93:p=28:tx= 9      :BX=&HFFFF00:
             kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*20
+            xo= 8: yo=-42: zo=3
   CASE 8  : xa= 83:ya=  3:sx=62:sy=93:p=28:tx= 7:ty= 0:BX=&HFFFF00:
             kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*20
+            xo= 4: yo=-41: zo=3
   CASE 9  : xa=145:ya=  2:sx=63:sy=94:p=28:tx= 8:ty= 0:BX=&HFFFF00:
             kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*20
+            xo= 8: yo=-53: zo=2
   CASE 10 : xa=208:ya=  2:sx=51:sy=94:p=28:tx=12      :BX=&HFFFF00:
             kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*20
+            xo=13: yo=-53: zo=2
   CASE 11 : xa=259:ya=  1:sx=32:sy=95:p=28:tx= 9:ty=-1:BX=&HFFFF00:
             kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*20
+            xo=18: yo=-54: zo=2
   CASE 12 : xa=  0:ya=103:sx=38:sy=94:p=28:tx= 3:ty= 0:BX=&HFFFF00:
             kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*20
+            xo=23: yo=-54: zo=2
  END SELECT
 END SUB
+
 
 'CODY PUNCHING 
 SUB ShowCodyPunching(num,PL)
  SELECT CASE num
   CASE 13 : xa= 54:ya=  2:sx= 64:sy=90:p=27:tx=- 8        
   CASE 14 : xa=118:ya=  2:sx= 84:sy=90:p=27:tx=-28:kx=19:ky= 5:kt=50
-  CASE 15 : xa=202:ya=  9:sx= 83:sy=79:p=27:tx=-34 
+  CASE 15 : xa=202:ya=  7:sx= 83:sy=81:p=27:tx=-34 
   CASE 16 : xa=  0:ya=116:sx=112:sy=77:p=27:tx=-48:kx=19:ky=10:kt=50
  END SELECT
 END SUB
@@ -348,20 +415,20 @@ END SUB
 'CODY JUMPING AHEAD / VERTICAL
 SUB ShowCodyJumping(num,PL)
  SELECT CASE num
-  CASE 24 : xa=259:ya= 0:sx=61:sy= 65:p=25:     ty=-30
-  CASE 25 : xa=255:ya=65:sx=65:sy= 61:p=25:     ty=-30
-  CASE 26 : xa=  0:ya=98:sx=53:sy= 84:p=25:tx=0:ty=  0
-  CASE 27 : xa= 53:ya=92:sx=42:sy=108:p=25:tx=2:ty= -6
+  CASE 24 : xa=259:ya= 0:sx=61:sy= 65:p=25:     ty=-30:xo= 23:yo=- 49:zo=3: if s>5 then inc yo,15
+  CASE 25 : xa=255:ya=65:sx=65:sy= 61:p=25:     ty=-30:xo= 11:yo=- 79:zo=1: if s>5 then inc yo,40
+  CASE 26 : xa=  0:ya=98:sx=53:sy= 84:p=25:tx=0:ty=  0:xo=-21:yo=- 76:zo=8
+  CASE 27 : xa= 53:ya=92:sx=42:sy=108:p=25:tx=2:ty= -6:xo=-11:yo=-117:zo=8
  END SELECT
 END SUB
 
 'CODY VERTICAL AIR KICK / AIR KNEE
 SUB ShowCodyVKick(num,PL)
  SELECT CASE num
-  CASE 28 : xa= 96:ya=113:sx=61:sy=87:p=25:tx=2:ty=-18:kx=10:ky=50
-  CASE 29 : xa=157:ya=113:sx=54:sy=87:p=25:tx=4:ty=-24
-  CASE 30 : xa=211:ya=123:sx=52:sy=76:p=25:tx=2:ty=-24
-  CASE 31 : xa=263:ya=129:sx=57:sy=63:p=25:     ty=-30:kx= 7:ky=35
+  CASE 28 : xa= 96:ya=113:sx=61:sy=87:p=25:tx=2:ty=-18:kx=10:ky=50:xo= 8:yo=-68:zo=2
+  CASE 29 : xa=157:ya=113:sx=54:sy=87:p=25:tx=4:ty=-24:xo= 2:yo=-93:zo=1
+  CASE 30 : xa=211:ya=123:sx=52:sy=76:p=25:tx=2:ty=-24:xo=12:yo=-89:zo=2
+  CASE 31 : xa=263:ya=129:sx=57:sy=63:p=25:     ty=-30:kx= 7:ky=35:xo=11:yo=-41:zo=3
  END SELECT
 END SUB
 
@@ -370,7 +437,7 @@ SUB ShowCodySpecial(num,PL)
  SELECT CASE num
   CASE 32 : xa=  0:ya=  0:sx= 75:sy=81:p=26:tx=  5:ty= -8
   CASE 33 : xa= 75:ya=  0:sx= 60:sy=85:p=26:tx=  8:ty= -6:kx= 20:ky=40
-  CASE 34 : xa=135:ya=  0:sx=120:sy=59:p=26:tx=-40:ty=-30:kx= 45:ky=40 'FULL AIR KICK
+  CASE 34 : xa=135:ya=  0:sx=120:sy=59:p=26:tx=-40:ty=-30:kx= 45:ky=40:xo=-48:yo=-82:zo=8'FULL AIR KICK
   CASE 35 : xa=118:ya=105:sx= 45:sy=70:p=26:tx=  0:ty=-24:kx=  0:ky=40 
   CASE 36 : xa=226:ya=132:sx= 94:sy=68:p=26:tx= 30:ty=-20:kx=-30:ky=40
   CASE 37 : xa=  0:ya= 82:sx= 61:sy=61:p=26:tx=  0:ty=-30:kx=-20:ky=40

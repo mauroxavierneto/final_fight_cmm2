@@ -6,6 +6,9 @@ SUB PlayerAnimation(PL)
  'IS ANY PLAYER HURTED? (THE SEQUENCE IS THE SAME FOR ALL) -----------------------------------
  If PHurted(PL)>0 then
 
+  'DROP WEAPON
+  DropWeapon(PL)
+   
   If HCombo(PL)>100 OR (HCombo(PL)>0 and Jump(PL)>0) then HCombo(PL)=0: PHurted(PL)=18
   INC PHurted(PL),-1
   Kick(PL)=0: Punch(PL)=0: Hitting(PL)=0: GrapE(PL)=0: Grap(PL)=0: Combo(PL)=0
@@ -159,13 +162,33 @@ SUB PlayerAnimation(PL)
       Punch(PL)=1: AniSpd(PL)=2: AniDelay(PL)=0
       INC X(PL),10*(SIDE(PL)=5)-10*(SIDE(PL)=4) 'RETURN PLAYER TO ORIGINAL COORDINATE
 
-     CASE 3: 'PUNCHING (REPEAT 2X)
+     CASE 3: 'PUNCHING (REPEAT 2X) / USING WEAPON
       AN(PL)=13: AniSpd(PL)=2: AniDelay(PL)=0
+      IF WEAPON(PL)>0 THEN
+       AN(PL)=70
+       SELECT CASE Weapon(PL)
+        CASE KATANA: AniSpd(PL)=6:  PLAY_SAMPLE 16,PL
+        CASE KNIFE : AniSpd(PL)=7:  PLAY_SAMPLE 16,PL,30000
+        CASE PIPE  : AniSpd(PL)=8: PLAY_SAMPLE 16,PL,19000
+       END SELECT
+      ENDIF
      CASE 2:
       AN(PL)=14: AniSpd(PL)=3: AniDelay(PL)=0
       IF Hitting(PL)>2 THEN INC Combo(PL): Hitting(PL)=5
+      IF WEAPON(PL)>0 THEN       
+       AN(PL)=71
+       SELECT CASE Weapon(PL)
+        CASE KATANA: AniSpd(PL)=5
+        CASE KNIFE :
+         AniSpd(PL)=6
+         SpawnObject(X(PL)+(SIDE(PL)=4)*70-(SIDE(PL)=5)*70,RealY(PL),SIDE(PL)+KNIFE)
+         WEAPON(PL)=0
+        CASE PIPE  : AniSpd(PL)=8
+       END SELECT
+      ENDIF
      CASE 1:
       AN(PL)=13: AniSpd(PL)=2: AniDelay(PL)=0: IF Combo(PL)=2 THEN Punch(PL)=4
+      IF WEAPON(PL)>0 THEN AN(PL)=0: Combo(PL)=0
      CASE 0:
       AN(PL)=0: AniSpd(PL)=3: AniDelay(PL)=0
     END SELECT
@@ -322,11 +345,31 @@ SUB PlayerAnimation(PL)
 
       CASE   3: 'PUNCHING (REPEAT 2X)
        AN(PL)=13: AniSpd(PL)=2: AniDelay(PL)=0
+       IF WEAPON(PL)>0 THEN
+        AN(PL)=70
+        SELECT CASE Weapon(PL)
+         CASE KATANA: AniSpd(PL)=8: PLAY_SAMPLE 16,PL
+         CASE KNIFE : AniSpd(PL)=4: PLAY_SAMPLE 16,PL,30000
+         CASE PIPE  : AniSpd(PL)=8: PLAY_SAMPLE 16,PL,19000
+        END SELECT
+       ENDIF
       CASE   2:
        AN(PL)=14: AniSpd(PL)=3: AniDelay(PL)=0
        If Hitting(PL)>1 THEN INC Combo(PL)
+       IF WEAPON(PL)>0 THEN       
+        AN(PL)=71
+        SELECT CASE Weapon(PL)
+         CASE KATANA: AniSpd(PL)=4
+         CASE KNIFE :
+          AniSpd(PL)=4
+          SpawnObject(X(PL)+(SIDE(PL)=4)*70-(SIDE(PL)=5)*70,RealY(PL),SIDE(PL)+KNIFE)
+          WEAPON(PL)=0
+         CASE PIPE  : AniSpd(PL)=8
+        END SELECT
+       ENDIF
       CASE   1:
        AN(PL)=13: AniSpd(PL)=2: AniDelay(PL)=0
+       IF WEAPON(PL)>0 THEN AN(PL)=0: Combo(PL)=0
       CASE   0:
        AN(PL)= 0: AniSpd(PL)=3: AniDelay(PL)=0
      END SELECT
@@ -690,5 +733,13 @@ END SUB
 SUB InsertWait(WPL,WEN,WT)
  IF PLWait(PL)=0 THEN PLWait(WPL)=WT
  IF EWAIT(WEN)=0 THEN EWAIT(WEN)=WT
+END SUB
+
+
+' PLAYER DROP ANY WEAPON
+SUB DropWeapon(PL)
+ IF WEAPON(PL)=0 THEN EXIT SUB
+ SpawnObject(X(PL),RealY(PL),WEAPON(PL)+1): EY(NUM)=RealY(PL)-40
+ WEAPON(PL)=0
 END SUB
 

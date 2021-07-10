@@ -3,7 +3,7 @@
 SUB Enemy_DAMND(T,PL)
  LOCAL II,TT
 
- IF EMV(T)=1 OR (STE(T)>=70 AND STE(T)<=99) THEN INC EAniDelay(T)
+ IF EMV(T)=1 OR (STE(T)>=70 AND STE(T)<=100) THEN INC EAniDelay(T)
  IF EAniDelay(T)>EAniSpd(T) THEN
   EAniDelay(T)=0
   INC EAN(T)

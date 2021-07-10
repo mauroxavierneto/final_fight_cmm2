@@ -52,8 +52,12 @@ SUB PutObject(xs,ys,num,s,SHOW)
   CASE -270,272 TO 272: ShowDrumcan(num,s) 
   CASE 250 TO 257: ShowMolotov(num,s)
   CASE 270 TO 272: ShowBlood(num,s)
+  CASE -280,280 TO 289: ShowKatana(num,s)
+  CASE -290,290 TO 299: ShowKnife(num,s)
+  CASE -300,300 TO 309: ShowPipe(num,s)
  END SELECT
 
+ if s=5 then tx=-tx
  xxt=xs-(sx+TX)\2: yyt=ys-sy+TY
 
  IF SHOW<1 THEN
@@ -331,10 +335,10 @@ SUB ShowMolotov(num,s)
   CASE 251 : xa=188:ya=185:sx=27:sy=22:p=38                   '  / 2
   CASE 252 : xa=231:ya=116:sx=20:sy=20:p=38                   '  - 3
   CASE 253 : xa=209:ya=109:sx=22:sy=27:p=38                   '  \ 4
-  CASE 254 : xa=300:ya=192:sx=20:sy=20:p=38:if s=4 then s=6 else if s=5 then s=7 '  | 5
-  CASE 255 : xa=188:ya=185:sx=27:sy=22:p=38:if s=4 then s=6 else if s=5 then s=7 '  / 6
-  CASE 256 : xa=231:ya=116:sx=20:sy=20:p=38:if s=4 then s=6 else if s=5 then s=7 '  - 7
-  CASE 257 : xa=209:ya=109:sx=22:sy=27:p=38:if s=4 then s=6 else if s=5 then s=7 '  \ 8
+  CASE 254 : xa=300:ya=192:sx=20:sy=20:p=38:if s=4 then s=7 else if s=5 then s=6 '  | 5
+  CASE 255 : xa=188:ya=185:sx=27:sy=22:p=38:if s=4 then s=7 else if s=5 then s=6 '  / 6
+  CASE 256 : xa=231:ya=116:sx=20:sy=20:p=38:if s=4 then s=7 else if s=5 then s=6 '  - 7
+  CASE 257 : xa=209:ya=109:sx=22:sy=27:p=38:if s=4 then s=7 else if s=5 then s=6 '  \ 8
  END SELECT
 END SUB
 
@@ -357,8 +361,59 @@ END SUB
 'BLOOD
 SUB ShowBlood(num,s)
  SELECT CASE num
-  CASE 270 : xa= 0:ya=223:sx= 7:sy=13:p=33
-  CASE 271 : xa= 8:ya=223:sx=12:sy=14:p=33
-  CASE 272 : xa=23:ya=221:sx=19:sy=19:p=33
+  CASE 270 : xa= 0:ya=223:sx= 7:sy=13:p=33:tx=16
+  CASE 271 : xa= 8:ya=223:sx=12:sy=14:p=33:tx=32:ty=-8
+  CASE 272 : xa=23:ya=221:sx=19:sy=19:p=33:tx=48:ty=-16
+ END SELECT
+END SUB
+
+'KATANA
+SUB ShowKatana(num,s)
+ SELECT CASE num
+  CASE -280: xa= 80:ya=224:sx=16:sy=16:p=38: AVA$="KATANA" 'AVATAR
+  CASE 280 : xa=258:ya= 21:sx=62:sy=15:p=38       '_ GROUND
+  CASE 281 : xa=208:ya= 31:sx= 9:sy=78:p=38:ty=34 '| 1
+  CASE 282 : xa=262:ya= 65:sx=58:sy=31:p=38:ty=15 '/ 2
+  CASE 283 : xa=242:ya=  0:sx=78:sy= 9:p=38       '- 3
+  CASE 284 : xa=263:ya= 36:sx=57:sy=29:p=38:ty=15 '\ 4
+  CASE 285 : xa=208:ya= 31:sx= 9:sy=78:p=38:ty=34:if s=4 then s=7 else if s=5 then s=6 '| 5
+  CASE 286 : xa=262:ya= 65:sx=58:sy=31:p=38:ty=15:if s=4 then s=7 else if s=5 then s=6 '/ 6
+  CASE 287 : xa=242:ya=  0:sx=78:sy= 9:p=38:      if s=4 then s=7 else if s=5 then s=6 '- 7
+  CASE 288 : xa=263:ya= 36:sx=57:sy=29:p=38:ty=15:if s=4 then s=7 else if s=5 then s=6 '\ 8
+  CASE 289 : xa=262:ya=  0:sx=58:sy= 9:p=38       '- 3 
+ END SELECT
+END SUB
+
+'KNIFE
+SUB ShowKnife(num,s)
+ SELECT CASE num
+  CASE -290: xa= 80:ya=224:sx=16:sy=16:p=38: AVA$="KNIFE" 'AVATAR
+  CASE 290 : xa=191:ya=  0:sx=27:sy= 8:p=38      '_ GROUND
+  CASE 291 : xa=201:ya=162:sx= 8:sy=15:p=38      '| 1
+  CASE 292 : xa=248:ya= 86:sx=14:sy=14:p=38      '/ 2
+  CASE 293 : xa=246:ya= 65:sx=16:sy= 9:p=38      '- 3
+  CASE 294 : xa=247:ya= 74:sx=15:sy=12:p=38      '\ 4
+  CASE 295 : xa=201:ya=162:sx= 8:sy=15:p=38:ty=7:if s=4 then s=7 else if s=5 then s=6 '| 5
+  CASE 296 : xa=248:ya= 86:sx=14:sy=14:p=38:ty=7:if s=4 then s=7 else if s=5 then s=6 '/ 6
+  CASE 297 : xa=246:ya= 65:sx=16:sy= 9:p=38:     if s=4 then s=7 else if s=5 then s=6 '- 7
+  CASE 298 : xa=247:ya= 74:sx=15:sy=12:p=38:     if s=4 then s=7 else if s=5 then s=6 '\ 8
+  CASE 299 : xa=146:ya=149:sx=23:sy= 8:p=38 '- 'THROW
+ END SELECT
+END SUB
+
+'PIPE
+SUB ShowPipe(num,s)
+ SELECT CASE num
+  CASE -300: xa= 96:ya=224:sx=16:sy=16:p=38: AVA$="PIPE" 'AVATAR
+  CASE 300 : xa=240:ya=  9:sx=80:sy=12:p=38       '_ GROUND
+  CASE 301 : xa=217:ya= 29:sx= 8:sy=80:p=38:ty=40 '| 1
+  CASE 302 : xa=209:ya=136:sx=62:sy=33:p=38:ty=16 '/ 2
+  CASE 303 : xa=240:ya=102:sx=80:sy= 8:p=38       '- 3
+  CASE 304 : xa=271:ya=116:sx=49:sy=51:p=38:ty=25 '\ 4
+  CASE 305 : xa=217:ya= 29:sx= 8:sy=80:p=38:ty=40:if s=4 then s=7 else if s=5 then s=6 '| 5
+  CASE 306 : xa=209:ya=136:sx=62:sy=33:p=38:ty=16:if s=4 then s=7 else if s=5 then s=6 '/ 6
+  CASE 307 : xa=240:ya=102:sx=80:sy= 8:p=38:      if s=4 then s=7 else if s=5 then s=6 '- 7
+  CASE 308 : xa=271:ya=116:sx=49:sy=51:p=38:ty=25:if s=4 then s=7 else if s=5 then s=6 '\ 8
+  CASE 309 : xa=259:ya=102:sx=61:sy= 8:p=38:tx=-4 '- 3
  END SELECT
 END SUB
