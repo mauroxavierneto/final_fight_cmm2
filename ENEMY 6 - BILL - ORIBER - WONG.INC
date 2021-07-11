@@ -185,13 +185,13 @@ SUB Draw_BILL_ORIBER_WONG(num,who)
   'GETTING UP
   CASE 25:  xa= 1531:ya=753:sx= 68:sy= 53:tx=0
   'BURNING
-  CASE 80 : xa=  0:ya=993:sx=121:sy=72:who=14
-  CASE 81 : xa=121:ya=993:sx=123:sy=72:who=14
-  CASE 82 : xa=244:ya=993:sx=121:sy=72:who=14
+  CASE 80 : xa=  0:ya=993:sx=121:sy=72
+  CASE 81 : xa=121:ya=993:sx=123:sy=72
+  CASE 82 : xa=244:ya=993:sx=121:sy=72
 
  END SELECT 'BILL BILL / G. ORIBER / WONG WHO
- INC ya,(Who-14)*255
- INC yb,(Who-14)*255
+
+ if num<80 or num>82 then INC ya,(Who-14)*255: INC yb,(Who-14)*255
 
 END SUB
 

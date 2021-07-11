@@ -171,13 +171,13 @@ SUB Draw_J_TWO_P(num,who)
   'LEANING IN THE WALL
   CASE 35 : xa=116:ya=504:sx=47:sy=95:tx=0:ty=0
   'BURNING
-  CASE 80 : xa=  0:ya=993:sx=121:sy=72: Who=7
-  CASE 81 : xa=121:ya=993:sx=123:sy=72: Who=7
-  CASE 82 : xa=244:ya=993:sx=121:sy=72: Who=7
+  CASE 80 : xa=  0:ya=993:sx=121:sy=72
+  CASE 81 : xa=121:ya=993:sx=123:sy=72
+  CASE 82 : xa=244:ya=993:sx=121:sy=72
 
  END SELECT 'END J / TWO P
- INC xa,(who-7)*796
- INC xb,(who-7)*796
+
+ if num<80 or num>82 then INC xa,(who-7)*796: INC xb,(who-7)*796
 
 END SUB
 

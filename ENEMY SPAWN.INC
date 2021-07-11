@@ -23,7 +23,7 @@ SUB SpawnEnemy(x,y,tp,st,sd,NUM)
    EAN(T)=0: EAniDelay(T)=0:EAniSpd(T)=5: EWait(T)=0
    EMV(T)=1: EBACK(T)=1: EHIT(T)=0
    ESJMP(T)=0: STE(T)=st: EHURT(T)=0: EBURNED(T)=0
-   ESPDX(T)=0: ESPDY(T)=0: ETR(T)=0: ECOMBO(T)=0
+   ESPDX(T)=0: ESPDY(T)=0: ETR(T)=0: ECOMBO(T)=0: ESHAD(T)=0
 
    'SET SPECIFIC START PARAMETERS FOR EACH ENEMY ----------------------------------------
    SELECT CASE EType(T)

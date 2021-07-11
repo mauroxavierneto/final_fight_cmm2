@@ -279,13 +279,13 @@ SUB Draw_POISON_ROXY(num,who)
   CASE 39 : xa= 885:ya=633:sx=107:sy=60:tx= 0:ty=0
   CASE 40 : xa=1133:ya=599:sx= 60:sy=47:tx= 0:ty=0
   'BURNING
-  CASE 80 : xa=  0:ya=993:sx=121:sy=72:who=17
-  CASE 81 : xa=121:ya=993:sx=123:sy=72:who=17
-  CASE 82 : xa=244:ya=993:sx=121:sy=72:who=17
+  CASE 80 : xa=  0:ya=993:sx=121:sy=72
+  CASE 81 : xa=121:ya=993:sx=123:sy=72
+  CASE 82 : xa=244:ya=993:sx=121:sy=72
 
  END SELECT 'END POISON / ROXY
- INC ya,(Who-17)*94
- INC yb,(Who-17)*94
+
+ if num<80 or num>82 then INC ya,(Who-17)*94: INC yb,(Who-17)*94
 
 END SUB
 

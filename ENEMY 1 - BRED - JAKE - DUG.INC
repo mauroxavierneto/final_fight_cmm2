@@ -261,14 +261,13 @@ SUB Draw_BRED_JAKE_DUG(num,who)
   CASE 38 : xa=1040:ya=228:sx=42:sy=44:tx=5:ty=-1:xb=1082:yb=227:sbx=28:sby=45:tbx= 3
   CASE 39 : xa=1040:ya=228:sx=42:sy=44:tx=5:ty= 0:xb=1069:yb=273:sbx=31:sby=45:tbx= 8
   'BURNING
-  CASE 80 : xa=  0:ya=993:sx=121:sy=72: Who=4
-  CASE 81 : xa=121:ya=993:sx=123:sy=72: Who=4
-  CASE 82 : xa=244:ya=993:sx=121:sy=72: Who=4
+  CASE 80 : xa=  0:ya=993:sx=121:sy=72
+  CASE 81 : xa=121:ya=993:sx=123:sy=72
+  CASE 82 : xa=244:ya=993:sx=121:sy=72
 
  END SELECT 'END BRED / JAKE / DUG
- 
- INC ya,(Who-4)*93
- INC yb,(Who-4)*93
+
+ if num<80 or num>82 then INC ya,(Who-4)*93: INC yb,(Who-4)*93
 
 END SUB
 

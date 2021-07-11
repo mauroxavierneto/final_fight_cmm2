@@ -8,12 +8,15 @@ PS.: The current enemies on the CMM2 G1 probably will not be implemented because
 
 Changelog:
 
+2021-07-11
+- Fixed Haggar voice when supplex the enemy sometimes
+- Fixed enemies changing when burned
+- Implemented player dying and falling from the sky
+
 2021-07-10
 - Implemented weapons control for Haggar and Cody
 - Fixed drop weapons
 - Fixed some animations on players and weapons
-- Fixed enemies freezed when hurted by weapons
-- Implemented enemies dead when Damnd dies
 
 2021-07-09
 - Implemented player weapons: katana, knife and pipe

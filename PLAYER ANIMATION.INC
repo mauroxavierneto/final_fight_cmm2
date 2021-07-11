@@ -36,7 +36,9 @@ SUB PlayerAnimation(PL)
    CASE 12: 'LAST FALLING 
     AN(PL)=41: AniSpd(PL)=0: AniDelay(PL)=0: Jump(PL)=98: INC PHurted(PL)
     IF Y(PL)+RealY(PL)>=RealY(PL) THEN INC PHurted(PL),-1
- 
+    'DEAD
+    IF Energy(PL)<=0 THEN PHurted(PL)=100
+
    CASE 13: 'HIT THE FLOOR AGAIN
     AN(PL)=41: AniSpd(PL)=4: AniDelay(PL)=0: JumpY(PL)=-4: Jump(PL)=98
     BURNED(PL)=0
@@ -78,6 +80,34 @@ SUB PlayerAnimation(PL)
     InsertHit(XH(PL),YH(PL),1)
     InsertWait(PL,WhoE(PL),3)
     IF SIDE(PL)=4 THEN JumpX(PL)=-TRT else JumpX(PL)=TRT
+    'DEAD SOUND
+    IF Energy(PL)<=0 THEN 
+     SELECT CASE PlType(PL)
+      CASE    GUY: PLAY_SAMPLE  8,PL,25000,9999
+      CASE   CODY: PLAY_SAMPLE  8,PL,,9999
+      CASE HAGGAR: PLAY_SAMPLE 22,PL,,9999
+     END SELECT
+    ENDIF
+
+   CASE 70: 'FALLING FROM THE SKY
+    INC PHurted(PL): MV=0
+    AN(PL)=27
+    'KO ALL ENEMIES AND GET UP PLAYER
+    IF Y(PL)>=0 THEN
+     PLAY_SAMPLE 3,PL,,9999: PLAY_SAMPLE 3,3,,9999: PLAY_SAMPLE 3,4,,9999
+     KillEnemies(0,0): AN(PL)=42: PHurted(PL)=11: MV=1 
+    ENDIF
+
+   CASE 71: 'RESET - FALLING FROM THE SKY
+    INC PLIVE(PL),-1: AniSpd(PL)=0: AniDelay(PL)=1
+    IF PLIVE(PL)>=0 THEN Energy(PL)=110 ELSE PLIVE(PL)=0 'INSERT GAME OVER
+    AN(PL)=27
+    Y(PL)=-MM.VRES: JumpY(PL)=15: Jump(PL)=98: MV=0: JumpX(PL)=0
+
+   CASE 72 TO 99: 'DEAD - FLASHING BODY
+    AN(PL)=41
+    Energy(PL)=0: MV=0: JumpX(PL)=0
+    AniSpd(PL)=0: AniDelay(PL)=1
 
   END SELECT
 
@@ -103,23 +133,9 @@ SUB PlayerAnimation(PL)
      CASE 130: 'THROW ENEMY GRAPPLED - SOUND FIX
       AN(PL)=22: AniSpd(PL)=0: AniDelay(PL)=0: Grap(PL)=AN(PL)
       PLAY_SAMPLE 4,PL,,2000+Punch(PL)
-
-      'T=GrapE(PL)
-      'ESide(T)=(SIDE(PL)=4)*5+(SIDE(PL)=5)*4
-      'EX(T)=X(PL)+(SIDE(PL)=5)*10-(SIDE(PL)=4)*10: RealY(T)=RealY(PL)-5
-      'EAN(T)=23: EY(T)=-1: ESJMP(T)=-12
-      'ESPDX(T)=(SIDE(PL)=4)*10-(SIDE(PL)=5)*10       
-
      CASE 129: 'THROW ENEMY GRAPPLED
       AN(PL)=22: AniSpd(PL)=3: AniDelay(PL)=0: Grap(PL)=AN(PL)
      CASE 128: 'THROW ENEMY GRAPPLED - 2 
-
-      'T=GrapE(PL)
-      'ESIDE(T)=(Side(PL)=4)*6+(Side(PL)=5)*7 'ROTATE 180`
-      'RealY(T)=RealY(PL)
-      'EAN(T)=21: STE(T)=51
-      'EAniDelay(T)=0: EAniSpd(T)=15
-
       AN(PL)=23: AniSpd(PL)=2: AniDelay(PL)=0: Grap(PL)=AN(PL)
      CASE 125: 'STOP THROW SEQUENCE
       AN(PL)=26: AniSpd(PL)=1: AniDelay(PL)=0: Grap(PL)=0: Punch(PL)=0: Jump(PL)=1: GrapE(PL)=0
@@ -560,9 +576,10 @@ SUB PlayerAnimation(PL)
      INC Jump(PL),-1
 
      'AIR KICK (NOT SPECIAL)
-     IF (Jump(PL)>=2 and Jump(PL)<=29) and Kick(PL)=0 and Y(PL)<-1 then
+     'IF (Jump(PL)>=2 and Jump(PL)<=29) and Kick(PL)=0 and Y(PL)<-1 then
+     IF (Jump(PL)>=2 and Jump(PL)<=35) and Kick(PL)=0 and Y(PL)<-1 then
       IF KSHIFT AND (Kick(PL)=0) THEN
-       Kick(PL)=1: Wait(PL)=4
+       Kick(PL)=1: Wait(PL)=2
 
        'CALL PILE DRIVER
        IF Grap(PL)=20 AND GrapE(PL)>0 AND Special(PL)=0 THEN
@@ -632,7 +649,7 @@ SUB PlayerAnimation(PL)
         Kick(PL)=0
        endif
       else
-      'KICK VERTICAL JUMP
+       'KICK VERTICAL JUMP
        if Jump(PL)>=23 and Jump(PL)<=29 then 
         if MVUD(PL)=0 then AN(PL)=27
        else

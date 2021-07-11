@@ -27,7 +27,7 @@ SUB Enemy_DAMND(T,PL)
      IF Punch(PL)>0 AND EBACK(T)<>-1 THEN EBACK(T)=-1: STE(T)=75
     ENDIF
    ENDIF
-   IF DIST>80 AND RND>0.9 AND CNTE>1 THEN STE(T)=73: EBACK(T)=1 'LAUGHING
+   IF DIST>80 AND RND>0.7 THEN STE(T)=73: EBACK(T)=1 'LAUGHING
   ELSE
    'GO BACKWARD IF TOO NEAR
    IF DIST<35 AND STE(T)<50 THEN EBACKX(T)=-1
@@ -105,8 +105,9 @@ SUB Enemy_DAMND(T,PL)
   CASE 72: IF EAN(T)>=19 THEN STE(T)=1: EAniDelay(T)=0: EAniSpd(T)=4
 
   'LAUGHING --------------------------------------------------------------------------
-  CASE 73: EAN(T)=10: EAniDelay(T)=0: EAniSpd(T)=200: INC STE(T)
+  CASE 73: EAN(T)=10: ESHAD(T)=1: EAniDelay(T)=0: EAniSpd(T)=200: INC STE(T)
   CASE 74:
+    ESHAD(T)=1
     SELECT CASE EAniDelay(T)
      CASE  6: EAN(T)=11: PLAY_SAMPLE 30,3
      CASE 12, 24, 36, 48: EAN(T)=10
@@ -142,8 +143,8 @@ SUB Enemy_DAMND(T,PL)
    INC ESJMP(T),-0.85: EMV(T)=2   
    IF EX(T)>1120-SCRX THEN EX(T)=1120-SCRX
    IF EX(T)>1110-SCRX THEN IF EY(T)>-25 THEN EY(T)=-25
-   IF RealY(T)>218 THEN INC RealY(T),-4
-   IF RealY(T)<212 THEN INC RealY(T), 4
+   IF RealY(T)>210 THEN INC RealY(T),-4
+   IF RealY(T)<204 THEN INC RealY(T), 4
 
    SELECT CASE EAniDelay(T)
     CASE  5: EAN(T)=34 
@@ -201,23 +202,13 @@ SUB Enemy_DAMND(T,PL)
    EAniSpd(T)=0
    IF EAN(T)>60 THEN
     'KILL ALL OTHER ENEMIES WHEN DAMND DIES
-    FOR TT=4 TO 9
-     IF TT<>T AND EEnergy(TT)>0 THEN
-      STE(TT)=51: EAniSpd(TT)=15: EANiDelay(TT)=0
-      ESJMP(TT)=-10: EAN(TT)=23: EEnergy(TT)=0
-     ENDIF
-    NEXT TT
+    KillEnemies(1,T)
     EAN(T)=50: STE(T)=101 ' FLASH BODY AGAIN
    ENDIF
   CASE 101:
    IF EAN(T)>60 THEN
     'KILL ALL OTHER ENEMIES WHEN DAMND DIES (AGAIN)
-    FOR TT=4 TO 9
-     IF TT<>T AND EEnergy(TT)>0 THEN
-      STE(TT)=51: EAniSpd(TT)=15: EANiDelay(TT)=0
-      ESJMP(TT)=-10: EAN(TT)=23: EEnergy(TT)=0
-     ENDIF
-    NEXT TT
+    KillEnemies(1,T)
     EEnergy(T)=-99: STE(T)=0: RealY(T)=999: Exit Sub 'REMOVE DEAD ENEMY
    ENDIF
 

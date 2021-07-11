@@ -94,7 +94,8 @@ SUB PutEnemy(xs,ys,num,s,Who,pl,SHOW)
 
    PAGE WRITE 1
    'SHADOW
-   IF NUM<>99 AND EY(PL)<-1 THEN
+   IF NUM<>99 AND EY(PL)<-1 OR ESHAD(PL)=1 THEN
+    ESHAD(PL)=0
     T=sx\((sx<64)+(sx>=64)*2)+EY(PL)\2: IF T<30 THEN T=30
     CIRCLE xxt+sx\2,RealY(PL)-3,T/10,1,5,&H202020,&H202020
    ENDIF

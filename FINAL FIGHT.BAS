@@ -202,8 +202,8 @@ DIM EX(EMAX)
 DIM EY(EMAX),ESJMP(EMAX),ETR(EMAX),EWAIT(EMAX)
 ' SPEED / ENEMY FLIP SIDE / ENEMY TYPE / HIT COMBO COUNTER / WHO HITTED IT
 DIM ESPD(EMAX),ESIDE(EMAX),EType(EMAX),ECOMBO(EMAX),EHIT(EMAX)
-' SPEED X/Y / IS ENEMY WALKING BACK? (-1) / WALKING BACK HORIZONTALLY
-DIM ESPDX(EMAX),ESPDY(EMAX),EBACK(EMAX),EBACKX(EMAX)
+' SPEED X/Y / IS ENEMY WALKING BACK? (-1) / WALKING BACK HORIZONTALLY / SHADOW?
+DIM ESPDX(EMAX),ESPDY(EMAX),EBACK(EMAX),EBACKX(EMAX),ESHAD(EMAX)
 ' ANIMATION NUMBER / ANIMATION SPEED / ANIMATION DELAY / ATTACK DISTANCE
 DIM EAN(EMAX),EAniSpd(EMAX),EAniDelay(EMAX), EDIST(EMAX)
 ' CURRENT ENERGY / MAX ENERGY / MOVING FLAG / STATUS / FREEZE WHEN HURTED / ENEMY BURNING?
@@ -296,13 +296,13 @@ ENDIF
 Round=1: Section=1: LoadRound
 
 'ALWAYS NEED TO BE LOADED THE FIRST SECTION TO TEST ANY OTHER SECTION
-IF NOINTRO THEN Section=3: LoadRound
+IF NOINTRO THEN Section=1: LoadRound
 
 IF NOINTRO THEN
  OSDX=20: MAXPL=1
- PLType(2)=CODY
- PLType(1)=HAGGAR
- WEAPON(1)=PIPE
+ PLType(1)=GUY
+ PLType(2)=HAGGAR
+ 'WEAPON(1)=PIPE
 ENDIF
 
 'LOAD GENERAL ASSETS
@@ -392,7 +392,7 @@ DO WHILE GameLogic=1
 
 FOR PL=1 TO MAXPL ' --------------------------------------------------------------------------
 
- IF Energy(PL)<=0 AND PLive(PL)<0 THEN EXIT FOR
+ IF PLive(PL)<0 THEN EXIT FOR
 
  IF PLWAIT(PL)>0 THEN INC PLWAIT(PL),-1
 
@@ -515,8 +515,8 @@ FOR PL=1 TO MAXPL ' ------------------------------------------------------------
    IF Energy(PL)>0 AND Jump(PL)=0 AND (Punch(PL)=0 OR Grap(PL)>0) AND Special(PL)=0 THEN
     AniDelay(PL)=20: Kick(PL)=10: Special(PL)=1
     Jump(PL)=51: JumpX(PL)=0
-    IF Energy(PL)>0 THEN INC Energy(PL),-5
-    IF Energy(PL)<0 THEN Energy(PL)=0
+    IF Energy(PL)>6 THEN INC Energy(PL),-5
+    IF Energy(PL)<1 THEN Energy(PL)=1
     KCTRL=0: KSHIFT=0: KALT=0
    ENDIF
   ENDIF
@@ -645,7 +645,7 @@ FOR PL=1 TO MAXPL ' ------------------------------------------------------------
   'RESET PILE DRIVER WHEN TOUCH THE GROUND AND HURT THE ENEMY
   IF AN(PL)=32 AND PlType(PL)=HAGGAR THEN
    T=GrapE(PL): SHAKE=10
-   INC EEnergy(T),-EEnMAX(T)\5-30+ES_DEF(T): Jump(PL)=36: AniDelay(PL)=999
+   INC EEnergy(T),-EEnergy(T)\2-10+ES_DEF(T): Jump(PL)=36: AniDelay(PL)=999
    INC Score(PL),1000
    STE(T)=60
    ESPDX(T)=(SIDE(PL)=4)*6-(SIDE(PL)=5)*6: RealY(T)=RealY(PL)
@@ -655,7 +655,7 @@ FOR PL=1 TO MAXPL ' ------------------------------------------------------------
    IF EEnergy(T)>-99 AND EEnergy(T)<0 THEN
     EAN(T)=21: STE(T)=52: ESJMP(T)=-10: EY(T)=0: INC RealY(T),4
     ESPDX(T)=(SIDE(PL)=4)*5-(SIDE(PL)=5)*5
-    EEnergy(T)=-99: PLAY_SAMPLE 10+(EType(T)=POISON OR EType(T)=ROXY)*16,4 'DEAD SOUND
+    EEnergy(T)=-99: PLAY_SAMPLE 10+(EType(T)=POISON OR EType(T)=ROXY)*16,4,,255 'DEAD SOUND
     INC SCORE(EHIT(T)),ESCORE(T) 'INC PLAYER SCORE
    ENDIF
   ENDIF
@@ -700,6 +700,7 @@ FOR PL=1 TO MAXPL ' ------------------------------------------------------------
 
  ENDIF 'END OF OSDX=0 -----------------------------------------------------------------------------
 
+ 'FIX PLAYER ANIMATION IF ENEMY WAS KILLED WHEN GRAPPLED OR THROWED
  IF GrapE(PL)>0 THEN
   IF EEnergy(GrapE(PL))<=0 THEN
    GrapE(PL)=0: Grap(PL)=0: Combo(PL)=0
@@ -739,8 +740,10 @@ FOR PL=1 TO MAXPL ' ------------------------------------------------------------
  ' RESET COLLISION WITH ITEMS ABOVE THE PLAYER
  ITEM(PL)=0
 
-NEXT PL '-------------------------------------------------------------------------------------
+' KEEP MINIMUM PLAYER ENERGY
+ IF Energy(PL)<0 THEN Energy(PL)=0
 
+NEXT PL '-------------------------------------------------------------------------------------
 
 ' DRAW THE COLLISION BOXES ON THE ENEMIES THROWED ---------------------------------------
  FOR IND=4 TO 9
@@ -779,7 +782,7 @@ NEXT PL '-----------------------------------------------------------------------
   SELECT CASE IND
    CASE <4: 'PLAYERS
     IF Energy(IND)>=0 THEN
-     PutPlayer(X(IND)+(AN(PL)=39)*SW*2,RealY(IND)+Y(IND)+PILE(IND),AN(IND),SIDE(IND),PlType(IND),IND,1)
+     PutPlayer(X(IND)+(AN(PL)=39)*SW*2,RealY(IND)+Y(IND)+PILE(IND),AN(IND),SIDE(IND),PlType(IND),IND,1-(PHurted(IND)>72)*SB)
     ENDIF
    CASE 4 TO 9: 'DRAW ACTIVE ENEMIES    
     IF STE(IND)>0 THEN
@@ -902,17 +905,15 @@ NEXT PL '-----------------------------------------------------------------------
 
   ENDIF 'END SHOW HIT INFO
 
-  IF Energy(PL)>=0 THEN
-   'AVATAR AND HEALTH
-   PutPlayer(32+(MM.HRES\2+15)*(PL-1)+II,26,99,4,PlType(PL),PL,1) 
-   Rbox 25+(MM.HRES\2+15)*(PL-1)+II,19,112*RX,7,2,&HFFFFFF,&HFF0000
-   T=Energy(PL): IF T>110 THEN T=110
-   box  26+(MM.HRES\2+15)*(PL-1)+II,20,T*RX,5,0,,&HFFFF00
-   'LIFES
-   PrintS(55+(PL-1)*(MM.HRES\2+18)+II,10,1,"=")
-   PrintS(65+(PL-1)*(MM.HRES\2+18)+II,10,1,STR$(PLIVE(PL)))
-   PrintFS(81+(PL-1)*(MM.HRES\2+16)+II,10,0,FORMAT$(SCORE(PL),"%7.0f"))
-  ENDIF
+  'AVATAR AND HEALTH
+  PutPlayer(32+(MM.HRES\2+15)*(PL-1)+II,26,99,4,PlType(PL),PL,1) 
+  Rbox 25+(MM.HRES\2+15)*(PL-1)+II,19,112*RX,7,2,&HFFFFFF,&HFF0000
+  T=Energy(PL): IF T>110 THEN T=110
+  box  26+(MM.HRES\2+15)*(PL-1)+II,20,T*RX,5,0,,&HFFFF00
+  'LIFES
+  PrintS(55+(PL-1)*(MM.HRES\2+18)+II,10,1,"=")
+  PrintS(65+(PL-1)*(MM.HRES\2+18)+II,10,1,STR$(PLIVE(PL)))
+  PrintFS(81+(PL-1)*(MM.HRES\2+16)+II,10,0,FORMAT$(SCORE(PL),"%7.0f"))
 
  NEXT PL ' END OF HIT INFO / AVATAR / LIFES / HEALTH -------------------------------------
 

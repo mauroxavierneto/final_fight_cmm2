@@ -258,13 +258,12 @@ SUB Draw_HOLLY_WOOD_EL_GADO(num,who,s)
   'DASH
   CASE 78 : xa=647:ya=841:sx=131:sy=46:tx=0:ty=0
   'BURNING
-  CASE 80 : xa=  0:ya=993:sx=121:sy=72:who=11
-  CASE 81 : xa=121:ya=993:sx=123:sy=72:who=11
-  CASE 82 : xa=244:ya=993:sx=121:sy=72:who=11
+  CASE 80 : xa=  0:ya=993:sx=121:sy=72
+  CASE 81 : xa=121:ya=993:sx=123:sy=72
+  CASE 82 : xa=244:ya=993:sx=121:sy=72
 
  END SELECT 'END HOLLY WOOD / EL GADO
- INC ya,(who-11)*100
- INC yb,(who-11)*100
+ if num<80 or num>82 then INC ya,(who-11)*100: INC yb,(who-11)*100
 
 END SUB
 

@@ -44,8 +44,11 @@ SUB Round_1_Events(xx)
 
       'TESTS
       IF NOINTRO THEN
-       'SpawnEnemy(340,200,HOLLY_WOOD_RED,1)
-       'SpawnEnemy(180,210,J,66)
+       SpawnEnemy(340,200,HOLLY_WOOD_RED,1)
+       SpawnEnemy(180,210,BILL_BULL,1)
+       SpawnEnemy(180,210,HOLLY_WOOD,1)
+       SpawnEnemy(180,210,EL_GADO,1)
+       SpawnEnemy(180,210,J,1)
        'SpawnObject(250,195,1,,150)
        'SpawnObject(170,205,1,,160)
        'SpawnObject(100,215,1,,170)
@@ -230,7 +233,7 @@ SUB Round_1_Events(xx)
     IF EVENT(1)=50 THEN SpawnEnemy(-40,210,J,1,4): EMV(BOSS)=2: EVENT(1)=100
    ENDIF
 
-   IF EVENT(1)=100 AND EEnergy(BOSS)<140 AND STE(BOSS)>0 AND STE(BOSS)<=40 THEN
+   IF EVENT(1)=100 AND EEnergy(BOSS)<90 AND STE(BOSS)>0 AND STE(BOSS)<=40 THEN
     EVENT(1)=101: STE(BOSS)=76 'GO TO THE SUBWAY ENTRY WALL AGAIN
    ENDIF
    IF EVENT(1)>100 AND EVENT(1)<200 AND EMV(BOSS)=3 THEN 'CALL SECOND ENEMIES WAVE
