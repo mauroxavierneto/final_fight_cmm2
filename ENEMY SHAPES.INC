@@ -113,6 +113,21 @@ SUB PutEnemy(xs,ys,num,s,Who,pl,SHOW)
     'PIXEL xs     -tx\2+xp,RealY(pl), RGB(255,0,0)
    ENDIF
 
+   'INSERT JESSICA ON THE DAMND HANDS   
+   IF who=81 THEN
+    Draw_DAMND(num,who)
+    SELECT CASE NUM
+     CASE 100: PutEnemy(xs+10,ys-24,997,4,81,,1)
+     CASE 101: PutEnemy(xs+10,ys-24,997,4,81,,1)
+     CASE 102: PutEnemy(xs+ 9,ys-22,999,4,81,,1)
+     CASE 103: PutEnemy(xs+ 9,ys-22,999,4,81,,1)
+     CASE 104: PutEnemy(xs+ 9,ys-22,999,4,81,,1)
+     CASE 105: PutEnemy(xs+10,ys-24,997,4,81,,1)
+     CASE 110: PutEnemy(xs+10,ys-20,997,4,81,,1)
+     CASE 111: PutEnemy(xs+ 5,ys-20,998,4,81,,1)
+    END SELECT
+   ENDIF
+
  END SELECT 'END SELECT SHOW -----------------------------------------------------------
 
 
@@ -122,20 +137,6 @@ SUB PutEnemy(xs,ys,num,s,Who,pl,SHOW)
    T=(Grap(I)>0)*10 'EXTEND REAL Y WHEN GRAPPLE
    IF COLLIDE(I)>0 AND (RealY(pl)<RealY(I)-5-T or RealY(pl)>RealY(I)+5+T) THEN COLLIDE(I)=0
   NEXT I
- ENDIF
-
- 'INSERT JESSICA ON THE DAMND HANDS
- IF Who=81 THEN
-  SELECT CASE NUM
-   CASE 100: PutEnemy(xs+10,ys-24,997,4,99,,1)
-   CASE 101: PutEnemy(xs+10,ys-24,997,4,99,,1)
-   CASE 102: PutEnemy(xs+ 9,ys-22,999,4,99,,1)
-   CASE 103: PutEnemy(xs+ 9,ys-22,999,4,99,,1)
-   CASE 104: PutEnemy(xs+ 9,ys-22,999,4,99,,1)
-   CASE 105: PutEnemy(xs+10,ys-24,997,4,99,,1)
-   CASE 110: PutEnemy(xs+10,ys-20,997,4,99,,1)
-   CASE 111: PutEnemy(xs+ 5,ys-20,998,4,99,,1)
-  END SELECT
  ENDIF
 
 END SUB

@@ -197,8 +197,29 @@ SUB Enemy_DAMND(T,PL)
    END SELECT
 
   'ENEMY IS DEAD ---------------------------------------------------------------------
-  CASE 100: EAniSpd(T)=0: IF EAN(T)>60 THEN EAN(T)=50: INC STE(T) ' FLASH BODY AGAIN
-  CASE 101: IF EAN(T)>60 THEN EEnergy(T)=-99: STE(T)=0: RealY(T)=999: Exit Sub 'REMOVE DEAD ENEMY
+  CASE 100:
+   EAniSpd(T)=0
+   IF EAN(T)>60 THEN
+    'KILL ALL OTHER ENEMIES WHEN DAMND DIES
+    FOR TT=4 TO 9
+     IF TT<>T AND EEnergy(TT)>0 THEN
+      STE(TT)=51: EAniSpd(TT)=15: EANiDelay(TT)=0
+      ESJMP(TT)=-10: EAN(TT)=23: EEnergy(TT)=0
+     ENDIF
+    NEXT TT
+    EAN(T)=50: STE(T)=101 ' FLASH BODY AGAIN
+   ENDIF
+  CASE 101:
+   IF EAN(T)>60 THEN
+    'KILL ALL OTHER ENEMIES WHEN DAMND DIES (AGAIN)
+    FOR TT=4 TO 9
+     IF TT<>T AND EEnergy(TT)>0 THEN
+      STE(TT)=51: EAniSpd(TT)=15: EANiDelay(TT)=0
+      ESJMP(TT)=-10: EAN(TT)=23: EEnergy(TT)=0
+     ENDIF
+    NEXT TT
+    EEnergy(T)=-99: STE(T)=0: RealY(T)=999: Exit Sub 'REMOVE DEAD ENEMY
+   ENDIF
 
   'GRAPPLED BY A PLAYER --------------------------------------------------------------
   CASE 120 TO 170: GrapPlayer(T) 
@@ -300,13 +321,10 @@ SUB Draw_DAMND(num,who)
   CASE 81 : xa=121:ya=993:sx=123:sy=72
   CASE 82 : xa=244:ya=993:sx=121:sy=72
 
- CASE 99: 'SPECIAL CASES ---------------------------------------------------------------
-  SELECT CASE num
-   'JESSICA ROUND 1 DAMND INTRO
-   CASE 997: xa=1094:ya=1125:sx=51:sy=75:tx= 0:ty=0
-   CASE 998: xa=1145:ya=1125:sx=49:sy=75:tx=-2:ty=0
-   CASE 999: xa=1194:ya=1125:sx=51:sy=75:tx= 0:ty=0
-  END SELECT 'END SPECIAL CASES
+  'JESSICA ROUND 1 DAMND INTRO
+  CASE 997: xa=1094:ya=1125:sx=51:sy=75:tx= 0:ty=0
+  CASE 998: xa=1145:ya=1125:sx=49:sy=75:tx=-2:ty=0
+  CASE 999: xa=1194:ya=1125:sx=51:sy=75:tx= 0:ty=0
 
  END SELECT 'END DAMND
 

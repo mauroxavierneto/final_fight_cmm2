@@ -12,6 +12,8 @@ Changelog:
 - Implemented weapons control for Haggar and Cody
 - Fixed drop weapons
 - Fixed some animations on players and weapons
+- Fixed enemies freezed when hurted by weapons
+- Implemented enemies dead when Damnd dies
 
 2021-07-09
 - Implemented player weapons: katana, knife and pipe

@@ -165,6 +165,7 @@ SUB PutPlayer(xs,ys,num,s,Who,pl,SHOW)
     CASE 1: inc yo,-8
     CASE 2: inc xo,3: inc yo,-2
     CASE 3: inc xo,4
+    CASE 4: inc yo,8
     CASE 7: inc xo,-5
     CASE 8: inc xo,2: inc yo,-9
     CASE 9: inc yo
