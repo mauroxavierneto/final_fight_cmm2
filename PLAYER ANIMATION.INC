@@ -788,3 +788,9 @@ SUB DropWeapon(PL)
  WEAPON(PL)=0
 END SUB
 
+' PLAYER JUMP BACKWARD
+SUB JumpBackward(PL)
+ AniDelay(PL)=20: Kick(PL)=0
+ Jump(PL)=31
+ JumpX(PL)=-SPD(PL): MVLR(PL)=1: SIDE(PL)=4
+END SUB

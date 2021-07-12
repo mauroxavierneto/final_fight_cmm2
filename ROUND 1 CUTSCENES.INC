@@ -141,15 +141,16 @@ SUB Round_1_Cutscenes(Ending)
 
       ' INSERT SCENE INTO THE FOREGROUND
       PAGE WRITE 1
-      BLIT 213,0,MM.HRES-93,56,93,184,12,4
+      IF OSDX<=9600 THEN BLIT 213,0,MM.HRES-93,56,93,184,12,4
        
       GO=1
-      ' A LITTLE PAUSE (LIKE THE ARCADE)
+      ' A LITTLE PAUSE AND JUMP BACKWARD IF TOO NEAR THE CORNER (LIKE THE ARCADE)
       IF OSDX>=9600 THEN
        GO=0: MV=0
        FOR PL=1 TO MAXPL
-        AN(PL)=0
-        IF OSDX=9950 THEN DropWeapon(PL)
+        IF X(PL)>MM.HRES-160 AND OSDX=9940 THEN JumpBackward(PL)
+        IF Jump(PL)=0 THEN AN(PL)=0
+        IF OSDX=9960 THEN DropWeapon(PL)
        NEXT PL
       ENDIF
 
@@ -252,14 +253,15 @@ SUB Round_1_Cutscenes(Ending)
 
       'FOREGROUND WALL
       ScrX=320
-      BLIT 256,0,MM.HRES-64,0,64,240,7,4
-       
-      ' A LITTLE PAUSE (LIKE THE ARCADE)
+      IF OSDX<=9600 THEN BLIT 256,0,MM.HRES-64,0,64,240,7,4
+
+      ' A LITTLE PAUSE AND JUMP BACKWARD IF TOO NEAR THE CORNER (LIKE THE ARCADE)
       IF OSDX>=9600 THEN
        GO=0: MV=0
        FOR PL=1 TO MAXPL
-        AN(PL)=0
-        IF OSDX=9950 THEN DropWeapon(PL)
+        IF X(PL)>MM.HRES-170 AND OSDX=9940 THEN JumpBackward(PL)
+        IF Jump(PL)=0 THEN AN(PL)=0
+        IF OSDX=9960 THEN DropWeapon(PL)
        NEXT PL
       ENDIF
 

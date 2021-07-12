@@ -8,8 +8,12 @@ PS.: The current enemies on the CMM2 G1 probably will not be implemented because
 
 Changelog:
 
+2021-07-12
+- Fixed the final cutscenes to the players jump backward to avoid foreground artifacts
+- Fixed Damnd laughing outside the screen
+- Fixed Damnd jump to slowly follow the player
+
 2021-07-11
-- Fixed Haggar voice when supplex the enemy sometimes
 - Fixed enemies changing when burned
 - Implemented player dying and falling from the sky
 

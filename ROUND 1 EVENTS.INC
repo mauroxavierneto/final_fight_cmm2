@@ -44,11 +44,11 @@ SUB Round_1_Events(xx)
 
       'TESTS
       IF NOINTRO THEN
-       SpawnEnemy(340,200,HOLLY_WOOD_RED,1)
-       SpawnEnemy(180,210,BILL_BULL,1)
-       SpawnEnemy(180,210,HOLLY_WOOD,1)
-       SpawnEnemy(180,210,EL_GADO,1)
-       SpawnEnemy(180,210,J,1)
+       'SpawnEnemy(340,200,HOLLY_WOOD_RED,1)
+       'SpawnEnemy(180,210,BILL_BULL,1)
+       'SpawnEnemy(180,210,HOLLY_WOOD,1)
+       'SpawnEnemy(180,210,EL_GADO,1)
+       'SpawnEnemy(180,210,J,1)
        'SpawnObject(250,195,1,,150)
        'SpawnObject(170,205,1,,160)
        'SpawnObject(100,215,1,,170)
