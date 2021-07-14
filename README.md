@@ -8,6 +8,13 @@ PS.: The current enemies on the CMM2 G1 probably will not be implemented because
 
 Changelog:
 
+2021-07-13
+- Fixed controller auto-detection start routine
+- Fixed I2C error when none controller was connected
+- Fixed control type selection in the game menu
+- Fixed the control detection in-game
+- Removed white start screen used to sincronize capture card for YouTube video
+
 2021-07-12
 - Fixed the final cutscenes to the players jump backward to avoid foreground artifacts
 - Fixed Damnd laughing outside the screen

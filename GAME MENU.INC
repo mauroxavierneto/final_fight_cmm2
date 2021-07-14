@@ -79,11 +79,17 @@ SUB GameMenu
    FOR T=0 TO 1
     IF TCType(T+1)<0 THEN TCType(T+1)=2
     IF TCType(T+1)>2 THEN TCType(T+1)=0
-    SELECT CASE TCType(T+1)
-     CASE 0: PrintS(152,II+T*16,1-(YOP=T),"KEYB` SHIFT CTRL ALT") 
-     CASE 1: PrintS(152,II+T*16,1-(YOP=T),"NES/SNES CLASSIC MINI") 
-     CASE 2: PrintS(152,II+T*16,1-(YOP=T),"WII CLASSIC")   
-    END SELECT
+    IF CtrlExist(1)=0 AND CtrlExist(2)=0 THEN TCType(T+1)=0
+    IF CtrlExist(1)>0 OR CtrlExist(2)>0 OR T=0 THEN
+     SELECT CASE TCType(T+1)
+      CASE 0: PrintS(152,II+T*16,1-(YOP=T),"KEYB` SHIFT CTRL ALT") 
+      CASE 1: IF CtrlExist(1)>0 THEN PrintS(152,II+T*16,1-(YOP=T),"NES/SNES CLASSIC MINI") ELSE TCType(T+1)=0
+      CASE 2: IF CtrlExist(2)>0 THEN PrintS(152,II+T*16,1-(YOP=T),"WII CLASSIC") ELSE TCType(T+1)=0
+     END SELECT
+    ELSE
+     PrintS(152,II+T*16,1-(YOP=T),"NONE DETECTED") 
+    ENDIF
+    CtrlType(T+1)=TCType(T+1)
    NEXT T
 
    'GAME LEVEL

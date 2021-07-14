@@ -37,7 +37,7 @@ SUB SelectPlayer
  Y(1)=99: Y(2)=99
 
  'CLEAR BUFFER
- IF TCType(PL)=1 THEN Classic_Mini_Read(CtrlExist(1))
+ IF TCType(PL)=1 AND CtrlExist(1)>0 THEN Classic_Mini_Read(CtrlExist(1))
 
  MAXPL=1
 
@@ -47,9 +47,18 @@ SUB SelectPlayer
 
   'ENTER THE SECOND PLAYER
   IF MAXPL=1 THEN
-   IF TCType(2)=1 THEN
+   'NES CLASSIC CONTROLLER
+   IF TCType(2)=1 AND CtrlExist(1)>0 THEN
     Classic_Mini_Read(CtrlExist(1))
     IF (PEEK(VAR KCM$, 06)=48 OR PEEK(VAR KCM$, 10)=48 OR PEEK(VAR KCM$, 12)=48) AND Y(PL)=0 THEN
+     MAXPL=2: PLAY_SAMPLE 2,2: Y(2)=99
+     IF PLType(2)=PLType(1) THEN INC PLType(2): IF PLType(2)>3 THEN PLType(2)=1
+    ENDIF
+   ENDIF
+   'WII CONTROLLER
+   IF TCType(2)=2 AND CtrlExist(2)>0 THEN
+    KC$=RIGHT$("00000000000000"+BIN$(CLASSIC(B,CtrlExist(2))),14)
+    IF PEEK(VAR KC$,13)=49 OR PEEK(VAR KC$, 1)=49 OR PEEK(VAR KC$, 3)=49 THEN
      MAXPL=2: PLAY_SAMPLE 2,2: Y(2)=99
      IF PLType(2)=PLType(1) THEN INC PLType(2): IF PLType(2)>3 THEN PLType(2)=1
     ENDIF
@@ -77,6 +86,7 @@ SUB SelectPlayer
 
   IF Y(PL)=2 THEN CONTINUE DO
   IF Y(PL)=1 THEN PLAY_SAMPLE 3,PL: Y(PL)=2
+
   SELECT CASE TCType(PL)
    CASE 0: 'KEYBOARD CONTROL -------------------------------------------------------------
     FOR T=1 TO 6
@@ -115,7 +125,26 @@ SUB SelectPlayer
     IF PEEK(VAR KCM$,15)<>48 AND PEEK(VAR KCM$, 1)<>48 THEN X(PL)=0
     IF PEEK(VAR KCM$,06)<>48 AND PEEK(VAR KCM$,10)<>48 AND PEEK(VAR KCM$, 12)<>48 THEN Y(PL)=0
 
+  CASE 2: 'WII CLASSIC CONTROLLER -------------------------------------------------------
+   KC$=RIGHT$("00000000000000"+BIN$(CLASSIC(B,CtrlExist(2))),14)
+   LX=CLASSIC(LX,CtrlExist(2))
+   LY=CLASSIC(LY,CtrlExist(2))
+   IF X(PL)=0 AND Y(PL)=0 THEN 'LOCK THE SELECT AFTER PRESSED THE CONTROL
+    IF PEEK(VAR KC$, 6)=49 OR LX< 60 THEN
+     INC PLType(PL),-1:X(PL)=1
+     IF MAXPL=2 AND PLType(PL)=PLTYPE(3-PL) THEN INC PLType(PL),-1
+    ENDIF
+    IF PEEK(VAR KC$, 8)=49 OR LX>195 THEN
+     INC PLType(PL)   :X(PL)=1
+     IF MAXPL=2 AND PLType(PL)=PLTYPE(3-PL) THEN INC PLType(PL)
+    ENDIF
+    IF PEEK(VAR KC$,13)=49 OR PEEK(VAR KC$, 1)=49 OR PEEK(VAR KC$, 3)=49 THEN Y(PL)=1
+   ENDIF
+   IF NOT(PEEK(VAR KC$, 6)=49 OR LX< 60) AND NOT(PEEK(VAR KC$, 8)=49 OR LX>195) THEN X(PL)=0
+   IF PEEK(VAR KC$,13)<>49 AND PEEK(VAR KC$, 1)<>49 AND PEEK(VAR KC$, 3)<>49 THEN Y(PL)=0
+
   END SELECT
+
   IF X(PL)=1 THEN X(PL)=2: PLAY_SAMPLE 1,PL
 
   IF Y(PL)=1 THEN

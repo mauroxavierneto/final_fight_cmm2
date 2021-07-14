@@ -7,7 +7,7 @@
 ' 3 - NUNCHUCK (NOT IMPLEMENTED YET)
 ' 4 - AWSD (DISABLED IN THIS GAME)
 
-DIM CtrlType(4),CtrlChange(4),CtrlExist(4),BUF(10)
+DIM CtrlType(4),CtrlChange(4),CtrlExist(4),BUF(10),TCTYPE(4)
 
 CtrlCount=1    'ONLY ONE CONTROLLER YET - THE KEYBOARD
 
@@ -22,7 +22,7 @@ next t
 CtrlExist(1)=0
 Classic_Mini_Init(3)
 if CtrlExist(1)=0 THEN Classic_Mini_Init(1)
-IF CtrlExist(1) THEN Classic_Mini_Read(CtrlExist(1))
+IF CtrlExist(1) THEN Classic_Mini_Read(CtrlExist(1)): TCType(2)=1: CtrlType(2)=1
 
 'WII CLASSIC CONTROLLER
 CtrlExist(2)=0
@@ -30,14 +30,14 @@ IF CtrlExist(1)<>3 THEN
  FOR T=1 TO 10
   IF CtrlExist(2)<>0 then EXIT FOR
   ON ERROR SKIP 1: CONTROLLER CLASSIC OPEN 3
-  if MM.ERRNO = 0 THEN  CtrlExist(2)=3
+  if MM.ERRNO = 0 THEN CtrlExist(2)=3: TCType(2)=2: CtrlType(2)=2
  NEXT T
 ENDIF
 IF CtrlExist(1)<>1 and CtrlExist(2)<>1 THEN 
  FOR T=1 TO 10
   IF CtrlExist(2)<>0 then EXIT FOR
   ON ERROR SKIP 1: CONTROLLER CLASSIC OPEN 1
-  if MM.ERRNO = 0 THEN  CtrlExist(2)=1
+  if MM.ERRNO = 0 THEN CtrlExist(2)=1: TCType(2)=2: CtrlType(2)=2
  NEXT T
 ENDIF
 
