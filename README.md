@@ -13,10 +13,10 @@ Changelog:
 - Fixed I2C error when none controller was connected
 - Fixed control type selection in the game menu
 - Fixed the control detection in-game
-- Removed white start screen used to sincronize capture card for YouTube video
+- Removed white start screen used to synchronize capture card for YouTube video
 
 2021-07-12
-- Fixed the final cutscenes to the players jump backward to avoid foreground artifacts
+- Fixed the final cutscenes to the players jump backwards to avoid foreground artefacts
 - Fixed Damnd laughing outside the screen
 - Fixed Damnd jump to slowly follow the player
 
@@ -26,36 +26,36 @@ Changelog:
 
 2021-07-10
 - Implemented weapons control for Haggar and Cody
-- Fixed drop weapons
+- Fixed weapons when dropped
 - Fixed some animations on players and weapons
 
 2021-07-09
 - Implemented player weapons: katana, knife and pipe
 - Implemented weapon control for Guy
-- Changed the collision type of an grappled enemy is hurted by any player
-- Changed how many particles is used to the broken objects
+- Changed the collision type of a grappled enemy is hurt by any player
+- Changed how many particles are used to the broken objects
 
 2021-07-07
 - Fixed J / Two P invisible shapes
-- Fixed wrong position of the shape when enemy die while are throwed by a player
-- Huge optimization on the particles (pieces of glass, wood, etc)
+- Fixed wrong position of the shape when an enemy dies while being thrown by a player
+- Huge optimization on the particles (pieces of glass, fire, wood, etc)
 - Optimized Objects and Player shapes
 
 2021-07-05
 - Remade all sound effects directly from an emulator of the Arcade
 - Readjusted music volume
-- Fixed bug that caused the freezing the enemy on the floor
+- Fixed bug that caused the freezing of the enemy on the floor
 - Fixed many bugs in the pile drive (Haggar)
-- Fixed no bgm option
-- Removed left scroll in Round 1-3 until fix the bug
+- Fixed no BGM option
+- Removed left scroll in Round 1-3 until fixing the bug
 
 2021-07-03
 - Fixed bad position of front end objects in the ending cutscenes
 - Source code repositioned inside the INC files (again)
 - Little optimizations in the enemies
 - Changes in Poison / Roxy movements to keep more similar to the arcade
-- Fixed J / Two P desappearing when get up
-- Finished Holly Wood molotov and fire (but I need to optimize it)
+- Fixed J / Two P disappearing when getting up
+- Finished Holly Wood Molotov and fire (but I need to optimize it)
 - Now enemies and players can be burned with fire
 - Implemented difficult level
 
@@ -65,10 +65,10 @@ Changelog:
 - Implemented optional 384x240 resolution mode (only for CMM2 G2)
 - Implemented optional 16-bit colour mode, but it's slower than the 8-bit mode
 - Adjusted OSD and the engine to support 320 or 384 width pixel mode
-- Fixed the freeze effects on the enemies when hurted
-- Restaured scream sound of the the "fat runners"
+- Fixed the freeze effects on the enemies when hurt
+- Restored scream sound of the "fat runners"
 - Fixed Damnd jumping kick freeze
-- Fixed many fixes in the enemies animations that caused unexpected behaviors
+- Fixed many fixes in the enemies animations that caused unexpected behaviours
 - Fixed vertical flip when using two parts to make one shape
 
 2021-06-29
@@ -91,5 +91,3 @@ Changelog:
 - Added Holly Wood (not red) and El Gado 
 - Added Bill Bull and Graham Oriber
 - Added Poison and Roxy
-
-
