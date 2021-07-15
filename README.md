@@ -86,7 +86,7 @@ Changelog:
 - Reorganized source code and INC files
 - Added all round 1 cutscenes
 - Added Damnd
-
+ 
 2021-06-28
 - Intro scenes from the arcade are finished
 - Select player screen is finished
