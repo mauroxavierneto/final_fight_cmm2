@@ -4,6 +4,8 @@ This is a non-profit port of the arcade game Final Fight from CAPCOM, made 100% 
 
 I don't have any rights to the images, sound effects and music in this repository, but I'm counting on the tolerance of CAPCOM about your huge fan games base already present.
 
+THIS GAME IS A WORK IN PROGRESS AND ONLY THE FIRST STAGE WAS DEVELOPED FOR NOW. THE OTHERS ARE ON THE WAY...
+
 PS.: The current enemies on the CMM2 G1 probably will not be implemented because of some memory restrictions: Simons, Wong Who and the appearance of the Andore Father, Uncle and Granpa outside the ring stage.
 
 Changelog:
