@@ -53,56 +53,71 @@ SUB Enemy_J_TWO_P(T,PL)
    EAniSpd(T)=3-(EBACK(T)=-1)*2
    ESPD(T)=((ES_SPD(T)+EAN(T)-1)/2)*EBACK(T)*((EBACK(T)=-1)*2+(EBACK(T)>=0))
    IF EAN(T)<0 OR EAN(T)>3 THEN EAN(T)=0
+   EXIT SUB
 
   'GETTING UP ------------------------------------------------------------------------
-  CASE 51: 'NOTHING
+  CASE 51: EXIT SUB 'NOTHING
   CASE 52:
    EAN(T)=24: INC STE(T): EAniDelay(T)=0: EAniSpd(T)=30
    'FIX ENEMY SIDE AFTER THROWED
    IF ESide(T)=6 THEN ESide(T)=4
    IF ESide(T)=7 THEN ESide(T)=5
+   EXIT SUB
   CASE 53:      
    ESPDX(T)=ESPDX(T)\2: IF EAniDelay(T)>20 OR EEnergy(T)<=0 THEN INC STE(T)
+   EXIT SUB
   CASE 54:
    EAN(T)=24: INC STE(T): EAniDelay(T)=0: EAniSpd(T)=3: ESPDX(T)=0
    'ENEMY DEAD?
    IF EEnergy(T)<=0 THEN STE(T)=100: EAN(T)=50: EAniDelay(T)=0: EAniSpd(T)=1       
+   EXIT SUB
   CASE 55:
    EAN(T)=24: INC STE(T): EAniDelay(T)=0: EAniSpd(T)=10
-  CASE 56: EAN(T)=0: STE(T)=1
+   EXIT SUB
+  CASE 56: EAN(T)=0: STE(T)=1: EXIT SUB
 
   'THROWED UPDOWN --------------------------------------------------------------------
   CASE 60:
    EAN(T)=21: STE(T)=61: EAniDelay(T)=0: EAniSpd(T)=15
    IF ESide(T)=4 THEN ESide(T)=7 ELSE ESide(T)=6
    INC EX(T),-ESPDX(T)
+   EXIT SUB
   CASE 61:
    IF EAniDelay(T)>10 THEN INC STE(T)
+   EXIT SUB
   CASE 62:
    EAN(T)=22: STE(T)=52: EAniDelay(T)=0: EAniSpd(T)=10
+   EXIT SUB
+
+  'GRAPPLED BY A PLAYER --------------------------------------------------------------
+  CASE 120 TO 170: GrapPlayer(T): EXIT SUB
 
   'LEANING AGAINST THE WALL ----------------------------------------------------------
   CASE 64:
    EAN(T)=35: EAniDelay(T)=0: EAniSPD(T)=10
    STE(T)=65: EMV(T)=0
    IF EX(T)<245+RXX THEN EAN(T)=0: STE(T)=1: EMV(T)=1
+   EXIT SUB
   CASE 65:
    EAN(T)=35: EAniDelay(T)=0: EAniSPD(T)=10
    STE(T)=64: EMV(T)=0
    IF EX(T)<245+RXX THEN EAN(T)=0: STE(T)=1: EMV(T)=1
+   EXIT SUB
 
   'SEATED ----------------------------------------------------------------------------
   CASE 66:
    EAN(T)=34: EAniDelay(T)=0: EAniSPD(T)=10
    STE(T)=67: EMV(T)=0
    IF EX(T)<245+RXX THEN EAN(T)=35: STE(T)=65
+   EXIT SUB
   CASE 67:
    EAN(T)=34: EAniDelay(T)=0: EAniSPD(T)=10
    STE(T)=66: EMV(T)=0
    IF EX(T)<245+RXX THEN EAN(T)=35: STE(T)=65
+   EXIT SUB
 
   'PUNCH AND FAST BACKWARD -----------------------------------------------------------
-  CASE 70: EAN(T)=13: EAniDelay(T)=0: EAniSpd(T)=2: INC STE(T)
+  CASE 70: EAN(T)=13: EAniDelay(T)=0: EAniSpd(T)=2: INC STE(T): EXIT SUB
   CASE 71:       
    'PUNCH THE PLAYER ONLY IF IS NOT ALREADY BE HURTED AND NOT USING SPECIAL MOVE
    IF COLLIDE(0)=&HFFFFFF AND PHurted(PL)=0 AND EAN(T)=14 AND Special(PL)=0 THEN
@@ -116,18 +131,20 @@ SUB Enemy_J_TWO_P(T,PL)
     WhoE(PL)=T 'SET WHO HURTED THE PLAYER
     STE(T)=72: EAniDelay(T)=0: EAniSpd(T)=3
    ENDIF
-  IF EAN(T)>=15 THEN STE(T)=72
-  CASE 72: IF EAN(T)>=15 THEN EBACK(T)=-1: STE(T)=10: EAniDelay(T)=0: EAniSpd(T)=2
+   IF EAN(T)>=15 THEN STE(T)=72
+   EXIT SUB
+  CASE 72:
+   IF EAN(T)>=15 THEN EBACK(T)=-1: STE(T)=10: EAniDelay(T)=0: EAniSpd(T)=2
+   EXIT SUB
 
   'J / TWO P DON'T KICK OR JUMP ----------------------------------
-  CASE 75,80: STE(T)=1
+  CASE 75,80: STE(T)=1: EXIT SUB
 
   'ENEMY IS DEAD ---------------------------------------------------------------------
-  CASE 100: EAniSpd(T)=0: IF EAN(T)>60 THEN EAN(T)=50: INC STE(T) ' FLASH BODY AGAIN
+  CASE 100:
+   EAniSpd(T)=0: IF EAN(T)>60 THEN EAN(T)=50: INC STE(T) ' FLASH BODY AGAIN
+   EXIT SUB
   CASE 101: IF EAN(T)>60 THEN EEnergy(T)=-99: STE(T)=0: RealY(T)=999: Exit Sub 'REMOVE DEAD ENEMY
-
-  'GRAPPLED BY A PLAYER --------------------------------------------------------------
-  CASE 120 TO 170: GrapPlayer(T)
 
   'RETURN TO THE ORIGINAL STATE IF SOMETHING GOES WRONG ON GAPPLE
   CASE >=171:

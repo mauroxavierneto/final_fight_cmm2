@@ -85,6 +85,7 @@ IF VMODE=400 THEN VSYNC=0: DEPTH=8
 
 'PLAYER MANAGEMENT
 #INCLUDE "PLAYER ANIMATION.INC"
+#INCLUDE "PLAYER CONTROL.INC"
 #INCLUDE "PLAYER SELECTION.INC"
 #INCLUDE "PLAYER SHAPES.INC"
 
@@ -297,7 +298,7 @@ IF NOINTRO THEN Section=1: LoadRound
 
 IF NOINTRO THEN
  OSDX=20: MAXPL=1
- PLType(1)=CODY
+ PLType(1)=GUY
  PLType(2)=HAGGAR
  'WEAPON(1)=PIPE
 ENDIF
@@ -407,37 +408,11 @@ FOR PL=1 TO MAXPL ' ------------------------------------------------------------
 
  IF OSDX=0 THEN KSHIFT=0: KCTRL=0: KALT=0
 
+ ' READ BUTTONS FROM THE CONTROLLERS
  SELECT CASE CtrlType(PL)
-
-  CASE 0: 'KEYBOARD SHIFT + CTRL + ALT --------------------------------------------------
-   'CONTROL - READ MODIFIER KEYS
-   MDKEY$=RIGHT$("00000000"+BIN$(KEYDOWN(7)),8)
-   'RESPOND ONLY WHEN NOT HURTED
-   IF PHurted(PL)=0 OR PHurted(PL)=8 OR PHurted(PL)=9 THEN
-    IF PEEK(VAR MDKEY$,1)=49 OR PEEK(VAR MDKEY$,5)=49 THEN KSHIFT=1
-    IF PEEK(VAR MDKEY$,3)=49 OR PEEK(VAR MDKEY$,7)=49 THEN KCTRL=1
-    IF PEEK(VAR MDKEY$,4)=49 OR PEEK(VAR MDKEY$,8)=49 THEN KALT=1
-   ENDIF
-
-  CASE 1: 'CLASSIC NES/SNES MINI --------------------------------------------------------
-   Classic_Mini_Read(CtrlExist(1))
-   'IF PEEK(VAR KCM$, 06)=48 THEN 'START
-   IF PHurted(PL)=0 OR PHurted(PL)=8 OR PHurted(PL)=9 THEN
-    IF PEEK(VAR KCM$, 10)=48 THEN KSHIFT=1 'B
-    IF PEEK(VAR KCM$, 12)=48 THEN KCTRL=1  'A
-    IF PEEK(VAR KCM$,  4)=48 THEN KALT=1   'SELECT 
-   ENDIF
-
-  CASE 2: 'WII CLASSIC CONTROLLER -------------------------------------------------------
-   KC$=RIGHT$("00000000000000"+BIN$(CLASSIC(B,CtrlExist(2))),14)
-   LX=CLASSIC(LX,CtrlExist(2))
-   LY=CLASSIC(LY,CtrlExist(2))
-   'IF PEEK(VAR KC$,13)=49 THEN 'START
-   IF PHurted(PL)=0 OR PHurted(PL)=8 OR PHurted(PL)=9 THEN
-    IF PEEK(VAR KC$, 1)=49 THEN KSHIFT=1 'B
-    IF PEEK(VAR KC$, 3)=49 THEN KCTRL=1  'A
-   ENDIF
-
+  CASE 0: Read_Keyboard_Buttons    'KEYBOARD SHIFT + CTRL + ALT
+  CASE 1: Read_NES_Classic_Buttons 'CLASSIC NES/SNES MINI
+  CASE 2: Read_Wii_Classic_Buttons 'WII CLASSIC CONTROLLER
  END SELECT
 
  ' END READING BUTTONS ------------------------------------------------------------------
@@ -449,160 +424,27 @@ FOR PL=1 TO MAXPL ' ------------------------------------------------------------
   MVLR(PL)=0
   MVUD(PL)=0
 
-  'CONTROL - MOVE -----------------------------------------------------------------------
+  'CONTROL - MOVE: READ DIRECTIONALS / PAD
 
   'MOVE WHEN ENEMY GRAPPLED ONLY IF IT'S HAGGAR ELSE
   'DON'T MOVE IF GRAPPLING, PUNCHING OR KICKING
   SELECT CASE CtrlType(PL)
+   CASE 0: Read_Keyboard_Directional    'KEYBOARD DIRECTIONAL KEYS
+   CASE 1: Read_Wii_Classic_Directional 'CLASSIC NES/SNES MINI
+   CASE 2: Read_NES_Classic_Directional 'WII CLASSIC CONTROLLER
+  END SELECT
 
-   CASE 0: 'KEYBOARD DIRECTIONAL KEYS ---------------------------------------------------
-    IF ((PLType(PL)=3 AND Grap(PL)<21) OR Grap(PL)=0 OR Punch(PL)=0 OR Kick(PL)=0) THEN 
-     FOR T=1 TO 6
-      KB=ASC(UCASE$(CHR$(KEYDOWN(T))))
-      SELECT CASE KB
-       CASE K_U: INC RealY(PL),-SPD(PL): MV=1: MVUD(PL)=-1
-       CASE K_D: INC RealY(PL), SPD(PL): MV=1: MVUD(PL)= 1
-       CASE K_L: INC X(PL),-SPD(PL): MV=1: MVLR(PL)=-1: IF Grap(PL)=0 THEN SIDE(PL)=5
-       CASE K_R: INC X(PL), SPD(PL): MV=1: MVLR(PL)= 1: IF Grap(PL)=0 THEN SIDE(PL)=4
-      END SELECT
-     NEXT T
-    ELSE 'THE PLAYER CAN'T MOVE BUT READ ONLY CONTROL THE SIDE
-     FOR T=1 TO 6
-      KB=ASC(UCASE$(CHR$(KEYDOWN(T))))
-      SELECT CASE KB
-       CASE K_U: MVUD(PL)=-1
-       CASE K_D: MVUD(PL)= 1
-       CASE K_L: MVLR(PL)=-1
-       CASE K_R: MVLR(PL)= 1
-      END SELECT
-     NEXT T
-    ENDIF
+  'CONTROL - SPECIAL BUTTON
+  IF ((KCTRL AND KSHIFT) OR KALT) THEN Player_Special_Button
 
-   CASE 1: 'CLASSIC NES/SNES MINI -------------------------------------------------------
-    IF ((PLType(PL)=3 AND Grap(PL)<21) OR Grap(PL)=0 OR Punch(PL)=0 OR Kick(PL)=0) THEN 
-     IF PEEK(VAR KCM$,16)=48 THEN INC RealY(PL),-SPD(PL): MV=1: MVUD(PL)=-1
-     IF PEEK(VAR KCM$, 2)=48 THEN INC RealY(PL), SPD(PL): MV=1: MVUD(PL)= 1
-     IF PEEK(VAR KCM$,15)=48 THEN INC X(PL),-SPD(PL): MV=1: MVLR(PL)=-1: IF Grap(PL)=0 THEN SIDE(PL)=5
-     IF PEEK(VAR KCM$, 1)=48 THEN INC X(PL), SPD(PL): MV=1: MVLR(PL)= 1: IF Grap(PL)=0 THEN SIDE(PL)=4
-    ELSE 'THE PLAYER CAN'T MOVE BUT READ ONLY CONTROL THE SIDE
-     IF PEEK(VAR KCM$,16)=48 THEN MVUD(PL)=-1
-     IF PEEK(VAR KCM$, 2)=48 THEN MVUD(PL)= 1
-     IF PEEK(VAR KCM$,15)=48 THEN MVLR(PL)=-1
-     IF PEEK(VAR KCM$, 1)=48 THEN MVLR(PL)= 1
-    ENDIF
-
-   CASE 2: 'WII CLASSIC CONTROLLER ------------------------------------------------------
-    IF ((PLType(PL)=HAGGAR AND Grap(PL)<21) OR Grap(PL)=0 OR Punch(PL)=0 OR Kick(PL)=0) THEN
-     IF PEEK(VAR KC$, 7)=49 OR LY>195 THEN INC RealY(PL),-SPD(PL): MV=1: MVUD(PL)=-1
-     IF PEEK(VAR KC$, 9)=49 OR LY< 60 THEN INC RealY(PL), SPD(PL): MV=1: MVUD(PL)= 1
-     IF PEEK(VAR KC$, 6)=49 OR LX< 60 THEN INC X(PL),-SPD(PL): MV=1: MVLR(PL)=-1: IF Grap(PL)=0 THEN SIDE(PL)=5
-     IF PEEK(VAR KC$, 8)=49 OR LX>195 THEN INC X(PL), SPD(PL): MV=1: MVLR(PL)= 1: IF Grap(PL)=0 THEN SIDE(PL)=4
-    ELSE 'THE PLAYER CAN'T MOVE BUT READ ONLY CONTROL THE SIDE
-     IF PEEK(VAR KC$, 7)=49 OR LY>195 THEN MVUD(PL)=-1
-     IF PEEK(VAR KC$, 9)=49 OR LY< 60 THEN MVUD(PL)= 1
-     IF PEEK(VAR KC$, 6)=49 OR LX< 60 THEN MVLR(PL)=-1
-     IF PEEK(VAR KC$, 8)=49 OR LX>195 THEN MVLR(PL)= 1
-    ENDIF
-
-  END SELECT 'END OF CONTROLLER MOVEMENT ------------------------------------------------
-
-
-  'CONTROL - SPECIAL BUTTON -----------------------------------------
-  IF ((KCTRL AND KSHIFT) OR KALT) THEN
-   IF Energy(PL)>0 AND Jump(PL)=0 AND (Punch(PL)=0 OR Grap(PL)>0) AND Special(PL)=0 THEN
-    AniDelay(PL)=20: Kick(PL)=10: Special(PL)=1
-    Jump(PL)=51: JumpX(PL)=0
-    IF Energy(PL)>6 THEN INC Energy(PL),-5
-    IF Energy(PL)<1 THEN Energy(PL)=1
-    KCTRL=0: KSHIFT=0: KALT=0
-   ENDIF
-  ENDIF
-
-  'CONTROL - PUNCH BUTTON -------------------------------------------
   INC Hitting(PL),-1 'RESET HITTING STATUS
   IF Hitting(PL)<0 THEN Hitting(PL)=0: IF Grap(PL)=0 THEN Combo(PL)=0
-  
-  IF KSHIFT THEN
 
-   ' GET ITEM
-   IF Item(PL)>0 AND AN(PL)<=12 AND Kick(PL)=0 AND Punch(PL)=0 AND Jump(PL)=0 AND FreePunch(PL)=1 AND Grap(PL)=0 AND OSDX=0 THEN
-    STE(Item(PL))=99: EHIT(Item(PL))=PL: Punch(PL)=201: FreePunch(PL)=0
-   ENDIF
+  'CONTROL - PUNCH BUTTON
+  IF KSHIFT THEN Player_Punch_Button
 
-   ' NORMAL PUNCH OR COMBO
-   IF (Punch(PL)<(3-(WEAPON(PL)>0))+(PlType(PL)=HAGGAR)*3 OR Combo(PL)>=3) AND FreePunch(PL)=1 AND Grap(PL)=0 THEN
-    T=Punch(PL)
-    Punch(PL)=4+(PlType(PL)=3)*2: AniDelay(PL)=0: AniSpd(PL)=1
-    SELECT CASE PLType(PL)
-
-     CASE GUY:
-      'THIRD PUNCH IF COMBO RATE 3 AND IN THE FIRST PUNCHING SEQUENCE
-      IF Hitting(PL)>0 AND Combo(PL)=3 AND T<=4 THEN Punch(PL)=14
-      'LAST KICK IF COMBO RATE >=4, NOT PUSHING UP OR DOWN AND SEQUENCE ABOVE THIRD PUNCH
-      IF Combo(PL)>=4 AND MVUD(PL)=0 AND T>10 THEN Punch(PL)=10
-
-     CASE CODY:
-      'THIRD PUNCH IF COMBO RATE 3 AND IN THE FIRST PUNCHING SEQUENCE
-      IF Hitting(PL)>0 AND Combo(PL)=3 AND T<=4 THEN Punch(PL)=13
-      'LAST KICK IF COMBO RATE >=4, NOT PUSHING UP OR DOWN AND SEQUENCE ABOVE THIRD PUNCH
-      IF Combo(PL)>=4 AND MVUD(PL)=0 AND T>10 THEN Punch(PL)=10
-
-     CASE HAGGAR:
-      'THIRD PUNCH IF COMBO RATE 2 AND IN THE FIRST PUNCHING SEQUENCE
-      IF Hitting(PL)>0 AND Combo(PL)=2 AND T<=6 THEN Punch(PL)=6
-      'LAST KICK IF COMBO RATE >=4, NOT PUSHING UP OR DOWN AND SEQUENCE ABOVE THIRD PUNCH
-      IF Combo(PL)>=3 AND MVUD(PL)=0 AND T>10 THEN Punch(PL)=11
-
-    END SELECT
-    'PLAY ONLY IF THE SOUND CHANNEL IS OPEN (LIKE THE ARCADE)
-    IF Punch(PL)=4+(PlType(PL)=3)*2 AND WEAPON(PL)=0 THEN PLAY_SAMPLE 28,PL,,-1 
-   ENDIF
-
-   ' CODY/GUY THROW ENEMY OR HAGGAR SUPLEX
-   IF MVUD(PL)<>0 AND FreePunch(PL)=1 AND Grap(PL)=20 AND GrapE(PL)>0 THEN
-    INC Hitting(PL),-1 'RESET HITTING STATUS
-    IF Hitting(PL)<0 THEN Hitting(PL)=0
-    Grap(PL)=22: AN(PL)=22
-    AniDelay(PL)=0: AniSpd(PL)=1
-    T=GrapE(PL)
-    IF MVLR(PL)<>0 THEN
-     ESIDE(T)=5-(MVLR(PL)=1):Side(PL)=4+(MVLR(PL)=1)
-    ELSE
-     ESIDE(T)=(SIDE(PL)=4)*5+(SIDE(PL)=5)*4
-    ENDIF
-    'ENEMY THROWED SIDE
-    ESPDX(T)=(ESide(PL)=4)*8-(ESide(PL)=5)*8
-
-    Punch(PL)=131: STE(T)=60: ETR(T)=PL
-
-    'FIX ENEMY POSITION WHEN THROW / SUPLEX
-    IF PlType(PL)=HAGGAR THEN Punch(PL)=131: STE(T)=60: InsertWait(PL,T,4): RealY(T)=RealY(PL)-4
-   ENDIF
-
-   ' CODY/GUY KICK WHEN GRAPPLE AN ENEMY / HAGGAR HEAD BANG
-   IF MVUD(PL)=0 AND Punch(PL)>30 AND FreePunch(PL)=1 AND Grap(PL)>0 AND Hitting(PL)=0 THEN
-    'RESET HITTING STATUS
-    IF Grap(PL)=20 THEN Grap(PL)=21: Punch(PL)=110
-    AniDelay(PL)=0: AniSpd(PL)=1
-   ENDIF
-
-  ENDIF 'END PUNCH CONTROL ------------------------------------------
-
-
-  'CONTROL - JUMP BUTTON --------------------------------------------
-  IF KCTRL THEN
-
-   IF Jump(PL)=0 THEN
-    AniDelay(PL)=20: Kick(PL)=0
-    IF MVLR(PL)<>0 THEN
-     Jump(PL)=16-5*(PLType(PL)=HAGGAR)
-     JumpX(PL)=MVLR(PL)*SPD(PL)
-    ELSE
-     Jump(PL)=31: JumpX(PL)=0
-    ENDIF
-   ENDIF
-
-  ENDIF
+  'CONTROL - JUMP BUTTON
+  IF KCTRL THEN Player_Jump_Button
 
  ELSE 'NOT PUNCHING, JUMPING OR KICKING -------------------------------------------------
 
@@ -742,17 +584,10 @@ FOR PL=1 TO MAXPL ' ------------------------------------------------------------
 
 NEXT PL '-------------------------------------------------------------------------------------
 
-' DRAW THE COLLISION BOXES ON THE ENEMIES THROWED ---------------------------------------
- FOR IND=4 TO 9
-  IF STE(IND)>0 THEN 
-   IF ETR(IND)>0 THEN PutEnemy(EX(IND),RealY(IND)+EY(IND),EAN(IND),ESide(IND),EType(IND),IND,0)
-  ENDIF
- NEXT IND
-
 ' DRAW THE COLLISION BOXES ON THE OBJECTS (FIRE AND WEAPONS)-----------------------------
- FOR IND=10 TO EMAX
-  IF STE(IND)>0 AND EAN(IND)>211 THEN PutObject(EX(IND),RealY(IND)+EY(IND),EAN(IND),ESIDE(IND),2)
- NEXT IND
+' FOR IND=10 TO EMAX
+'  IF STE(IND)>0 AND EAN(IND)>211 THEN PutObject(EX(IND),RealY(IND)+EY(IND),EAN(IND),ESIDE(IND),2)
+' NEXT IND
 
  IF OSDX=700 THEN PAGE WRITE 35: CLS &HFF0000
 
@@ -789,7 +624,7 @@ NEXT PL '-----------------------------------------------------------------------
      PutEnemy(C_A,C_B,C_C,ESide(IND),EType(IND),IND,1)
     ENDIF
    CASE ELSE: 'OBJECTS
-    IF STE(IND)>0 THEN IF EMV(IND)>=0 THEN PutObject(EX(IND),RealY(IND)+EY(IND),EAN(IND),ESIDE(IND),1-(EMV(IND)=2)*SB)
+    IF STE(IND)>0 THEN IF EMV(IND)>=0 AND (1-(EMV(IND)=2)*SB) THEN PutObject(EX(IND),RealY(IND)+EY(IND),EAN(IND),ESIDE(IND))
   END SELECT
  NEXT T  
 
@@ -829,7 +664,7 @@ NEXT PL '-----------------------------------------------------------------------
  ' TIMER
  ANTTIME=GTIME 
 
- PutObject(MM.HRES\2,26-OSDP,99,4,1) 
+ PutObject(MM.HRES\2,26-OSDP,99,4) 
 
  GTIME=((STIME+1)*10000-TIMER)\10000
 
@@ -891,7 +726,7 @@ NEXT PL '-----------------------------------------------------------------------
    'SHOW OBJECT AVATAR AND NAME
    IF SHOWHIT(PL)>0 THEN
     INC SHOWHIT(PL),-1
-    PutObject(16+I+II,43,Hit(PL),4,1)
+    PutObject(16+I+II,43,Hit(PL),4)
     PrintS(25+(PL-1)*(MM.HRES\2+16)+I+II,27,0,AVA$)
     'FLASHING AVATAR OF THE DESTRUCTABLE OBJECTS
     IF SB AND Hit(PL)>=-100 THEN
@@ -941,9 +776,11 @@ NEXT PL '-----------------------------------------------------------------------
   PAGE WRITE 1
  ENDIF
 
- 'PAUSETIMER=TIMER+26.66 '37.5 FPS - HALF 75 Hz
- PAUSETIMER=TIMER+33.3333 '30 FPS
- 'PAUSETIMER=TIMER+16.6666 '60 FPS
+ IF DEPTH=16 THEN
+  PAUSETIMER=TIMER+26.66 '37.5 FPS - HALF 75 Hz - UNSTABLE FRAMERATE
+ ELSE
+  PAUSETIMER=TIMER+33.3333 '30 FPS
+ ENDIF
 
  StageScrollEvent(ScrSide,PLSCR)
 

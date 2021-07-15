@@ -59,46 +59,55 @@ SUB Enemy_POISON_ROXY(T,PL)
    EAniSpd(T)=3
    ESPD(T)=ES_SPD(T)*EBACK(T)
    IF EAN(T)>5 THEN EAN(T)=0
+   EXIT SUB
 
   'GETTING UP ------------------------------------------------------------------------
-  CASE 51: 'NOTHING
+  CASE 51: EXIT SUB 'NOTHING
   CASE 52:
    EAN(T)=24: INC STE(T): EAniDelay(T)=0: EAniSpd(T)=30
    'FIX ENEMY SIDE AFTER THROWED
    IF ESide(T)=6 THEN ESide(T)=4
    IF ESide(T)=7 THEN ESide(T)=5
+   EXIT SUB
   CASE 53:      
    ESPDX(T)=ESPDX(T)\2: IF EAniDelay(T)>20 OR EEnergy(T)<=0 THEN INC STE(T)
+   EXIT SUB
   CASE 54:
    EAN(T)=24: INC STE(T): EAniDelay(T)=0: EAniSpd(T)=3: ESPDX(T)=0
    'ENEMY DEAD?
    IF EEnergy(T)<=0 THEN STE(T)=100: EAN(T)=50: EAniDelay(T)=0: EAniSpd(T)=1       
-  CASE 55:
-   EAN(T)=25: INC STE(T): EAniDelay(T)=0: EAniSpd(T)=10
-  CASE 56: EAN(T)=0: STE(T)=1
+   EXIT SUB
+  CASE 55: EAN(T)=25: INC STE(T): EAniDelay(T)=0: EAniSpd(T)=10: EXIT SUB
+  CASE 56: EAN(T)=0: STE(T)=1: EXIT SUB
 
   'THROWED UPDOWN --------------------------------------------------------------------
   CASE 60:
    EAN(T)=21: STE(T)=61: EAniDelay(T)=0: EAniSpd(T)=15
    IF ESide(T)=4 THEN ESide(T)=7 ELSE ESide(T)=6
    INC EX(T),-ESPDX(T)
+   EXIT SUB
   CASE 61:
    IF EAniDelay(T)>10 THEN INC STE(T)
-  CASE 62:
-   EAN(T)=22: STE(T)=52: EAniDelay(T)=0: EAniSpd(T)=10
+   EXIT SUB
+  CASE 62: EAN(T)=22: STE(T)=52: EAniDelay(T)=0: EAniSpd(T)=10: EXIT SUB
+
+  'GRAPPLED BY A PLAYER --------------------------------------------------------------
+  CASE 120 TO 170: GrapPlayer(T)
 
   'CROUCHED --------------------------------------------------------------------------
   CASE 66:
    EAN(T)=25: EAniDelay(T)=0: EAniSPD(T)=10
    STE(T)=67: EMV(T)=0: ESPDX(T)=0
    IF EX(T)<245 THEN STE(T)=1
+   EXIT SUB
   CASE 67:
    EAN(T)=25: EAniDelay(T)=0: EAniSPD(T)=10
    STE(T)=66: EMV(T)=0: ESPDX(T)=0
    IF EX(T)<245 THEN STE(T)=1
+   EXIT SUB
 
   'PUNCH -----------------------------------------------------------------------------
-  CASE 70: EAN(T)=13: EAniDelay(T)=0: EAniSpd(T)=4: INC STE(T): ESPDX(T)=0
+  CASE 70: EAN(T)=13: EAniDelay(T)=0: EAniSpd(T)=4: INC STE(T): ESPDX(T)=0: EXIT SUB
   CASE 71:       
    'PUNCH THE PLAYER ONLY IF IS NOT ALREADY BE HURTED AND NOT USING SPECIAL MOVE
    IF COLLIDE(0)=&HFFFFFF AND PHurted(PL)=0 AND EAN(T)=14 AND Special(PL)=0 THEN
@@ -112,11 +121,14 @@ SUB Enemy_POISON_ROXY(T,PL)
     WhoE(PL)=T 'SET WHO HURTED THE PLAYER
     STE(T)=72: EAniDelay(T)=0: EAniSpd(T)=4
    ENDIF
-  IF EAN(T)>15 THEN STE(T)=72
-  CASE 72: IF EAN(T)>15 THEN STE(T)=1: EAniDelay(T)=0: EAniSpd(T)=4
+   IF EAN(T)>15 THEN STE(T)=72
+   EXIT SUB
+  CASE 72:
+   IF EAN(T)>15 THEN STE(T)=1: EAniDelay(T)=0: EAniSpd(T)=4
+   EXIT SUB
 
   'KICK -----------------------------------------------------------------------------
-  CASE 75: EAN(T)=16: EAniDelay(T)=0: EAniSpd(T)=2: INC STE(T): ESPDX(T)=0
+  CASE 75: EAN(T)=16: EAniDelay(T)=0: EAniSpd(T)=2: INC STE(T): ESPDX(T)=0: EXIT SUB
   CASE 76:       
    'PUNCH THE PLAYER ONLY IF IS NOT ALREADY BE HURTED AND NOT USING SPECIAL MOVE
    IF COLLIDE(0)=&HFFFFFF AND PHurted(PL)=0 AND EAN(T)=18 AND Special(PL)=0 THEN
@@ -130,39 +142,48 @@ SUB Enemy_POISON_ROXY(T,PL)
     WhoE(PL)=T 'SET WHO HURTED THE PLAYER
     STE(T)=77: EAniDelay(T)=0: EAniSpd(T)=3
    ENDIF
-  IF EAN(T)>19 THEN STE(T)=77
-  CASE 77: IF EAN(T)>19 THEN STE(T)=1: EAniDelay(T)=0: EAniSpd(T)=3
+   IF EAN(T)>19 THEN STE(T)=77
+   EXIT SUB
+  CASE 77:
+   IF EAN(T)>19 THEN STE(T)=1: EAniDelay(T)=0: EAniSpd(T)=3
+   EXIT SUB
 
   'ACROBATIC JUMP KICK ---------------------------------------------------------------
   CASE 80: 
    'TURN ENEMY TO JUMP IN THE ENEMY POSITION
    IF EX(T)>X(PL) THEN ESIDE(T)=5 ELSE ESIDE(T)=4
    EAN(T)=25: EAniDelay(T)=0: EAniSpd(T)=20: INC STE(T): ESPDX(T)=0
+   EXIT SUB
   CASE 81:
    EAN(T)=25:
     IF EAniDelay(T)>5 THEN 'WAIT CROUCHED THEN START TO JUMP
      EAN(T)=25: EAniDelay(T)=0: EAniSpd(T)=20: INC STE(T)
      ESPDX(T)=(ESide(T)=4)*3-(ESide(T)=5)*3:ESJMP(T)=-13
     ENDIF
+   EXIT SUB
   CASE 82: 
    EAN(T)=34
    INC EX(T),ESPDX(T): INC ESPDX(T),-SGN(ESPDX(T))*0.06: INC ESJMP(T),-0.75
    IF EAniDelay(T)>4 THEN
     EAN(T)=37: INC STE(T): EAniDelay(T)=0: ESIDE(T)=(ESIDE(T)=4)*7+(ESIDE(T)=5)*6 'ROTATE 180`
    ENDIF
+   EXIT SUB
   CASE 83:
    EAN(T)=37
    INC EX(T),ESPDX(T): INC ESPDX(T),-SGN(ESPDX(T))*0.06: INC ESJMP(T),-0.75
    IF EAniDelay(T)>4 THEN EAN(T)=40: INC STE(T): EAniDelay(T)=0      
+   EXIT SUB
   CASE 84:
    INC EX(T),ESPDX(T): INC ESPDX(T),-SGN(ESPDX(T))*0.06: INC ESJMP(T),-0.75
    EAN(T)=40
    IF EAniDelay(T)>4 THEN
     EAN(T)=37: INC STE(T): EAniDelay(T)=0: ESIDE(T)=(ESIDE(T)=7)*4+(ESIDE(T)=6)*5 'TURN BACK 180`
    ENDIF
+   EXIT SUB
   CASE 85:
    INC EX(T),ESPDX(T): INC ESPDX(T),-SGN(ESPDX(T))*0.06: INC ESJMP(T),-0.75
    EAN(T)=37: IF EAniDelay(T)>4 THEN INC STE(T): EAniDelay(T)=0
+   EXIT SUB
   CASE 86: 'ATTACK!
    'KICK THE PLAYER ONLY IF IS NOT ALREADY BE HURTED AND NOT USING SPECIAL MOVE
    IF COLLIDE(0)=&HFFFFFF AND PHurted(PL)=0 AND Special(PL)=0 THEN
@@ -177,15 +198,18 @@ SUB Enemy_POISON_ROXY(T,PL)
    ENDIF
    INC EX(T),ESPDX(T): INC ESPDX(T),-SGN(ESPDX(T))*0.06: INC ESJMP(T),-0.75
    EAN(T)=38: IF EAniDelay(T)>10 THEN INC STE(T): EAniDelay(T)=0
+   EXIT SUB
   CASE 87:
    INC EX(T),ESPDX(T): INC ESPDX(T),-SGN(ESPDX(T))*0.06: INC ESJMP(T),-0.75
    EAN(T)=37: IF EAniDelay(T)>2 THEN INC STE(T): EAniDelay(T)=0
+   EXIT SUB
   CASE 88:
    EAN(T)=25 
    IF EAniDelay(T)>3 THEN
     ESPDX(T)=0: EAniDelay(T)=0: EaniSpd(T)=40
     EBACKX(T)=0: EBACK(T)=0: EY(T)=0: ESJMP(T)=0: STE(T)=1
    ENDIF
+   EXIT SUB
 
   'ACROBATIC BACKFLIP ----------------------------------------------------------------
   CASE 90: 
@@ -210,6 +234,7 @@ SUB Enemy_POISON_ROXY(T,PL)
     CASE 44: EAN(T)=37
     CASE 48: EAN(T)=25: INC STE(T): EaniDelay(T)=0
    END SELECT
+   EXIT SUB
   CASE 92:
    EAN(T)=25 
    IF EAniDelay(T)>3 THEN
@@ -217,13 +242,11 @@ SUB Enemy_POISON_ROXY(T,PL)
     ESPDX(T)=0: EAniDelay(T)=0: EaniSpd(T)=40
     EBACKX(T)=0: EBACK(T)=0: EY(T)=0: ESJMP(T)=0: STE(T)=1
    ENDIF
+   EXIT SUB
 
   'ENEMY IS DEAD ---------------------------------------------------------------------
   CASE 100: EAniSpd(T)=0: IF EAN(T)>60 THEN EAN(T)=50: INC STE(T) ' FLASH BODY AGAIN
   CASE 101: IF EAN(T)>60 THEN EEnergy(T)=-99: STE(T)=0: RealY(T)=999: Exit Sub 'REMOVE DEAD ENEMY
-
-  'GRAPPLED BY A PLAYER --------------------------------------------------------------
-  CASE 120 TO 170: GrapPlayer(T)
 
   'RETURN TO THE ORIGINAL STATE IF SOMETHING GOES WRONG ON GAPPLE
   CASE >=171:

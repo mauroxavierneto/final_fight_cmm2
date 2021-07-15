@@ -54,36 +54,46 @@ SUB Enemy_HOLLY_WOOD_EL_GADO(T,PL,s)
    ESPD(T)=ES_SPD(T)
    EAniSpd(T)=2
    IF EAN(T)>5 THEN EAN(T)=0
+   EXIT SUB
 
   'GETTING UP ------------------------------------------------------------------------
-  CASE 51: 'NOTHING
+  CASE 51: EXIT SUB 'NOTHING
   CASE 52:
    EAN(T)=24: INC STE(T): EAniDelay(T)=0: EAniSpd(T)=30
    'FIX ENEMY SIDE AFTER THROWED
    IF ESide(T)=6 THEN ESide(T)=4
    IF ESide(T)=7 THEN ESide(T)=5
+   EXIT SUB
   CASE 53:      
    ESPDX(T)=ESPDX(T)\2: IF EAniDelay(T)>20 OR EEnergy(T)<=0 THEN INC STE(T)
+   EXIT SUB
   CASE 54:
    EAN(T)=24: INC STE(T): EAniDelay(T)=0: EAniSpd(T)=3: ESPDX(T)=0
    'ENEMY DEAD?
    IF EEnergy(T)<=0 THEN STE(T)=100: EAN(T)=50: EAniDelay(T)=20: EAniSpd(T)=1
+   EXIT SUB
   CASE 55:
    EAN(T)=25: INC STE(T): EAniDelay(T)=0: EAniSpd(T)=10
-  CASE 56: EAN(T)=1: STE(T)=1
+   EXIT SUB
+  CASE 56: EAN(T)=1: STE(T)=1: EXIT SUB
 
   'THROWED UPDOWN --------------------------------------------------------------------
   CASE 60:
    EAN(T)=21: STE(T)=61: EAniDelay(T)=0: EAniSpd(T)=15
    IF ESide(T)=4 THEN ESide(T)=7 ELSE ESide(T)=6
    INC EX(T),-ESPDX(T)
+   EXIT SUB
   CASE 61:
    IF EAniDelay(T)>10 THEN INC STE(T)
+   EXIT SUB
   CASE 62:
-   EAN(T)=22: STE(T)=52: EAniDelay(T)=0: EAniSpd(T)=10
+   EAN(T)=22: STE(T)=52: EAniDelay(T)=0: EAniSpd(T)=10: EXIT SUB
+
+  'GRAPPLED BY A PLAYER --------------------------------------------------------------
+  CASE 120 TO 170: GrapPlayer(T)
 
   'PUNCH -----------------------------------------------------------------------------
-  CASE 70: EAN(T)=13: EAniDelay(T)=0: EAniSpd(T)=2: INC STE(T)
+  CASE 70: EAN(T)=13: EAniDelay(T)=0: EAniSpd(T)=2: INC STE(T): EXIT SUB
   CASE 71:       
    'PUNCH THE PLAYER ONLY IF IS NOT ALREADY BE HURTED AND NOT USING SPECIAL MOVE
    IF COLLIDE(0)=&HFFFFFF AND PHurted(PL)=0 AND EAN(T)=14 AND Special(PL)=0 THEN
@@ -97,11 +107,14 @@ SUB Enemy_HOLLY_WOOD_EL_GADO(T,PL,s)
     WhoE(PL)=T 'SET WHO HURTED THE PLAYER
     STE(T)=72: EAniDelay(T)=0: EAniSpd(T)=4
    ENDIF
-  IF EAN(T)>=15 THEN STE(T)=72
-  CASE 72: IF EAN(T)>=15 THEN STE(T)=1: EAniDelay(T)=0: EAniSpd(T)=4
+   IF EAN(T)>=15 THEN STE(T)=72
+   EXIT SUB
+  CASE 72:
+   IF EAN(T)>=15 THEN STE(T)=1: EAniDelay(T)=0: EAniSpd(T)=4
+   EXIT SUB
 
   'STAB ------------------------------------------------------------------------------
-  CASE 75: EAN(T)=73: EAniDelay(T)=0: EAniSpd(T)=1: INC STE(T)
+  CASE 75: EAN(T)=73: EAniDelay(T)=0: EAniSpd(T)=1: INC STE(T): EXIT SUB
   CASE 76:       
    'STAB THE PLAYER ONLY IF IS NOT ALREADY BE HURTED AND NOT USING SPECIAL MOVE
    IF COLLIDE(0)=&HFFFFFF AND PHurted(PL)=0 AND EAN(T)=75 AND Special(PL)=0 THEN
@@ -115,18 +128,25 @@ SUB Enemy_HOLLY_WOOD_EL_GADO(T,PL,s)
     WhoE(PL)=T 'SET WHO HURTED THE PLAYER
     STE(T)=77: EAniDelay(T)=0: EAniSpd(T)=3
    ENDIF
-  IF EAN(T)>=77 THEN STE(T)=77: EAN(T)=77
-  CASE 77: IF EAN(T)>=77 THEN STE(T)=1: EAN(T)=77: EAniDelay(T)=0: EAniSpd(T)=4
+   IF EAN(T)>=77 THEN STE(T)=77: EAN(T)=77
+   EXIT SUB
+  CASE 77:
+   IF EAN(T)>=77 THEN STE(T)=1: EAN(T)=77: EAniDelay(T)=0: EAniSpd(T)=4
+   EXIT SUB
 
   'DASH ------------------------------------------------------------------------------
   CASE 80: 
    'TURN ENEMY TO DASH IN THE ENEMY POSITION
    IF EX(T)>X(PL) THEN ESIDE(T)=5 ELSE ESIDE(T)=4
    EAN(T)=25: EAniDelay(T)=0: EAniSpd(T)=20: INC STE(T)
-  CASE 81: EAN(T)=25: IF EAniDelay(T)>7 THEN INC STE(T) 'WAIT CROUCHED
+   EXIT SUB
+  CASE 81:
+   EAN(T)=25: IF EAniDelay(T)>7 THEN INC STE(T) 'WAIT CROUCHED
+   EXIT SUB
   CASE 82:
    EAN(T)=25: EAniDelay(T)=0: EAniSpd(T)=10: INC STE(T)
    ESPDX(T)=(ESide(T)=4)*8-(ESide(T)=5)*8
+   EXIT SUB
   CASE 83:
    EAN(T)=78
    INC EX(T),ESPDX(T) 'DASH!
@@ -144,20 +164,28 @@ SUB Enemy_HOLLY_WOOD_EL_GADO(T,PL,s)
    ENDIF
    'WHEN SPEED IS OVER, STOP DASH
    IF (ESPDX(T)<=2 AND ESIDE(T)=4) OR (ESPDX(T)>=-2 AND ESIDE(T)=5) THEN STE(T)=84: EAniDelay(T)=0
+   EXIT SUB
   CASE 84:
    EAN(T)=25: EAniSpd(T)=10: INC STE(T)
    EY(T)=0: ESJMP(T)=0: ESPDX(T)=0: EBACKX(T)=0: EBACK(T)=0: ESPDX(T)=0
-  CASE 85: IF EAniSpd(T)>=8 THEN STE(T)=1
+   EXIT SUB
+  CASE 85:
+   IF EAniSpd(T)>=8 THEN STE(T)=1
+   EXIT SUB
 
   'AIR KNIFE ATTACK ------------------------------------------------------------------
   CASE 86: 
    'TURN ENEMY TO JUMP IN THE ENEMY POSITION
    IF EX(T)>X(PL) THEN ESIDE(T)=5 ELSE ESIDE(T)=4
    EAN(T)=25: EAniDelay(T)=0: EAniSpd(T)=20: INC STE(T)
-  CASE 87: EAN(T)=25: IF EAniDelay(T)>15 THEN INC STE(T) 'WAIT CROUCHED
+   EXIT SUB
+  CASE 87:
+   EAN(T)=25: IF EAniDelay(T)>15 THEN INC STE(T) 'WAIT CROUCHED
+   EXIT SUB
   CASE 88:
    EAN(T)=34: EAniDelay(T)=0: EAniSpd(T)=2: INC STE(T)
    ESPDX(T)=(ESide(T)=4)*7-(ESide(T)=5)*7:ESJMP(T)=-16
+   EXIT SUB
   CASE 89:
    INC EX(T),ESPDX(T) 'JUMP!
    INC ESPDX(T),-SGN(ESPDX(T))*0.06
@@ -176,12 +204,14 @@ SUB Enemy_HOLLY_WOOD_EL_GADO(T,PL,s)
    IF EAN(T)>=40 THEN
     EAN(T)=40: STE(T)=90: EAniDelay(T)=0: EaniSpd(T)=40
    ENDIF
+   EXIT SUB
   CASE 90:
    EAN(T)=40 
    IF EAniDelay(T)>3 THEN
     ESPDX(T)=0: EAniDelay(T)=0: EaniSpd(T)=40
     EBACKX(T)=0: EBACK(T)=0: ESPDX(T)=0: INC STE(T)
    ENDIF 
+   EXIT SUB
   CASE 91: 
    IF EX(T)>X(PL) THEN ESIDE(T)=5 ELSE ESIDE(T)=4
    EAN(T)=25
@@ -189,13 +219,11 @@ SUB Enemy_HOLLY_WOOD_EL_GADO(T,PL,s)
     EY(T)=0: ESJMP(T)=0
     STE(T)=1
    ENDIF
+   EXIT SUB
 
   'ENEMY IS DEAD ---------------------------------------------------------------------
   CASE 100: EAniSpd(T)=0: IF EAN(T)>60 THEN EAN(T)=50: INC STE(T) ' FLASH BODY AGAIN
   CASE 101: IF EAN(T)>60 THEN EEnergy(T)=-99: STE(T)=0: RealY(T)=999: Exit Sub 'REMOVE DEAD ENEMY
-
-  'GRAPPLED BY A PLAYER --------------------------------------------------------------
-  CASE 120 TO 170: GrapPlayer(T)
 
   'RETURN TO THE ORIGINAL STATE IF SOMETHING GOES WRONG ON GAPPLE
   CASE >=171:

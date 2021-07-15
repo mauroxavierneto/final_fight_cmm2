@@ -8,6 +8,14 @@ PS.: The current enemies on the CMM2 G1 probably will not be implemented because
 
 Changelog:
 
+2021-07-14
+- Optimized decision tree and collision blocks of all enemies
+- Optimized player's control performance
+- Optimized player's control schema and was separated from the main source (PLAYER CONTROL.INC)
+- Optimized object renderer
+- Optimized performance of all particles
+- 16-bit mode little optimizations (but still have slowdown)
+
 2021-07-13
 - Fixed controller auto-detection start routine
 - Fixed I2C error when none controller was connected

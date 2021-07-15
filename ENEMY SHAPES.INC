@@ -59,8 +59,8 @@ SUB PutEnemy(xs,ys,num,s,Who,pl,SHOW)
  IF num=50 THEN EEnergy(PL)=-99
 
  SELECT CASE SHOW
-  CASE <=-1: ' SHOW = -1 TO READ COLLISION, NO SHAPE IS DISPLAYED ------------------------
-
+  CASE <0: ' SHOW = -1 TO READ COLLISION, NO SHAPE IS DISPLAYED ------------------------
+   
    ' CHECK COLLISION - GET THE PIXELS FROM THE FIRST SHAPE ONLY
    FOR I=0 TO 2
     COLLIDE(I)=0     
@@ -68,12 +68,20 @@ SUB PutEnemy(xs,ys,num,s,Who,pl,SHOW)
     T=PIXEL(xs+xp+sx\2-tx\2,yyt+yp+sy\2): IF T>0 AND COLLIDE(I)=0 THEN COLLIDE(I)=T
     T=PIXEL(xs+xp-sx\2-tx\2,yyt+yp+sy\2): IF T>0 AND COLLIDE(I)=0 THEN COLLIDE(I)=T
     T=PIXEL(xs+xp-tx\2     ,yyt+yp+8+(WHO>=80)*32): IF T>0 AND COLLIDE(I)=0 THEN COLLIDE(I)=T
-    'T=PIXEL(xs+xp-tx\2     ,RealY(pl)): IF T>0 AND COLLIDE(I)=0 THEN COLLIDE(I)=T
    NEXT I
    'SET HIT POSITION ALWAYS BASED ON THE FIRST PART OF THE SHAPE (FASTER)
    XTHit=xxt+sx\2: YTHit=yyt+sy\2
 
-  CASE  0: ' SHOW =  0 TO WRITE COLLISION AND NO SHAPE IS DISPLAYED --------------------
+   'REMOVE COLLISION IF OUT OF Y AXIS WITH THE ENEMY
+   IF SHOW=-1 THEN
+    FOR I=1 TO 2
+     T=(Grap(I)>0)*10 'EXTEND REAL Y WHEN GRAPPLE
+     IF COLLIDE(I)>0 AND (RealY(pl)<RealY(I)-5-T or RealY(pl)>RealY(I)+5+T) THEN COLLIDE(I)=0
+    NEXT I
+   ENDIF
+   EXIT SUB
+
+  CASE  1: ' SHOW =  1 TO SHOW SHAPE AND WRITE COLLISION BLOCK -------------------------
 
    ' INSERT COLLISION BOX WHEN ENEMY IS THROWED
    IF ETR(PL)>0 THEN
@@ -87,10 +95,7 @@ SUB PutEnemy(xs,ys,num,s,Who,pl,SHOW)
     ELSE
      BOX xxt-10,yyt-10,sx+sbx+20,sy+sby+20,,&HFF00BF,&HFF00BF
     ENDIF
-    EXIT SUB
    ENDIF
-
-  CASE  1: ' SHOW =  1 TO SHOW SHAPE ONLY, DON'T WRITE OR READ COLLISION ---------------
 
    PAGE WRITE 1
    'SHADOW
@@ -108,10 +113,9 @@ SUB PutEnemy(xs,ys,num,s,Who,pl,SHOW)
    BLIT xa,ya,xxt,yyt,sx,sy,FRAMEBUFFER,s
 
    IF DEBUG THEN
-    PIXEL xs+sx\2-tx\2+xp,yyt+yp+sy\2, RGB(255,0,0)
-    PIXEL xs-sx\2-tx\2+xp,yyt+yp+sy\2, RGB(255,0,0)
-    PIXEL xs     -tx\2+xp,yyt+yp+8+(WHO>=80)*32, RGB(255,0,0)
-    'PIXEL xs     -tx\2+xp,RealY(pl), RGB(255,0,0)
+    PIXEL xs+xp+sx\2-tx\2,yyt+yp+sy\2, RGB(255,0,0)
+    PIXEL xs+xp-sx\2-tx\2,yyt+yp+sy\2, RGB(255,0,0)
+    PIXEL xs+xp-tx\2     ,yyt+yp+8+(WHO>=80)*32, RGB(255,0,0)
    ENDIF
 
    'INSERT JESSICA ON THE DAMND HANDS   
@@ -130,15 +134,6 @@ SUB PutEnemy(xs,ys,num,s,Who,pl,SHOW)
    ENDIF
 
  END SELECT 'END SELECT SHOW -----------------------------------------------------------
-
-
- 'REMOVE COLLISION IF OUT OF Y AXIS WITH THE ENEMY
- IF SHOW=-1 THEN
-  FOR I=1 TO 2
-   T=(Grap(I)>0)*10 'EXTEND REAL Y WHEN GRAPPLE
-   IF COLLIDE(I)>0 AND (RealY(pl)<RealY(I)-5-T or RealY(pl)>RealY(I)+5+T) THEN COLLIDE(I)=0
-  NEXT I
- ENDIF
 
 END SUB
 

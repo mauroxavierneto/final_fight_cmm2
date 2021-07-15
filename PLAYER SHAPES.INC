@@ -240,7 +240,7 @@ SUB PutPlayer(xs,ys,num,s,Who,pl,SHOW)
    ENDIF
    IF p<0 THEN BLIT xa,ya,xxt,yyt,sx,sy,framebuffer,s ELSE BLIT xa,ya,xxt,yyt,sx,sy,p,s
 
-   IF zo>0 AND WEAPON(PL)>0 THEN t=s: PutObject(xt+xo,yt+yo,WEAPON(PL)+130+zo,t,1)
+   IF zo>0 AND WEAPON(PL)>0 THEN t=s: PutObject(xt+xo,yt+yo,WEAPON(PL)+130+zo,t)
 
  END SELECT
 

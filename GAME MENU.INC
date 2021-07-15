@@ -20,7 +20,7 @@ SUB GameMenu
   PrintS(110,179,1-(YOP=212),"GAME START")
   PrintS(110,199,1-(YOP=232),"OPTION MENU") 
 
-  PutObject(90,YOP,15,4,1)
+  PutObject(90,YOP,15,4)
 
   PAGE COPY 1 TO 0,B
 
@@ -72,7 +72,7 @@ SUB GameMenu
     PrintN(32,224,0,"CMM2 G1 - ENHANCED MODES DISABLED")
    ENDIF
 
-   PutObject(14,93+YOP*16,15,4,1)
+   PutObject(14,93+YOP*16,15,4)
 
    II=60
    'CONTROLLER TYPE

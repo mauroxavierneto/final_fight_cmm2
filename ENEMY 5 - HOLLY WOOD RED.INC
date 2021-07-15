@@ -34,34 +34,39 @@ SUB Enemy_HOLLY_WOOD_RED(T,PL)
   CASE 1 TO 40: 
    EAniSpd(T)=2
    IF EAN(T)>5 THEN EAN(T)=0
+   EXIT SUB
 
   'GETTING UP ------------------------------------------------------------------------
-  CASE 51: 'NOTHING
+  CASE 51: EXIT SUB 'NOTHING
   CASE 52:
    EAN(T)=24: INC STE(T): EAniDelay(T)=0: EAniSpd(T)=30
    'FIX ENEMY SIDE AFTER THROWED
    IF ESide(T)=6 THEN ESide(T)=4
    IF ESide(T)=7 THEN ESide(T)=5
+   EXIT SUB
   CASE 53:      
    ESPDX(T)=ESPDX(T)\2: IF EAniDelay(T)>20 OR EEnergy(T)<=0 THEN INC STE(T)
+   EXIT SUB
   CASE 54:
-   EAniDelay(T)=0: EAniSpd(T)=3: ESPDX(T)=0: STE(T)=100: EAN(T)=50 ' DIE
+   EAniDelay(T)=0: EAniSpd(T)=3: ESPDX(T)=0: STE(T)=100: EAN(T)=50: EXIT SUB ' DIE
 
   'THROWED UPDOWN --------------------------------------------------------------------
   CASE 60:
    EAN(T)=21: STE(T)=61: EAniDelay(T)=0: EAniSpd(T)=15
    IF ESide(T)=4 THEN ESide(T)=7 ELSE ESide(T)=6
    INC EX(T),-ESPDX(T)
+   EXIT SUB
   CASE 61:
    IF EAniDelay(T)>10 THEN INC STE(T)
+   EXIT SUB
   CASE 62:
-   EAN(T)=22: STE(T)=52: EAniDelay(T)=0: EAniSpd(T)=10
+   EAN(T)=22: STE(T)=52: EAniDelay(T)=0: EAniSpd(T)=10: EXIT SUB
 
-  'THROW MOLOTOV TOO INSTEAD PUNCHING ------------------------------------------------
-  CASE 70: STE(T)=75
+  'GRAPPLED BY A PLAYER --------------------------------------------------------------
+  CASE 120 TO 170: GrapPlayer(T)
 
   'THROW MOLOTOV ---------------------------------------------------------------------
-  CASE 75: EAN(T)=70: EAniDelay(T)=0: EAniSpd(T)=4: INC STE(T)
+  CASE 70,75: EAN(T)=70: EAniDelay(T)=0: EAniSpd(T)=4: INC STE(T): EXIT SUB
   CASE 76:
    IF EAN(T)>=72 THEN
     STE(T)=77: EAN(T)=72
@@ -70,24 +75,21 @@ SUB Enemy_HOLLY_WOOD_RED(T,PL)
     ESPDX(NUM)=(ESIDE(T)=4)*3-(ESIDE(T)=5)*3
     EAniDelay(T)=0: EAniSpd(T)=200
    ENDIF
+   EXIT SUB
   CASE 77:
    EAN(T)=72
    IF EAniSpd(T)>4 THEN
     STE(T)=40: EAniDelay(T)=0: EAniSpd(T)=4
     ESIDE(T)=(ESIDE(T)=4)*5+(ESIDE(T)=5)*4
    ENDIF
+   EXIT SUB
 
-  'DON'T DASH ------------------------------------------------------------------------
-  CASE 80: STE(T)=1
-  'DON'T MAKE A AIR KNIFE ATTACK -----------------------------------------------------
-  CASE 86: STE(T)=1
+  'DON'T DASH / AIR KNIFE ATTACK -----------------------------------------------------
+  CASE 80,86: STE(T)=1: EXIT SUB
 
   'ENEMY IS DEAD ---------------------------------------------------------------------
   CASE 100: EAniSpd(T)=0: IF EAN(T)>60 THEN EAN(T)=50: INC STE(T) ' FLASH BODY AGAIN
   CASE 101: IF EAN(T)>60 THEN EEnergy(T)=-99: STE(T)=0: RealY(T)=999: Exit Sub 'REMOVE DEAD ENEMY
-
-  'GRAPPLED BY A PLAYER --------------------------------------------------------------
-  CASE 120 TO 170: GrapPlayer(T)
 
   'RETURN TO THE ORIGINAL STATE IF SOMETHING GOES WRONG ON GAPPLE
   CASE >=171:
