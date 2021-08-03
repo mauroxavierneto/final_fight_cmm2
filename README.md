@@ -4,11 +4,32 @@ This is a non-profit port of the arcade game Final Fight from CAPCOM, made 100% 
 
 I don't have any rights to the images, sound effects and music in this repository, but I'm counting on the tolerance of CAPCOM about your huge fan games base already present.
 
-THIS GAME IS A WORK IN PROGRESS AND ONLY THE FIRST STAGE WAS DEVELOPED FOR NOW. THE OTHERS ARE ON THE WAY...
+THIS GAME IS A WORK IN PROGRESS AND SEE IN THE CHANGELOG WHAT IS THE LAST STAGE IMPLEMENTED. THE OTHER ROUNDS ARE ON THE WAY...
 
-PS.: The current enemies on the CMM2 G1 probably will not be implemented because of some memory restrictions: Simons, Wong Who and the appearance of the Andore Father, Uncle and Granpa outside the ring stage.
+PS.: The current enemies on the CMM2 G1 probably will not be implemented because of some memory restrictions: Simons, Wong Who and the appearance of the Andore Father, Uncle and Granpa outside the ring stage. I'm still not sure if I can do something about this yet.
 
 Changelog:
+
+2021-08-03
+- Implemented Round 2-3 (still missing the rolling drum cans)
+
+2021-08-02
+- Tweaked collision hitboxes
+- Fixed collisions in the player jump attacks
+- Fixed intro and ending cutscenes in Round 2-1
+- Fixed ending cutscene in the Round 2-2
+
+2021-07-22
+- Implemented Round 2-2
+- Fixed background subway on the Round 2-1 
+
+2021-07-19
+- Implemented Round 2-1 with background subway
+
+2021-07-17
+- Implemented the Andore "family"
+- Implemented Damnd dying
+- Round 1 clear routine now is called immediately as Damnd dies, killing all enemies on the screen
 
 2021-07-14
 - Optimized decision tree and collision blocks of all enemies

@@ -15,12 +15,13 @@ SUB Enemy_DAMND(T,PL)
 
   'DECREASE TO WALK
   INC STE(T),-1
+  IF EX(T)<X(PL) THEN ESide(T)=4 ELSE ESide(T)=5
   IF EY(T)=0 THEN EMV(T)=1
 
   IF STE(T)<1 THEN
    EBACK(T)=1: EBACKX(T)=1
    STE(T)=1 'KEEP STOPPED UNTIL BACK TO WALK RANDOMLY
-   IF RND<0.3 THEN
+   IF RND<0.1 THEN
     'ALWAYS WALKING WITH ATTENTION
     STE(T)=40
     IF EX(T)>10 AND RND>0.6 AND DIST<80 THEN 'MAYBE JUMP BACK IF NEAR PLAYER IS PUNCHING
@@ -39,7 +40,6 @@ SUB Enemy_DAMND(T,PL)
    IF RealY(T)<RealY(PL)-2 THEN INC RealY(T), ESPD(T)
    TT=(EBACKX(T)=-1)*60
    INC EX(T),((EX(T)<X(PL)-70+TT)*II*EBACKX(T))-((EX(T)>X(PL)+70-TT)*II*EBACKX(T))
-   IF EX(T)<X(PL) THEN ESide(T)=4 ELSE ESide(T)=5
   ENDIF
 
  ELSE 'STE(T)>=50 - DON'T WALK! ---------------------------------
@@ -86,7 +86,7 @@ SUB Enemy_DAMND(T,PL)
   CASE 54:
    EAN(T)=27: INC STE(T): EAniDelay(T)=0: EAniSpd(T)=2: ESPDX(T)=0
    'ENEMY DEAD?
-   IF EEnergy(T)<=0 THEN STE(T)=100: EAN(T)=50: EAniDelay(T)=0: EAniSpd(T)=1       
+   IF EEnergy(T)<=0 THEN STE(T)=200: EAN(T)=50: EAniDelay(T)=0: EAniSpd(T)=500: KillEnemies(1,T)
    EXIT SUB
   CASE 55: IF EAniDelay(T)>=2 THEN EAniDelay(T)=0: EAN(T)=28: INC STE(T)
   CASE 56: IF EAN(T)>31 THEN EAniDelay(T)=0: EAN(T)=28: INC STE(T)
@@ -230,11 +230,26 @@ SUB Enemy_DAMND(T,PL)
    ENDIF
    EXIT SUB
   CASE 101:
-   IF EAN(T)>60 THEN
+   IF EAN(T)>59 THEN
     'KILL ALL OTHER ENEMIES WHEN DAMND DIES (AGAIN)
     KillEnemies(1,T)
+    OSDX=9990 'GO TO NEXT ROUND
     EEnergy(T)=-99: STE(T)=0: RealY(T)=999: Exit Sub 'REMOVE DEAD ENEMY
    ENDIF
+
+  'DYING ANIMATION -------------------------------------------------------------------
+  CASE 200:
+   SELECT CASE EAniDelay(T)
+    CASE >= 90: EAN(T)=50: STE(T)=100: EAniSpd(T)=4: EAniDelay(T)=0: PLAY_SAMPLE 10,4,,1000 
+    CASE >= 75: EAN(T)=27
+    CASE >= 55: EAN(T)=26
+    CASE >= 40: EAN(T)=21: INC EX(T),SB*2-(SB=0)*2
+    CASE >= 35: EAN(T)=26
+    CASE >= 30: EAN(T)=21: INC EX(T),SB*2-(SB=0)*2
+    CASE >= 10: EAN(T)=26
+    CASE >=  0: EAN(T)=27
+   END SELECT
+   EXIT SUB
 
   'RETURN TO THE ORIGINAL STATE IF SOMETHING GOES WRONG ON GAPPLE
   CASE >=171:
@@ -291,9 +306,9 @@ SUB Draw_DAMND(num,who)
            xb= 102:yb=1083:sbx=90:sby=42:tbx=  0:tby=  0
   'HURT
   CASE 21: xa=677:ya=1083: sx=78: sy=41: tx=12: ty=  0: 'IN THE STOMACH
-           xb=591:yb=1150:sbx=66:sby=49:tbx= 0:tby=  0
+           xb=591:yb=1150:sbx=66:sby=49:tbx= 0:tby=  0: ESHAD(PL)=1
   CASE 22: xa=509:ya=1083: sx=78: sy=61: tx=-4: ty= 12: 'IN THE FACE
-           xb=192:yb=1083:sbx=73:sby=61:tbx= 0:tby=  0
+           xb=192:yb=1083:sbx=73:sby=61:tbx= 0:tby=  0: ESHAD(PL)=1
   'FALLING
   CASE 23: xa=978:ya=1146:sx=116:sy=53:tx=5:ty=-20 'FALLING DOWN
   CASE 24,50,52,54,56,58,60:

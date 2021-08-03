@@ -25,6 +25,7 @@ SUB PutEnemy(xs,ys,num,s,Who,pl,SHOW)
 
  xa=-200: xb=-200
  xb=0:yb=0:sbx=0:sby=0:sx=0:sy=0:tx=0:ty=0:tbx=0:tby=0:xp=0:yp=0:xt=0:yt=0:xxt=0:yyt=0
+ IF num=21 OR num=22 THEN ESHAD(PL)=1
 
  SELECT CASE Who
 
@@ -35,6 +36,7 @@ SUB PutEnemy(xs,ys,num,s,Who,pl,SHOW)
   CASE 13      : Draw_HOLLY_WOOD_RED(num,who)
   CASE 14 TO 16: Draw_BILL_ORIBER_WONG(num,who)
   CASE 17 TO 18: Draw_POISON_ROXY(num,who)
+  CASE 19 TO 23: Draw_ANDORE(num,who)
   CASE 80,   81: Draw_DAMND(num,who)
 
  END SELECT 'END SELECT Who
@@ -49,8 +51,6 @@ SUB PutEnemy(xs,ys,num,s,Who,pl,SHOW)
   T=SX: SX=SBX: SBX=T
   T=SY: SY=SBY: SBY=T
   T=TX: TX=TBX: TBX=T
-  'T=TY: TY=TBY: TBY=T
-  'TY=-TY: TBY=-TBY
  ENDIF
 
  ' SET THE SUPERIOR PART OF THE SHAPE
@@ -76,7 +76,7 @@ SUB PutEnemy(xs,ys,num,s,Who,pl,SHOW)
    IF SHOW=-1 THEN
     FOR I=1 TO 2
      T=(Grap(I)>0)*10 'EXTEND REAL Y WHEN GRAPPLE
-     IF COLLIDE(I)>0 AND (RealY(pl)<RealY(I)-5-T or RealY(pl)>RealY(I)+5+T) THEN COLLIDE(I)=0
+     IF COLLIDE(I)>0 AND (RealY(pl)<RealY(I)-8-T or RealY(pl)>RealY(I)+8+T) THEN COLLIDE(I)=0
     NEXT I
    ENDIF
    EXIT SUB
@@ -85,9 +85,7 @@ SUB PutEnemy(xs,ys,num,s,Who,pl,SHOW)
 
    ' INSERT COLLISION BOX WHEN ENEMY IS THROWED
    IF ETR(PL)>0 THEN
-    IF DEBUG THEN
-     PAGE WRITE 1:BOX xxt-10,yyt-10,sx+sbx+20,sy+sby+20,,&HFF00FF,&HFF00FF
-    ENDIF
+    IF DEBUG THEN PAGE WRITE 1:BOX xxt-10,yyt-10,sx+sbx+20,sy+sby+20,,&HFF00FF,&HFF00FF
     PAGE WRITE 34
     ' CHANGE THE COLOUR TO MAKES EASIER TO TELL THE SIDE OF THE ENEMY
     IF ESPDX(PL)<0 THEN

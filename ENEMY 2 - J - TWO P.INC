@@ -15,6 +15,7 @@ SUB Enemy_J_TWO_P(T,PL)
 
   'DECREASE TO WALK
   INC STE(T),-1
+  IF EX(T)<X(PL) THEN ESide(T)=4 ELSE ESide(T)=5
 
   IF STE(T)<1 THEN
    EBACK(T)=1: EBACKX(T)=1
@@ -37,7 +38,6 @@ SUB Enemy_J_TWO_P(T,PL)
    IF RealY(T)<RealY(PL)-2 THEN INC RealY(T), ESPD(T)
    TT=(EBACKX(T)=-1)*30+(SIDE(PL)=5)*40-(SIDE(PL)=4)*40
    INC EX(T),((EX(T)<X(PL)-30+TT)*II*EBACKX(T))-((EX(T)>X(PL)+30-TT)*II*EBACKX(T))
-   IF EX(T)<X(PL) THEN ESide(T)=4 ELSE ESide(T)=5
   ENDIF
 
  ELSE 'STE(T)>=50 - DON'T WALK! ---------------------------------
@@ -96,7 +96,6 @@ SUB Enemy_J_TWO_P(T,PL)
   CASE 64:
    EAN(T)=35: EAniDelay(T)=0: EAniSPD(T)=10
    STE(T)=65: EMV(T)=0
-   IF EX(T)<245+RXX THEN EAN(T)=0: STE(T)=1: EMV(T)=1
    EXIT SUB
   CASE 65:
    EAN(T)=35: EAniDelay(T)=0: EAniSPD(T)=10
@@ -108,12 +107,12 @@ SUB Enemy_J_TWO_P(T,PL)
   CASE 66:
    EAN(T)=34: EAniDelay(T)=0: EAniSPD(T)=10
    STE(T)=67: EMV(T)=0
-   IF EX(T)<245+RXX THEN EAN(T)=35: STE(T)=65
+   IF EX(T)<245+RXX THEN EAN(T)=35: STE(T)=64
    EXIT SUB
   CASE 67:
    EAN(T)=34: EAniDelay(T)=0: EAniSPD(T)=10
    STE(T)=66: EMV(T)=0
-   IF EX(T)<245+RXX THEN EAN(T)=35: STE(T)=65
+   IF EX(T)<245+RXX THEN EAN(T)=35: STE(T)=64
    EXIT SUB
 
   'PUNCH AND FAST BACKWARD -----------------------------------------------------------

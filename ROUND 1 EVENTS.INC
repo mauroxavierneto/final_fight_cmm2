@@ -44,7 +44,7 @@ SUB Round_1_Events(xx)
 
       'TESTS
       IF NOINTRO THEN
-       'SpawnEnemy(340,200,HOLLY_WOOD_RED,1)
+       SpawnEnemy(300,200,ANDORE,1)
        'SpawnEnemy(180,210,BILL_BULL,1)
        'SpawnEnemy(180,210,HOLLY_WOOD,1)
        'SpawnEnemy(180,210,EL_GADO,1)
@@ -178,7 +178,7 @@ SUB Round_1_Events(xx)
      BLIT 0,0,320-xs,0,xs+RXX,240,9,4
      IF RXX=64 THEN BLIT 0,0,640-xs,0,xs+RXX,240,10,4
 
-     IF OSDX=2200 THEN
+     IF OSDX=2220 THEN 'DRAW BEFORE FADE IN
       'SPAWN OBJECT - TIRES
       SpawnObject(220,185,13,,140) 'BARBECUE
       SpawnObject(274,185,13,,-3)  'RANDOM WEAPON

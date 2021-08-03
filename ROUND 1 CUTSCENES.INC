@@ -75,23 +75,18 @@ SUB Round_1_Cutscenes(Ending)
           NEXT PL
         ENDIF
 
-       CASE 2100 TO 2210:
-        IF OSDX=2210 THEN
+       CASE 2100 TO 2220:
+        IF OSDX=2220 THEN
          'SLUMS INTRO
-         SELECT CASE Round
-          CASE 1:
-           LoadRoundMap(Round,0) 'LOAD INTRO MAP
-           'ENEMIES
-           SpawnEnemy(MM.HRES-35-RXX\2,205,6)
-           SpawnEnemy(MM.HRES-70-RXX\2,235,5)
-           SpawnEnemy(MM.HRES-50-RXX\2,190,81): EAN(6)=101
-           'DRUMCAN
-           'FOR T=34 TO 36: PAGE WRITE T: CLS RGB(0,0,0): NEXT T
-           'PAGE WRITE 1
-           FOR T=0 TO 1: FOR I=0 TO 2
-            SpawnObject(MM.HRES-185-RXX\2+T*60+(T=1 AND I=1)*40-I*15,190+I*25,2)
-           NEXT T,I
-         END SELECT
+         LoadRoundMap(Round,0) 'LOAD INTRO MAP
+         'ENEMIES
+         SpawnEnemy(MM.HRES-35-RXX\2,205,6)
+         SpawnEnemy(MM.HRES-70-RXX\2,235,5)
+         SpawnEnemy(MM.HRES-50-RXX\2,190,81): EAN(6)=101
+         'DRUMCAN
+         FOR T=0 TO 1: FOR I=0 TO 2
+          SpawnObject(MM.HRES-185-RXX\2+T*60+(T=1 AND I=1)*40-I*15,190+I*25,2)
+         NEXT T,I
         ENDIF
         IF OSDX=2200 THEN PLAY_WAV "Slums Start",1
         ShowRoundMap(SW,2100-OSDX) 'MAP DOWN
@@ -182,7 +177,7 @@ SUB Round_1_Cutscenes(Ending)
       ENDIF
 
       ' NEXT SECTION
-      IF GO=MAXPL THEN FadeOut: Inc Section: LoadRound: OSDX=2220: Round_1_Cutscenes(0)
+      IF GO=MAXPL THEN FadeOut: Inc Section: LoadRound: OSDX=2240
 
       FOR PL=1 TO MAXPL
        SIDE(PL)=4
@@ -229,7 +224,7 @@ SUB Round_1_Cutscenes(Ending)
         PLAY_SAMPLE 2,4,22050
 
        'CHANGE MUSIC AND INSERT PLAYERS IN THE RIGHT PLACE
-       CASE 2200:  
+       CASE 2220:  
         PLAY_WAV "The Slums 2"
         MV=0
         FOR PL=1 TO MAXPL
@@ -297,14 +292,13 @@ SUB Round_1_Cutscenes(Ending)
       IF OSDX<=6750 THEN
        FOR PL=1 TO MAXPL 
         INC X(PL), 4: MV=1: MVLR(PL)= 1
-        'IF X(PL)>235 THEN INC RealY(PL), -T/1.3: MVUD(PL)= 1
         ' REACH THE LIMIT
         IF X(PL)>MM.HRES+20 THEN INC GO
        NEXT PL
       ENDIF
 
       ' NEXT SECTION
-      IF GO=MAXPL THEN FadeOut: Inc Section: LoadRound: OSDX=2220: Round_1_Cutscenes(0)
+      IF GO=MAXPL THEN FadeOut: Inc Section: LoadRound: OSDX=2240
 
       FOR PL=1 TO MAXPL
        SIDE(PL)=4
@@ -322,9 +316,9 @@ SUB Round_1_Cutscenes(Ending)
       PAGE WRITE 1
 
       'FOREGROUND WALL (MIRRORED)
-      IF OSDX>20 THEN
-       BLIT 213,0,0,56,107,170,12,5
-       BLIT 0,220,0,220,107,20,8,4
+      IF OSDX>20 AND OSDX<2200 THEN
+       BLIT 213,  0,0, 56,107,170,12,5
+       BLIT   0,220,0,220,107, 20, 8,4
       ENDIF
   
       SELECT CASE OSDX
@@ -342,7 +336,7 @@ SUB Round_1_Cutscenes(Ending)
         IF GO THEN OSDX=10
 
        'CHANGE MUSIC AND INSERT PLAYERS IN THE RIGHT PLACE
-       CASE 2200:  
+       CASE 2220:  
         PLAY_WAV "The Slums"
         MV=0
         FOR PL=1 TO MAXPL
@@ -409,7 +403,14 @@ SUB Round_1_Cutscenes(Ending)
       ' NEXT ROUND
       IF GO=MAXPL THEN
        IF MM.INFO(SOUND)<>"MP3" THEN
-        FadeOut: Section=1: Round=2: LoadRound: OSDX=2220: Round_2_Cutscenes(0)
+        KILL_SOUND: Section=1: Round=2: GoNext=1
+        'FADE OUT
+        PAGE WRITE 1
+        FOR T=255 TO 0 STEP -5
+         BOX AND_PIXELS 0,0,MM.HRES,MM.VRES,RGB(T,T,T)
+         ShowRoundMap(0,OSDP-(MM.VRES+50))
+         PAGE COPY 1 TO 0,B
+        NEXT T
        ENDIF
       ENDIF
 

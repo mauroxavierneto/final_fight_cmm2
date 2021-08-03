@@ -38,16 +38,16 @@ SUB PutPlayer(xs,ys,num,s,Who,pl,SHOW)
     CASE 1 TO 12: ShowGuyWalking(num,PL)
     'GUY PUNCHING 
     CASE 13 : xa=  0:ya=0:sx= 64:sy=90:p=27:tx=-12:        
-    CASE 14 : xa= 64:ya=0:sx= 81:sy=90:p=27:tx=-44:     kx=15:ky= 5: kt=50
+    CASE 14 : xa= 64:ya=0:sx= 81:sy=90:p=27:tx=-44:      kx=15:ky= 0:kt=50
     'GUY EXTENDED PUNCH
     CASE 15 : xa=145:ya=0:sx= 65:sy=90:p=27:tx=-30:ty=-2 
-    CASE 16 : xa=211:ya=0:sx=100:sy=90:p=27:tx=-62:ty=-2:kx=19:ky=15:kt=40
+    CASE 16 : xa=211:ya=0:sx=100:sy=90:p=27:tx=-62:ty=-2:kx=19:ky=10:kt=40
     'GUY ELBOW
     CASE 17 : xa=  0:ya=90:sx=77:sy=81:p=27:tx=-18:ty=2
-    CASE 18 : xa= 77:ya=90:sx=88:sy=81:p=27:tx=-18:ty=2:kx=25:ky=10:kt=50
+    CASE 18 : xa= 77:ya=90:sx=88:sy=81:p=27:tx=-18:ty=2:kx=25:ky=5:kt=50
     'GUY COMBO (AND SPECIAL) 
     'SEQUENCE IS 32,33,34,19,36
-    CASE 19 : xa=263:ya=145:sx=57:sy=95:p=26:tx=0:ty=-2:kx=35:ky=10:kt=60 'THIS IS FOR COMBO
+    CASE 19 : xa=263:ya=145:sx=57:sy=95:p=26:tx=0:ty=-2:kx=35:ky=5:kt=60 'THIS IS FOR COMBO
     'GUY GRAPPLE / KNEELING / THROWING 
     CASE 20 TO 23: ShowGuyGKT(num,PL)   
     'GUY JUMPING AHEAD / VERTICAL
@@ -212,8 +212,8 @@ SUB PutPlayer(xs,ys,num,s,Who,pl,SHOW)
    IF kx>-99 AND num<99 THEN
     PAGE WRITE 34+PL
     'COLLISION BOX TO ATTACK
-    BOX xxt+sx\2+kx*SD-kt\2,yyt+ky,kt,kt,,BX,BX
-    IF DEBUG THEN PAGE WRITE 1: BOX xxt+sx\2+kx*SD-kt\2,yyt+ky,kt,kt,,BX,BX
+    BOX xxt+sx\2+kx*SD-kt\2,yyt+ky,kt,RealY(PL)-(yyt+ky),,BX,BX
+    IF DEBUG THEN PAGE WRITE 1: BOX xxt+sx\2+kx*SD-kt\2,yyt+ky,kt,RealY(PL)-(yyt+ky),,BX,BX
    ENDIF
    'COLLISION BOX TO GET ITEMS ON THE FLOOR
    IF AN(PL)<=12 THEN
@@ -251,40 +251,40 @@ END SUB
 SUB ShowGuyWalking(num,PL)
  SELECT CASE Num
   CASE 1  : xa= 62:ya=  0:sx=55:sy=87:p=28:tx= 4:ty=0:BX=&HFFFF00:
-            kx=10-(MVUD(PL)<>0)*10:ky=5:kt=PS_GRP(PL)*20
+            kx=10-(MVUD(PL)<>0)*10:ky=-5:kt=PS_GRP(PL)*20
             xo=26:yo=-50:zo=2
   CASE 2  : xa=117:ya=  0:sx=55:sy=87:p=28:tx= 8:ty=0:BX=&HFFFF00:
-            kx=10-(MVUD(PL)<>0)*10:ky=5:kt=PS_GRP(PL)*20
+            kx=10-(MVUD(PL)<>0)*10:ky=-5:kt=PS_GRP(PL)*20
             xo=24:yo=-49:zo=2
   CASE 3  : xa=172:ya=  0:sx=46:sy=87:p=28:tx=16:ty=0:BX=&HFFFF00:
-            kx=10-(MVUD(PL)<>0)*10:ky=5:kt=PS_GRP(PL)*20
+            kx=10-(MVUD(PL)<>0)*10:ky=-5:kt=PS_GRP(PL)*20
             xo=21:yo=-48:zo=2
   CASE 4  : xa=218:ya=  0:sx=29:sy=87:p=28:tx=14:ty=0:BX=&HFFFF00:
-            kx=10-(MVUD(PL)<>0)*10:ky=5:kt=PS_GRP(PL)*20
+            kx=10-(MVUD(PL)<>0)*10:ky=-5:kt=PS_GRP(PL)*20
             xo=19:yo=-38:zo=3
   CASE 5  : xa=247:ya=  0:sx=29:sy=87:p=28:tx= 8:ty=0:BX=&HFFFF00:
-            kx=10-(MVUD(PL)<>0)*10:ky=5:kt=PS_GRP(PL)*20 
+            kx=10-(MVUD(PL)<>0)*10:ky=-5:kt=PS_GRP(PL)*20 
             xo=16:yo=-39:zo=3
   CASE 6  : xa=276:ya=  0:sx=41:sy=87:p=28:tx=12:ty=0:BX=&HFFFF00:
-            kx=10-(MVUD(PL)<>0)*10:ky=5:kt=PS_GRP(PL)*20
+            kx=10-(MVUD(PL)<>0)*10:ky=-5:kt=PS_GRP(PL)*20
             xo=12:yo=-39:zo=3
   CASE 7  : xa=  0:ya= 88:sx=55:sy=87:p=28:tx= 6:ty=0:BX=&HFFFF00:
-            kx=10-(MVUD(PL)<>0)*10:ky=5:kt=PS_GRP(PL)*20
+            kx=10-(MVUD(PL)<>0)*10:ky=-5:kt=PS_GRP(PL)*20
             xo=6:yo=-38:zo=3
   CASE 8  : xa= 55:ya= 88:sx=55:sy=87:p=28:tx=10:ty=0:BX=&HFFFF00:
-            kx=10-(MVUD(PL)<>0)*10:ky=5:kt=PS_GRP(PL)*20
+            kx=10-(MVUD(PL)<>0)*10:ky=-5:kt=PS_GRP(PL)*20
             xo=12:yo=-39:zo=3
   CASE 9  : xa=110:ya= 88:sx=43:sy=87:p=28:tx=14:ty=0:BX=&HFFFF00:
-            kx=10-(MVUD(PL)<>0)*10:ky=5:kt=PS_GRP(PL)*20
+            kx=10-(MVUD(PL)<>0)*10:ky=-5:kt=PS_GRP(PL)*20
             xo=17:yo=-39:zo=3
   CASE 10 : xa=153:ya= 88:sx=28:sy=87:p=28:tx=10:ty=0:BX=&HFFFF00:
-            kx=10-(MVUD(PL)<>0)*10:ky=5:kt=PS_GRP(PL)*20
+            kx=10-(MVUD(PL)<>0)*10:ky=-5:kt=PS_GRP(PL)*20
             xo=20:yo=-38:zo=3
   CASE 11 : xa=181:ya= 88:sx=28:sy=87:p=28:tx=10:ty=0:BX=&HFFFF00:
-            kx=10-(MVUD(PL)<>0)*10:ky=5:kt=PS_GRP(PL)*20
+            kx=10-(MVUD(PL)<>0)*10:ky=-5:kt=PS_GRP(PL)*20
             xo=19:yo=-49:zo=2
   CASE 12 : xa=209:ya= 88:sx=40:sy=87:p=28:tx=12:ty=0:BX=&HFFFF00:
-            kx=10-(MVUD(PL)<>0)*10:ky=5:kt=PS_GRP(PL)*20
+            kx=10-(MVUD(PL)<>0)*10:ky=-5:kt=PS_GRP(PL)*20
             xo=24:yo=-51:zo=2
  END SELECT
 END SUB
@@ -358,40 +358,40 @@ END SUB
 SUB ShowCodyWalking(num,PL)
  SELECT CASE num
   CASE 1  : xa= 39:ya=104:sx=51:sy=95:p=28:tx=12:ty= 1:BX=&HFFFF00:
-            kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*20
+            kx=20-(MVUD(PL)<>0)*20:ky=5:kt=PS_GRP(PL)*20
             xo=24: yo=-57: zo=2
   CASE 2  : xa= 90:ya=104:sx=62:sy=95:p=28:tx= 7:ty= 1:BX=&HFFFF00:
-            kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*20
+            kx=20-(MVUD(PL)<>0)*20:ky=5:kt=PS_GRP(PL)*20
             xo=29: yo=-58: zo=2
   CASE 3  : xa=152:ya=104:sx=62:sy=95:p=28:tx= 7:ty= 1:BX=&HFFFF00:
-            kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*20
+            kx=20-(MVUD(PL)<>0)*20:ky=5:kt=PS_GRP(PL)*20
             xo=27: yo=-55: zo=2
   CASE 4  : xa=214:ya=103:sx=51:sy=94:p=28:tx=16:ty= 0:BX=&HFFFF00:
-            kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*20
+            kx=20-(MVUD(PL)<>0)*20:ky=5:kt=PS_GRP(PL)*20
             xo=28: yo=-41: zo=3
   CASE 5  : xa=265:ya=102:sx=32:sy=95:p=28:tx= 9:ty=-1:BX=&HFFFF00:
-            kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*20
+            kx=20-(MVUD(PL)<>0)*20:ky=5:kt=PS_GRP(PL)*20
             xo=21: yo=-43: zo=3
   CASE 6  : xa= 0 :ya=  2:sx=35:sy=94:p=28:tx= 6:ty= 0:BX=&HFFFF00:
-            kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*20
+            kx=20-(MVUD(PL)<>0)*20:ky=5:kt=PS_GRP(PL)*20
             xo=15: yo=-44: zo=3
   CASE 7  : xa= 35:ya=  3:sx=48:sy=93:p=28:tx= 9      :BX=&HFFFF00:
-            kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*20
+            kx=20-(MVUD(PL)<>0)*20:ky=5:kt=PS_GRP(PL)*20
             xo= 8: yo=-42: zo=3
   CASE 8  : xa= 83:ya=  3:sx=62:sy=93:p=28:tx= 7:ty= 0:BX=&HFFFF00:
-            kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*20
+            kx=20-(MVUD(PL)<>0)*20:ky=5:kt=PS_GRP(PL)*20
             xo= 4: yo=-41: zo=3
   CASE 9  : xa=145:ya=  2:sx=63:sy=94:p=28:tx= 8:ty= 0:BX=&HFFFF00:
-            kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*20
+            kx=20-(MVUD(PL)<>0)*20:ky=5:kt=PS_GRP(PL)*20
             xo= 8: yo=-53: zo=2
   CASE 10 : xa=208:ya=  2:sx=51:sy=94:p=28:tx=12      :BX=&HFFFF00:
-            kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*20
+            kx=20-(MVUD(PL)<>0)*20:ky=5:kt=PS_GRP(PL)*20
             xo=13: yo=-53: zo=2
   CASE 11 : xa=259:ya=  1:sx=32:sy=95:p=28:tx= 9:ty=-1:BX=&HFFFF00:
-            kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*20
+            kx=20-(MVUD(PL)<>0)*20:ky=5:kt=PS_GRP(PL)*20
             xo=18: yo=-54: zo=2
   CASE 12 : xa=  0:ya=103:sx=38:sy=94:p=28:tx= 3:ty= 0:BX=&HFFFF00:
-            kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*20
+            kx=20-(MVUD(PL)<>0)*20:ky=5:kt=PS_GRP(PL)*20
             xo=23: yo=-54: zo=2
  END SELECT
 END SUB
@@ -401,9 +401,9 @@ END SUB
 SUB ShowCodyPunching(num,PL)
  SELECT CASE num
   CASE 13 : xa= 54:ya=  2:sx= 64:sy=90:p=27:tx=- 8        
-  CASE 14 : xa=118:ya=  2:sx= 84:sy=90:p=27:tx=-28:kx=19:ky= 5:kt=50
+  CASE 14 : xa=118:ya=  2:sx= 84:sy=90:p=27:tx=-28:kx=19:ky=0:kt=50
   CASE 15 : xa=202:ya=  7:sx= 83:sy=81:p=27:tx=-34 
-  CASE 16 : xa=  0:ya=116:sx=112:sy=77:p=27:tx=-48:kx=19:ky=10:kt=50
+  CASE 16 : xa=  0:ya=116:sx=112:sy=77:p=27:tx=-48:kx=19:ky=5:kt=50
  END SELECT
 END SUB
 
@@ -411,8 +411,8 @@ END SUB
 SUB ShowCodyUppercut(num,PL)
  SELECT CASE num
   CASE 17 : xa=112:ya=123:sx=76:sy= 69:p=27:tx=-18
-  CASE 18 : xa=188:ya=103:sx=77:sy= 91:p=27:tx=-18:kx=25:ky=10:kt=60:Combo(PL)=3
-  CASE 19 : xa=266:ya= 89:sx=55:sy=111:p=27:tx=- 4:                  Combo(PL)=0
+  CASE 18 : xa=188:ya=103:sx=77:sy= 91:p=27:tx=-18:kx=25:ky=5:kt=60:Combo(PL)=3
+  CASE 19 : xa=266:ya= 89:sx=55:sy=111:p=27:tx=- 4:                 Combo(PL)=0
  END SELECT
 END SUB
 
@@ -484,40 +484,40 @@ SUB ShowHaggarWalking(num,PL,S)
  SELECT CASE num
   CASE  1 : xb=132:yb=  0:sbx=36:sby=68:tbx= 2: xo= 4-(s=5)*35:yo=-17:zo=1
             xa=  0:ya=  0:sx= 81:sy= 49:p=28:tx=-28:ty=16
-            BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*15
+            BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=10:kt=PS_GRP(PL)*15
   CASE  2 : xb=168:yb=  0:sbx=50:sby=67:tbx=-4: xo= 8-(s=5)*49:yo=-17:zo=1
             xa=  0:ya=  0:sx= 81:sy= 49:p=28:tx=-22:ty=16
-            BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*15
+            BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=10:kt=PS_GRP(PL)*15
   CASE  3 : xb=218:yb=  1:sbx=54:sby=66:tbx=-4: xo=10-(s=5)*53:yo=-17:zo=1
             xa=  0:ya=  0:sx= 81:sy= 49:p=28:tx=-23:ty=16
-            BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*15
+            BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=10:kt=PS_GRP(PL)*15
   CASE  4 : xb=  0:yb= 49:sbx=58:sby=65:tbx=-6: xo=11-(s=5)*57:yo=-17:zo=1
             xa=  0:ya=  0:sx= 81:sy= 49:p=28:tx=-21:ty=16
-            BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*15
+            BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=10:kt=PS_GRP(PL)*15
   CASE  5 : xb= 58:yb= 60:sbx=58:sby=65:tbx=-4: xo=12-(s=5)*57:yo=-17:zo=1
             xa=  0:ya=  0:sx= 81:sy= 49:p=28:tx=-22:ty=16
-            BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*15
+            BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=10:kt=PS_GRP(PL)*15
   CASE  6 : xb=116:yb= 67:sbx=47:sby=64:tbx=14: xo=15-(s=5)*46:yo=-17:zo=1
             xa=  0:ya=  0:sx= 81:sy= 49:p=28:tx=-40:ty=16
-            BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*15
+            BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=10:kt=PS_GRP(PL)*15
   CASE  7 : xb=163:yb= 67:sbx=37:sby=66:tbx= 4: xo= 5-(s=5)*36:yo=-17:zo=1
             xa=  0:ya=  0:sx= 81:sy= 49:p=28:tx=-30:ty=16
-            BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*15
+            BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=10:kt=PS_GRP(PL)*15
   CASE  8 : xb=200:yb= 67:sbx=37:sby=65:tbx=-4: xo= 1-(s=5)*36:yo=-17:zo=1
             xa=  0:ya=  0:sx= 81:sy= 49:p=28:tx=-22:ty=16
-            BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*15
+            BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=10:kt=PS_GRP(PL)*15
   CASE  9 : xb=237:yb= 67:sbx=45:sby=66:tbx= 0: xo= 7-(s=5)*44:yo=-17:zo=1
             xa=  0:ya=  0:sx= 81:sy= 49:p=28:tx=-26:ty=16
-            BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*15
+            BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=10:kt=PS_GRP(PL)*15
   CASE 10 : xb=  0:yb=114:sbx=56:sby=66:tbx=-2: xo=12-(s=5)*55:yo=-17:zo=1
             xa=  0:ya=  0:sx= 81:sy= 49:p=28:tx=-24:ty=16
-            BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*15
+            BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=10:kt=PS_GRP(PL)*15
   CASE 11 : xb= 56:yb=125:sbx=51:sby=66:tbx= 4: xo=12-(s=5)*50:yo=-17:zo=1
             xa=  0:ya=  0:sx= 81:sy= 49:p=28:tx=-31:ty=16
-            BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*15
+            BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=10:kt=PS_GRP(PL)*15
   CASE 12 : xb=107:yb=131:sbx=40:sby=66:tbx= 6: xo= 8-(s=5)*39:yo=-17:zo=1
             xa=  0:ya=  0:sx= 81:sy= 49:p=28:tx=-33:ty=16
-            BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=15:kt=PS_GRP(PL)*15
+            BX=&HFFFF00:kx=20-(MVUD(PL)<>0)*20:ky=10:kt=PS_GRP(PL)*15
  END SELECT
 END SUB
 
@@ -527,10 +527,10 @@ SUB ShowHaggarPunching(num,PL)
  SELECT CASE num
   CASE 13 : xa=  0:ya=  0:sx= 57:sy=86:p=27:tx=  6
   CASE 14 : xa= 57:ya=  0:sx= 71:sy=86:p=27:tx=- 8
-  CASE 15 : xa=128:ya=  0:sx=113:sy=84:p=27:tx=-52:kx=25:ky= 5:kt=60
+  CASE 15 : xa=128:ya=  0:sx=113:sy=84:p=27:tx=-52:kx=25:ky=-5:kt=60
   CASE 16 : xa=241:ya=  0:sx= 54:sy=99:p=27:tx=- 4
   CASE 17 : xa=  0:ya= 86:sx= 71:sy=89:p=27:tx=-18
-  CASE 18 : xa= 71:ya= 86:sx=111:sy=81:p=27:tx=-48:kx=25:ky=10:kt=60:Combo(PL)=2
+  CASE 18 : xa= 71:ya= 86:sx=111:sy=81:p=27:tx=-48:kx=25:ky= 0:kt=60:Combo(PL)=2
   CASE 19 : xa=182:ya= 99:sx= 71:sy=87:p=27:tx=-30:                  Combo(PL)=0
  END SELECT
 END SUB

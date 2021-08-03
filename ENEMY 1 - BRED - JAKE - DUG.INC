@@ -15,11 +15,12 @@ SUB Enemy_BRED_JAKE_DUG(T,PL)
 
   'DECREASE TO WALK
   INC STE(T),-1
+  IF EX(T)<X(PL) THEN ESide(T)=4 ELSE ESide(T)=5
 
   IF STE(T)<1 THEN
    EBACK(T)=1: EBACKX(T)=1
    STE(T)=1: EAN(T)=9 'KEEP STOPPED UNTIL BACK TO WALK RANDOMLY
-   IF RND<0.3 THEN
+   IF RND<0.1 THEN
     'WALKING WITH ATTENTION OR NORMAL ACCORDLY THE DISTANCE
     IF DIST<120 THEN STE(T)=20 ELSE STE(T)=40
     IF RND>0.6 AND DIST<80 THEN 'MAYBE GO BACK IF NEAR PLAYER IS PUNCHING
@@ -37,7 +38,6 @@ SUB Enemy_BRED_JAKE_DUG(T,PL)
    IF RealY(T)<RealY(PL)-2 THEN INC RealY(T), ESPD(T)
    TT=(EBACKX(T)=-1)*30
    INC EX(T),((EX(T)<X(PL)-45+TT)*II*EBACKX(T))-((EX(T)>X(PL)+45-TT)*II*EBACKX(T))
-   IF EX(T)<X(PL) THEN ESide(T)=4 ELSE ESide(T)=5
   ENDIF
 
  ELSE 'STE(T)>=50 - DON'T WALK! ---------------------------------
@@ -110,36 +110,35 @@ SUB Enemy_BRED_JAKE_DUG(T,PL)
   CASE 64:
    EAN(T)=35: EAniDelay(T)=0: EAniSPD(T)=10
    STE(T)=65
-   IF EX(T)<245+RXX THEN STE(T)=35
    EXIT SUB
   CASE 65:
    EAN(T)=35: EAniDelay(T)=0: EAniSPD(T)=10
    STE(T)=64
-   IF EX(T)<245+RXX THEN STE(T)=35
+   IF EX(T)<245+RXX THEN EAN(T)=0: STE(T)=1: EMV(T)=1
    EXIT SUB
 
   'SEATED ----------------------------------------------------------------------------
   CASE 66:
    EAN(T)=34: EAniDelay(T)=0: EAniSPD(T)=10
-   STE(T)=67: EMV(T)=0
-   IF EX(T)<245+RXX THEN STE(T)=65
+   STE(T)=67: EMV(T)=0: ESIDE(T)=4
+   IF EX(T)<245+RXX THEN STE(T)=64
    EXIT SUB
   CASE 67:
    EAN(T)=34: EAniDelay(T)=0: EAniSPD(T)=10
-   STE(T)=66: EMV(T)=0
-   IF EX(T)<245+RXX THEN STE(T)=65
+   STE(T)=66: EMV(T)=0: ESIDE(T)=4
+   IF EX(T)<245+RXX THEN STE(T)=64
    EXIT SUB
 
   'SEATED CROUCHED -------------------------------------------------------------------
   CASE 68:
    EAN(T)=6: EAniDelay(T)=0: EAniSPD(T)=10
    STE(T)=69: EMV(T)=0
-   IF EX(T)<245+RXX THEN STE(T)=65
+   IF EX(T)<245+RXX THEN STE(T)=64
    EXIT SUB
   CASE 69:
    EAN(T)=6: EAniDelay(T)=0: EAniSPD(T)=10
    STE(T)=68: EMV(T)=0
-   IF EX(T)<245+RXX THEN STE(T)=65
+   IF EX(T)<245+RXX THEN STE(T)=64
    EXIT SUB
 
   'PUNCH -----------------------------------------------------------------------------
