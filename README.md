@@ -29,7 +29,7 @@ Changelog:
 2021-07-17
 - Implemented the Andore "family"
 - Implemented Damnd dying
-- Round 1 clear routine now is called immediately as Damnd dies, killing all enemies on the screen
+- Round 1 clear routine now is called immediately when Damnd dies, killing all enemies on the screen
 
 2021-07-14
 - Optimized decision tree and collision blocks of all enemies
