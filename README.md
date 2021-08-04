@@ -13,7 +13,8 @@ Changelog:
 2021-08-03
 - Implemented Round 2-3
 - Implemented rolling drumcans
-- Fixed page size mismatch error in 400x300 mode when fade in or fade out
+- Fixed page size mismatch error in 400x300 mode when fading in or fading out
+- Changed the waiting time for enemy decisions
 
 2021-08-02
 - Tweaked collision hitboxes
