@@ -409,7 +409,13 @@ SUB Round_1_Cutscenes(Ending)
         FOR T=255 TO 0 STEP -5
          BOX AND_PIXELS 0,0,MM.HRES,MM.VRES,RGB(T,T,T)
          ShowRoundMap(0,OSDP-(MM.VRES+50))
-         PAGE COPY 1 TO 0,B
+         IF VMODE<>400 THEN
+          PAGE COPY 1 TO 0,B,0
+         ELSE
+          PAGE WRITE 0
+          BLIT 0,0,8,30,384,240,1
+          PAGE WRITE 1
+         ENDIF
         NEXT T
        ENDIF
       ENDIF

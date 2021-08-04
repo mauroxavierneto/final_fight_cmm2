@@ -263,9 +263,9 @@ SUB Round_2_Events(xx)
 
      IF EVENT(1)=0 THEN
       EVENT(1)=1
-      SpawnEnemy(310,185,AXL,66)
-      SpawnEnemy(360,185,J,66)
-      SpawnEnemy(375,205,JAKE,68)
+      'SpawnEnemy(310,185,AXL,66)
+      'SpawnEnemy(360,185,J,66)
+      'SpawnEnemy(375,205,JAKE,68)
       'DUSTBIN
       SpawnObject(550,190,11,,-4)
       SpawnObject(600,190,11,,-4)
@@ -283,9 +283,9 @@ SUB Round_2_Events(xx)
  
      ' "WAKE UP" ENEMIES
      IF EVENT(2)<110 THEN INC EVENT(2)
-     IF EVENT(2)=40 THEN STE(5)=1: EMV(5)=1
-     IF EVENT(2)=70 THEN STE(4)=1: EMV(4)=1
-     IF EVENT(2)=100 THEN STE(6)=1: EMV(6)=1
+     'IF EVENT(2)=40 THEN STE(5)=1: EMV(5)=1
+     'IF EVENT(2)=70 THEN STE(4)=1: EMV(4)=1
+     'IF EVENT(2)=100 THEN STE(6)=1: EMV(6)=1
 
      BLIT xs,0,0,0,(320-xs)*RX,240,2,0
      BLIT 0,0,320-xs,0,xs+RXX,240,3,0

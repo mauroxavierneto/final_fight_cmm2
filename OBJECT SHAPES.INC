@@ -37,13 +37,14 @@ SUB PutObject(xs,ys,num,s)
   CASE 200 TO 207: ShowPiecesGlass(num,s)
   CASE 208 TO 223: ShowPiecesWood(num,s)
   CASE 260 TO 269: ShowMolotovFire(num,s)
-  CASE -24,24 TO 26: ShowDrumcan(num,s) 
+  CASE -24,24 TO 26: ShowDrumcan(num,s)
   CASE -27,27 TO 29: ShowTelBooth(num,s) 
   CASE -30,30 TO 32: ShowBarrel(num,s) 
   CASE -33,33 TO 34: ShowDustbin(num,s) 
   CASE -35,35 TO 38: ShowTires(num,s) 
   CASE -39,39 TO 40: ShowFreight(num,s) 
-  CASE -41,41 TO 43: ShowBillboard(num,s) 
+  CASE -41,41 TO 43: ShowBillboard(num,s,xs,ys) 
+  CASE -50,50 TO 57: ShowRollingDrumcan(num,s,xs,ys)
   CASE -113 TO -100,100 TO 113: ShowPoints(num,s) 
   CASE -140 TO -120,120 TO 140: ShowFood(num,s)  
   CASE -270,272 TO 272: ShowDrumcan(num,s) 
@@ -56,6 +57,12 @@ SUB PutObject(xs,ys,num,s)
 
  if s=5 then tx=-tx
  xxt=xs-(sx+TX)\2: yyt=ys-sy+TY
+
+ 'DRUMCAN EXTRA COLLISION TO BE KICKED BY BRED/JAKE/DUG
+ IF NUM=24 THEN
+  PAGE WRITE 34: BOX xxt,yyt,sx,sy+sby\2,,&H00FFFF,&H00FFFF
+  IF DEBUG THEN PAGE WRITE 1: BOX xxt,yyt,sx,sy+sby\2,,&H00FFFF,&H00FFFF
+ ENDIF
 
  ' CHECK COLLISION - GET THE PIXELS FROM THE FIRST SHAPE ONLY
  FOR I=0 TO 2
@@ -151,7 +158,7 @@ SUB ShowFreight(num,s)
 END SUB
 
 'BILLBOARD
-SUB ShowBillboard(num,s)
+SUB ShowBillboard(num,s,xs,ys)
  SELECT CASE num
   CASE -41: xa= 64:ya=224:sx=16:sy= 16:p=38: AVA$="BILLBOARD" 'AVATAR
   CASE 41 : xa=  0:ya= 64:sx=64:sy= 94:p=33:'OK - LIGHT 1
@@ -159,6 +166,22 @@ SUB ShowBillboard(num,s)
   CASE 42 : xa=  0:ya= 64:sx=64:sy= 94:p=33:'OK - LIGHT 2
             xxt=xs-(sx+TX)\2: yyt=ys-sy+TY: BLIT 311,4,xxt+49,yyt+1,9,78,p,s            
   CASE 43 : xa=  0:ya=  0:sx=64:sy= 64:p=33 'LOWER BROKEN
+ END SELECT
+END SUB
+
+'ROLLING DRUMCAN
+SUB ShowRollingDrumcan(num,s,xs,ys)
+ IF num>=50 THEN BLIT 63,173,xs-31,ys-72,62,72,33,4+SB
+ SELECT CASE num
+  CASE -50: xa= 32:ya=224:sx=16:sy=16:p=38: AVA$="DRUMCAN" 'AVATAR
+  CASE 50 : xa=101:ya=128:sx=13:sy=13:p=33:tx=  0:ty=-34+2 '1
+  CASE 51 : xa=101:ya=128:sx=13:sy=13:p=33:tx=-18:ty=-32+2 '2
+  CASE 52 : xa=101:ya=128:sx=13:sy=13:p=33:tx=-28:ty=-24+2 '3
+  CASE 53 : xa=101:ya=128:sx=13:sy=13:p=33:tx=-18:ty=-16+2 '4
+  CASE 54 : xa=101:ya=128:sx=13:sy=13:p=33:tx=  0:ty=-14+2 '5
+  CASE 55 : xa=101:ya=128:sx=13:sy=13:p=33:tx= 18:ty=-16+2 '6
+  CASE 56 : xa=101:ya=128:sx=13:sy=13:p=33:tx= 28:ty=-24+2 '7
+  CASE 57 : xa=101:ya=128:sx=13:sy=13:p=33:tx= 18:ty=-32+2 '8
  END SELECT
 END SUB
 

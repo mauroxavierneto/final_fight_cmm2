@@ -7,7 +7,7 @@
 ' SHOW =  1 TO SHOW SHAPE ONLY, DON'T WRITE OR READ COLLISION
 ' SHOW >  1 TO WRITE COLLISION BLOCK TO AN SELECT PAGE
 SUB PutEnemy(xs,ys,num,s,Who,pl,SHOW)
- local I,T
+ local I,T,TT
 
 ',xa,ya,xb,yb,sbx,sby,sx,sy,tx,ty,tbx,tby,xt,yt,xxt,yyt,xp,yp
 
@@ -29,7 +29,7 @@ SUB PutEnemy(xs,ys,num,s,Who,pl,SHOW)
 
  SELECT CASE Who
 
-  CASE  4 TO  6: Draw_BRED_JAKE_DUG(num,who)
+  CASE  4 TO  6: Draw_BRED_JAKE_DUG(num,who): IF NUM=18 THEN TT=1
   CASE  7,    8: Draw_J_TWO_P(num,who)
   CASE  9,   10: Draw_AXL_SLASH(num,who)
   CASE 11 TO 12: Draw_HOLLY_WOOD_EL_GADO(num,who,s)
@@ -55,6 +55,13 @@ SUB PutEnemy(xs,ys,num,s,Who,pl,SHOW)
 
  ' SET THE SUPERIOR PART OF THE SHAPE
  xxt=xs-(sx+TX)\2: yyt=ys-sy+TY-(xb>-99)*(SBY-TBY)
+
+ 'KICK DRUMCAN
+ IF TT THEN
+  IF s=4 THEN T=&HFF0000 ELSE T=&HFFFF00
+  PAGE WRITE 34: BOX xxt-10,yyt-10,sx+sbx+20,sy+sby+20,,T,T 
+  IF DEBUG THEN PAGE WRITE 1: BOX xxt-10,yyt-10,sx+sbx+20,sy+sby+20,,T,T
+ ENDIF
 
  IF num=50 THEN EEnergy(PL)=-99
 
@@ -82,18 +89,6 @@ SUB PutEnemy(xs,ys,num,s,Who,pl,SHOW)
    EXIT SUB
 
   CASE  1: ' SHOW =  1 TO SHOW SHAPE AND WRITE COLLISION BLOCK -------------------------
-
-   ' INSERT COLLISION BOX WHEN ENEMY IS THROWED
-   IF ETR(PL)>0 THEN
-    IF DEBUG THEN PAGE WRITE 1:BOX xxt-10,yyt-10,sx+sbx+20,sy+sby+20,,&HFF00FF,&HFF00FF
-    PAGE WRITE 34
-    ' CHANGE THE COLOUR TO MAKES EASIER TO TELL THE SIDE OF THE ENEMY
-    IF ESPDX(PL)<0 THEN
-     BOX xxt-10,yyt-10,sx+sbx+20,sy+sby+20,,&HFF00FF,&HFF00FF
-    ELSE
-     BOX xxt-10,yyt-10,sx+sbx+20,sy+sby+20,,&HFF00BF,&HFF00BF
-    ENDIF
-   ENDIF
 
    PAGE WRITE 1
    'SHADOW
@@ -129,6 +124,19 @@ SUB PutEnemy(xs,ys,num,s,Who,pl,SHOW)
      CASE 110: PutEnemy(xs+10,ys-20,997,4,81,,1)
      CASE 111: PutEnemy(xs+ 5,ys-20,998,4,81,,1)
     END SELECT
+   ENDIF
+
+  CASE  2: ' SHOW =  2 TO INSERT COLLISION BOX WHEN ENEMY IS THROWED -------------------
+
+   IF ETR(PL)>0 THEN
+    IF DEBUG THEN PAGE WRITE 1:BOX xxt-10,yyt-10,sx+sbx+20,sy+sby+20,,&HFF00FF,&HFF00FF
+    PAGE WRITE 34
+    ' CHANGE THE COLOUR TO MAKES EASIER TO TELL THE SIDE OF THE ENEMY
+    IF ESPDX(PL)<0 THEN
+     BOX xxt-10,yyt-10,sx+sbx+20,sy+sby+20,,&HFF00FF,&HFF00FF
+    ELSE
+     BOX xxt-10,yyt-10,sx+sbx+20,sy+sby+20,,&HFF00BF,&HFF00BF
+    ENDIF
    ENDIF
 
  END SELECT 'END SELECT SHOW -----------------------------------------------------------

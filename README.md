@@ -11,7 +11,9 @@ PS.: The current enemies on the CMM2 G1 probably will not be implemented because
 Changelog:
 
 2021-08-03
-- Implemented Round 2-3 (still missing the rolling drum cans)
+- Implemented Round 2-3
+- Implemented rolling drumcans
+- Fixed page size mismatch error in 400x300 mode when fade in or fade out
 
 2021-08-02
 - Tweaked collision hitboxes

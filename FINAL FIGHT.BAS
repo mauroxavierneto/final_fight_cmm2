@@ -238,6 +238,8 @@ RESTART:
 'OPENNING MUST BE IN 16-BIT DEPTH
 IF NOINTRO=0 THEN
  MODE 7,16
+ GameLogic=0
+
  CLS RGB(255,255,255): PAUSE 10: MXN_Logo 
  LoadIntro
  GameIntro
@@ -250,6 +252,8 @@ IF NOINTRO=0 THEN
  SHOWTITLE:
 
  CLS
+
+ GameLogic=0
 
  GameTitle
 
@@ -296,7 +300,7 @@ IF NOINTRO THEN Round=2 ELSE Round=1
 Section=1: LoadRound
 
 'ALWAYS NEED TO BE LOADED THE FIRST SECTION TO TEST ANY OTHER SECTION
-IF NOINTRO THEN Round=2: Section=1: LoadRound
+IF NOINTRO THEN Round=2: Section=3: LoadRound
 
 IF NOINTRO THEN
  IF ROUND=1 THEN OSDX=20
@@ -596,10 +600,10 @@ FOR PL=1 TO MAXPL ' ------------------------------------------------------------
 
 NEXT PL '-------------------------------------------------------------------------------------
 
-' DRAW THE COLLISION BOXES ON THE OBJECTS (FIRE AND WEAPONS)-----------------------------
-' FOR IND=10 TO EMAX
-'  IF STE(IND)>0 AND EAN(IND)>211 THEN PutObject(EX(IND),RealY(IND)+EY(IND),EAN(IND),ESIDE(IND),2)
-' NEXT IND
+' DRAW THE COLLISION BOXES ON THE THROWED ENEMIES ---------------------------------------
+ FOR TT=4 TO 9
+  IF STE(TT)>0 AND ETR(TT)>0 THEN PutEnemy(EX(TT),RealY(TT)+EY(TT),EAN(TT),ESide(TT),EType(TT),TT,2) 
+ NEXT TT
 
  IF OSDX=700 THEN PAGE WRITE 35: CLS &HFF0000
 
@@ -665,7 +669,11 @@ NEXT PL '-----------------------------------------------------------------------
 
  ' LOAD NEXT ROUND RESOURCES
  IF GoNext THEN
-  PAGE COPY 1 TO 0,B
+  IF VMODE<400 THEN
+   PAGE COPY 1 TO 0,B
+  ELSE
+   PAGE WRITE 0: BLIT 0,0,8,30,400,300,1,0: PAGE WRITE 1
+  ENDIF
   GoNext=0: LoadRound: LoadAssets: OSDX=2210
   EXECUTE "Round_"+STR$(Round)+"_Cutscenes(0)"  'STARTING NEW STAGE
  ENDIF
@@ -773,8 +781,8 @@ NEXT PL '-----------------------------------------------------------------------
 
  NEXT PL ' END OF HIT INFO / AVATAR / LIFES / HEALTH -------------------------------------
 
- ? scrx
- ? LIMRD
+ '? scrx
+ '? LIMRD
 
   ' DEBUG INFO ONLY
  IF DEBUG=1 THEN
@@ -811,8 +819,10 @@ NEXT PL '-----------------------------------------------------------------------
 
  StageScrollEvent(ScrSide,PLSCR)
 
- 'INC TESTA
- 'IF TESTA<11 OR TESTA>13 THEN TESTA=11
+ 'IF SB THEN INC TESTA
+ 'IF TESTA>57 THEN TESTA=50
+ 'IF TESTA<50 THEN TESTA=57
+ 'PutObject(200,230,TESTA,4)
  'TESTA=1
  'PutEnemy(200,230,TESTA,4,ANDORE,,1)
 

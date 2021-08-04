@@ -22,7 +22,7 @@ SUB Round_2_Cutscenes(Ending)
     PAGE WRITE 1
     BLIT 0,0,-(scrx-240),0,48,MM.VRES,2,0
     
-    IF OSDX>1930 AND OSDX<2150 THEN FOR PL=1 TO MAXPL: INC X(PL), 8: NEXT PL
+    IF OSDX>1930 AND OSDX<2150 THEN FOR PL=1 TO MAXPL: INC X(PL), 6+(PlType(PL)=HAGGAR)*2: NEXT PL
 
     'PLAYERS WALKING
     IF OSDX>1550 AND OSDX<1830 THEN
@@ -59,10 +59,11 @@ SUB Round_2_Cutscenes(Ending)
       T=(2200-OSDX)*10: IF T<255 THEN BOX AND_PIXELS 0,0,MM.HRES,MM.VRES,RGB(T,T,T)
       IF OSDX=2200 THEN
        GO=0: MV=0
+       'START POSITION
        FOR PL=1 TO MAXPL
         RealY(PL)=190+(PL-1)*25
         Y(PL)=-(PlType(PL)=HAGGAR)*90
-        X(PL)=-35-(PlType(PL)=HAGGAR)*90
+        X(PL)=-25-(PlType(PL)=HAGGAR)*100
         JumpForward(PL)
         AN(PL)=27
        NEXT PL
